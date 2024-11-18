@@ -78,10 +78,10 @@ export class StocksComponent {
     //   this.apiResponse = JSON.stringify(response);
     // })
 
-    // const alphaSubscription = this.alphaVantageApiService.getTimeSeriesDailyObservable(this.stocksForm.value.ticker).subscribe((response) => {
-    //   console.log(response);
-    //   this.apiResponse = JSON.stringify(response);
-    // }); 
+    const alphaSubscription = this.alphaVantageApiService.getTimeSeriesDailyObservable(this.stocksForm.value.ticker).subscribe((response) => {
+      console.log(response);
+      this.apiResponse = JSON.stringify(response);
+    }); 
     
   }
 
