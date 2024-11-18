@@ -6,7 +6,8 @@
     "start": "ng serve -o",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy-ghpages": "ng deploy --base-href=/"
   },
   "private": true,
   "dependencies": {
