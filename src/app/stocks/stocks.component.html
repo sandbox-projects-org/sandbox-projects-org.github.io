@@ -1,0 +1,26 @@
+<p>stocks works!</p>
+
+<button type="submit" [disabled]="formIsInvalid">Submit</button>
+
+@if (isAdmin) {
+    <p>You are an admin</p>
+}
+@else {
+    <p>You are not authorized</p>
+}
+<ul>
+    @for (ingredient of ingredientList; track ingredient.name) {
+        <li> {{ ingredient.quantity }} - {{ ingredient.name }}</li>
+    }
+</ul>
+
+
+<div [formGroup]="stocksForm">
+    <label for="tick">Ticker: </label>
+    <input id="tick" type="text" formControlName="ticker">
+
+</div>
+
+<button (click)="action()">Search</button>
+
+<p>{{ apiResponse }}</p>
