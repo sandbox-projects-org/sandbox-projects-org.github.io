@@ -1,34 +1,34 @@
 <div>
     <div [formGroup]="inputForm" class="form">
         <mat-form-field appearance="outline">
-            <mat-label>Principal</mat-label>
+            <mat-label>Starting Amount</mat-label>
             <input 
                 matInput 
-                formControlName="principalControl">
+                formControlName="startingAmountControl">
         </mat-form-field>
         <mat-form-field appearance="outline">
-            <mat-label>Contribution</mat-label>
+            <mat-label>Additional Contribution</mat-label>
             <input 
                 matInput
-                formControlName="contributionControl">
+                formControlName="additionalContributionControl">
         </mat-form-field>
         <mat-form-field appearance="outline">
-            <mat-label>Growth Rate</mat-label>
+            <mat-label>Return Rate</mat-label>
             <input 
                 matInput
-                formControlName="growthRateControl">
+                formControlName="returnRateControl">
         </mat-form-field>
         <mat-form-field appearance="outline">
-            <mat-label>Dividend Yield</mat-label>
+            <mat-label>Time Period</mat-label>
             <input 
                 matInput
-                formControlName="dividendYieldControl">
+                formControlName="timePeriodControl">
         </mat-form-field>
         <button mat-button>submit</button>
     </div>
 
-    <div>{{ inputForm.controls['principalControl'].value }}</div>
-    <div>{{ inputForm.controls['contributionControl'].value }}</div>
-    <div>{{ inputForm.controls['growthRateControl'].value }}</div>
-    <div>{{ inputForm.controls['dividendYieldControl'].value }}</div>
+    <div>{{ inputForm.controls['startingAmountControl'].value }}</div>
+    <div>{{ inputForm.controls['additionalContributionControl'].value }}</div>
+    <div>{{ inputForm.controls['returnRateControl'].value }}</div>
+    <div>{{ inputForm.controls['timePeriodControl'].value }}</div>
 </div>  

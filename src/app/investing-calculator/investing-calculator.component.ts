@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { AngularMaterialModule } from '../shared/modules/angular-material.module';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-investing-calculator',
   standalone: true,
-  imports: [AngularMaterialModule],
+  imports: [AngularMaterialModule, ReactiveFormsModule],
   templateUrl: './investing-calculator.component.html',
   styleUrl: './investing-calculator.component.scss'
 })
@@ -17,10 +17,10 @@ export class InvestingCalculatorComponent {
     private formBuilder: FormBuilder,
   ){
     this.inputForm = this.formBuilder.group({
-      principalControl: [''],
-      contributionControl: [''],
-      growthRateControl: [''],
-      dividendYieldControl: ['']
+      startingAmountControl: [''],
+      additionalContributionControl: [''],
+      returnRateControl: [''],
+      timePeriodControl: ['']
     });
   }
 
