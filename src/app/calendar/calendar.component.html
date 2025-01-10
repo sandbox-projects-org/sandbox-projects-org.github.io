@@ -1,9 +1,14 @@
 <div class="calendar">
     <div>
-        <b>It is:</b> {{ currentDate }}
+        <b>It is:</b> {{ currentDate | date:"medium"}}
     </div>
 
     <div>
         <b>Is it Christmas yet?:</b> {{ isTodayChristmas ? 'Yes' : 'No' }}
     </div>
+
+    <div>
+        <b>How many days till Christmas?</b> {{ daysTillChristmas }}
+    </div>
+
 </div>
