@@ -15,11 +15,9 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-
       - name: Install angular-cli-ghpages
         run: |
           npm i angular-cli-ghpages
-          ng add angular-cli-ghpages
       - name: Build Angular project to fit GitHub Pages format
         run: echo "build"
           
