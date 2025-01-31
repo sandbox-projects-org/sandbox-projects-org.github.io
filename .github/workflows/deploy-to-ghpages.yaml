@@ -18,6 +18,8 @@ jobs:
       - name: Install angular-cli-ghpages
         run: |
           npm i angular-cli-ghpages
+          ls
+          ng add angular-cli-ghpages
       - name: Build Angular project to fit GitHub Pages format
         run: echo "build"
           
