@@ -5,11 +5,9 @@ jobs:
   Deploy:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo ${{ github.workspace }}
-          ls ${{ github.workspace }}
-      - run: cd ${{ github.workspace }}
+      - uses: actions/checkout@v4.2.2
       - run: ls
+          
       - name: Install angular-cli-ghpages
         run: |
           npm install -g @angular/cli
