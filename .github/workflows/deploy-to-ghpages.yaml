@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 run-name: ${{ github.actor }} is deploying to GitHub Pages
 on: [push]
 jobs:
-  Build:
+  Deploy:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -19,7 +19,7 @@ jobs:
         run: |
           npm install -g @angular/cli
           npm i angular-cli-ghpages
-      - name: Build Angular project to fit GitHub Pages format
-        run: echo "build"
+      - name: Build/Deploy Angular project to fit GitHub Pages format
+        run: ng deploy
           
     
