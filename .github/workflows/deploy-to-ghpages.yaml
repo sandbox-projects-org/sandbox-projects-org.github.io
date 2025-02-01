@@ -6,8 +6,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: COPY . /
-      - run: git clone https://github.com/sandbox-projects-org/sandbox-projects-org.github.io.git
-      - run: cd sandbox-projects-org.github.io
       - run: ls
       - name: Install angular-cli-ghpages
         run: |
