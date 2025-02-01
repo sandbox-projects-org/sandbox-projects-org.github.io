@@ -5,10 +5,7 @@ jobs:
   Deploy:
     runs-on: ubuntu-latest
     steps:
-      - run: ls
-      - run: mkdir gitproject
-      - run: cd gitproject
-      - run: ls
+      - run: COPY . /
       - run: git clone https://github.com/sandbox-projects-org/sandbox-projects-org.github.io.git
       - run: cd sandbox-projects-org.github.io
       - run: ls
