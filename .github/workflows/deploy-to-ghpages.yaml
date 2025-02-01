@@ -8,8 +8,8 @@ jobs:
       - run: |
           echo ${{ github.workspace }}
           ls ${{ github.workspace }}
-          cd ${{ github.workspace }}
-          ls
+      - run: cd ${{ github.workspace }}
+      - run: ls
       - name: Install angular-cli-ghpages
         run: |
           npm install -g @angular/cli
