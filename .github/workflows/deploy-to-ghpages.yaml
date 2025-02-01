@@ -17,8 +17,7 @@ jobs:
           ls ${{ github.workspace }}
       - name: Install angular-cli-ghpages
         run: |
-          npm -v
-          git --version
+          npm install -g @angular/cli
           npm i angular-cli-ghpages
           ls
           ng add angular-cli-ghpages
