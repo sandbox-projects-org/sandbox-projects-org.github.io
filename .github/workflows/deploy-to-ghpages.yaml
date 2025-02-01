@@ -18,6 +18,7 @@ jobs:
       - name: Install angular-cli-ghpages
         run: |
           npm -v
+          git --version
           npm i angular-cli-ghpages
           ls
           ng add angular-cli-ghpages
