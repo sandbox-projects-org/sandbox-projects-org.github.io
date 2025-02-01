@@ -6,6 +6,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: ls
+      - run: mkdir testing
+      - run: cd testing
+      - run: ls
+      - run: mkdir abc
+      - run: ls
       - name: Install angular-cli-ghpages
         run: |
           npm install -g @angular/cli
