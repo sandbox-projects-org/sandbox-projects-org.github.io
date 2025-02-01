@@ -5,7 +5,7 @@ jobs:
   Deploy:
     runs-on: ubuntu-latest
     steps:
-      - run: COPY . /
+      - run: cp . /
       - run: ls
       - name: Install angular-cli-ghpages
         run: |
