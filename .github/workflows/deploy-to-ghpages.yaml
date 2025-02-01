@@ -12,7 +12,9 @@ jobs:
       - run: git clone https://github.com/sandbox-projects-org/sandbox-projects-org.github.io.git
       - name: List files in the repository
         run: |
-          ls ${{ github.workspace }}
+          ls
+          cd gitproject
+          ls
       - name: Install angular-cli-ghpages
         run: |
           npm install -g @angular/cli
