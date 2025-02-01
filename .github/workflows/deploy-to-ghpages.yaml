@@ -13,6 +13,6 @@ jobs:
           npm install -g @angular/cli
           npm i angular-cli-ghpages
       - name: Build/Deploy Angular project to fit GitHub Pages format
-        run: ng deploy --base-href=/
+        run: npm run deploy-ghpages
           
     
