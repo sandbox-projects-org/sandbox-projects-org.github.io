@@ -10,11 +10,7 @@ jobs:
       - run: cd gitproject
       - run: ls
       - run: git clone https://github.com/sandbox-projects-org/sandbox-projects-org.github.io.git
-      - name: List files in the repository
-        run: |
-          ls
-          cd gitproject
-          ls
+      - run: ls
       - name: Install angular-cli-ghpages
         run: |
           npm install -g @angular/cli
