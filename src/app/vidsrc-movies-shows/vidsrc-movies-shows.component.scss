@@ -1,0 +1,9 @@
+.vidsrc-page-grid {
+    display: grid;
+    justify-items: center;
+}
+
+.video-player-grid {
+    display: grid;
+    grid-auto-flow: column;
+}
