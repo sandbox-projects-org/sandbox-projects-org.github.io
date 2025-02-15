@@ -13,7 +13,7 @@
     </div>
 
     <div>
-        <input type="search" #searchInput>
+        <input type="search" (keydown.enter)="searchMovieShow(searchInput.value)" #searchInput>
         <button (click)="searchMovieShow(searchInput.value)">Submit</button>
     </div>
 
