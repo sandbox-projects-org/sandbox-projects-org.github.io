@@ -2,6 +2,10 @@
     <div>
         <p>Instructions</p>
         <ol>
+            <li>Search for Movie/Show</li>
+        </ol>
+        <div>OR</div>
+        <ol>
             <li>Go to <a href="https://www.imdb.com" target=_blank>IMDB</a> or <a href="https://www.themoviedb.org" target="_blank">TMDB</a></li>
             <li>Search for your movie/show</li>
             <li>Get the movie/show ID from the URL (looks like <strong>tt0363771</strong> or <strong>411</strong>):</li>
@@ -9,13 +13,43 @@
                 <li>IMDB example: https://www.imdb.com/title/<strong>tt0363771</strong>/?ref_=fn_all_ttl_1</li>
                 <li>TMDB example: https://www.themoviedb.org/movie/<strong>411</strong>-the-chronicles-of-narnia-the-lion-the-witch-and-the-wardrobe</li>
             </ul>
-            <li>Copy that title id into search bar</li>
+            <li>Copy that title id into search bar with either a 'imdb:' or 'tmdb:' prefix</li>
+            <ul>
+                <li>IMDB example: <strong>imdb:tt0363771</strong></li>
+                <li>TMDB example: <strong>tmdb:411</strong></li>
+            </ul>
         </ol>
     </div>
 
-    <div>
-        <input type="search" (keydown.enter)="searchMovieShow(searchInput.value)" #searchInput>
-        <button (click)="searchMovieShow(searchInput.value)">Submit</button>
+    <div class="search-grid">
+    <div class="search-result-grid">
+        <div class="search-input-grid">
+            <input type="search" (keydown.enter)="searchMovieShow(searchInput.value)" #searchInput>
+            <button (click)="searchMovieShow(searchInput.value)">Search</button>
+        </div>
+        @if(searchResult.length > 0) {
+            <div class="search-item-grid">
+                @for (item of searchResult; track item) {
+                    <div class="search-result-items" (click)="loadMovieShow(item.id)" style="cursor: pointer">
+                        <img [src]="item.poster_path">
+                        <div>
+                            <div>
+                            TITLE: {{item.title ? item.title : item.name}}
+                        </div>
+                        <div>
+                            TYPE: {{ item.media_type === 'movie' ? 'movie' : (item.media_type === 'tv' ? 'show' : 'unknown') }}
+                        </div>
+                        <div>
+                            DATE: {{item.release_date ? item.release_date : (item.first_air_date ? item.first_air_date : 'unknown')}}
+                        </div>
+                        <div>
+                            DESCRIPTION: {{item.overview}}
+                        </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
     </div>
 
     <div class="video-player-grid">
@@ -40,4 +74,5 @@
             }
         }
     </div>
+</div>
 </div>

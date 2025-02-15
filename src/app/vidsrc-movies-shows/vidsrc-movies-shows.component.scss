@@ -12,3 +12,27 @@
 iframe {
     border: 1em outset #ddd;
 }
+
+.search-item-grid {
+    display: grid;
+    row-gap: 10px;
+}
+
+.search-result-items {
+    display: grid;
+    grid-auto-flow: column;
+    border: medium solid black;
+    :hover {
+        background-color: grey;
+    }
+}
+
+.search-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-column: span 2;
+}
+
+img {
+    height: 10em;
+}

@@ -15,6 +15,9 @@ export class VidsrcMoviesShowsComponent{
   movieURL: any = '';
   showURL: any = '';
 
+
+  searchResult: any[] = [];
+
   hasSearched = false;
   movieExists = false;
   showExists = false;
@@ -30,19 +33,46 @@ export class VidsrcMoviesShowsComponent{
   }
 
   searchMovieShow(value: string) {
+    this.searchResult = [];
+
+    // seach directly for movie if value is IMDB id or TMDB id
+    if (value.slice(0, 5) === 'imdb:' || value.slice(0, 5) === 'tmdb:') {
+      this.loadMovieShow(value.slice(5));
+    }
+
+    // search TMDB catalog
+    else {
+    this.search$ = this.vidsrcService.searchTMDB(value)
+    this.search$.subscribe({
+      next: (httpResponse) => {
+        var results: any[] = httpResponse.results;
+        results.forEach(item => {
+          if (item.media_type === 'movie' || item.media_type === 'tv') {
+            var posterPath = item.poster_path;
+            item.poster_path = `https://image.tmdb.org/t/p/w500${posterPath}`
+            this.searchResult.push(item)
+          }
+        })
+      }
+    })
+    
+  }
+  }
+
+  loadMovieShow(value: string) {
     this.hasSearched = true;
     this.isLoading = true;
-    
-    if (value.slice(0, 2) === 'tt') {
+    console.log(value)
+    if (value.toString().slice(0, 2) === 'tt') {
       this.search$ = this.vidsrcService.getIMDBMovie(value)
       this.search$.subscribe({
         next: (httpResponse) => {
+          console.log(httpResponse)
           this.movieExists = true;
           const parser = new DOMParser();
           const htmlDoc = parser.parseFromString(httpResponse.body!, 'text/html');
           
-          const movieTitle = htmlDoc.querySelector('title')!.text;
-          console.log(movieTitle)
+          // const movieTitle = htmlDoc.querySelector('title')!.text;
           var iframeSource = htmlDoc.querySelector('iframe#player_iframe')!.getAttribute('src')!;
           // var movieSources = htmlDoc.querySelector('div.servers');
   
@@ -65,10 +95,8 @@ export class VidsrcMoviesShowsComponent{
           const htmlDoc = parser.parseFromString(httpResponse.body!, 'text/html');
           
           
-          const showTitle = htmlDoc.querySelector('title')!.text;
-          console.log(showTitle)
+          // const showTitle = htmlDoc.querySelector('title')!.text;
           var iframeSource = htmlDoc.querySelector('iframe#player_iframe')!.getAttribute('src')!;
-          console.log(iframeSource)
           // var showSources = htmlDoc.querySelector('div.servers');
   
           this.showURL = this.domSanitizer.bypassSecurityTrustResourceUrl(iframeSource);
@@ -90,8 +118,7 @@ export class VidsrcMoviesShowsComponent{
           const parser = new DOMParser();
           const htmlDoc = parser.parseFromString(httpResponse.body!, 'text/html');
           
-          const movieTitle = htmlDoc.querySelector('title')!.text;
-          console.log(movieTitle)
+          // const movieTitle = htmlDoc.querySelector('title')!.text;
           var iframeSource = htmlDoc.querySelector('iframe#player_iframe')!.getAttribute('src')!;
           // var movieSources = htmlDoc.querySelector('div.servers');
   
@@ -114,10 +141,8 @@ export class VidsrcMoviesShowsComponent{
           const htmlDoc = parser.parseFromString(httpResponse.body!, 'text/html');
           
           
-          const showTitle = htmlDoc.querySelector('title')!.text;
-          console.log(showTitle)
+          // const showTitle = htmlDoc.querySelector('title')!.text;
           var iframeSource = htmlDoc.querySelector('iframe#player_iframe')!.getAttribute('src')!;
-          console.log(iframeSource)
           // var showSources = htmlDoc.querySelector('div.servers');
   
           this.showURL = this.domSanitizer.bypassSecurityTrustResourceUrl(iframeSource);
