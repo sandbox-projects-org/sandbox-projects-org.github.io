@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { AngularMaterialModule } from '../shared/modules/angular-material.module';
 
 @Component({
   selector: 'app-vidsrc-movies-shows',
   standalone: true,
-  imports: [],
+  imports: [AngularMaterialModule],
   templateUrl: './vidsrc-movies-shows.component.html',
   styleUrl: './vidsrc-movies-shows.component.scss'
 })
