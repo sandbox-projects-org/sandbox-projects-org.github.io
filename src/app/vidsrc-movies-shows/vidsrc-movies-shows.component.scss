@@ -1,9 +1,15 @@
 .vidsrc-page-grid {
     display: grid;
     justify-items: center;
+    row-gap: 30px;
 }
 
 .video-player-grid {
     display: grid;
     grid-auto-flow: column;
+}
+
+iframe {
+    aspect-ratio: 16/9;
+
 }

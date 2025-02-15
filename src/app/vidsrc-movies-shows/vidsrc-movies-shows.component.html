@@ -1,10 +1,10 @@
 <div class="vidsrc-page-grid">
     <div>
-        <p>Instructions for turdsbutt</p>
+        <p>Instructions</p>
         <ol>
             <li>Go to <a href="https://www.imdb.com/" target=_blank>IMDB</a></li>
             <li>Search for your movie/show</li>
-            <li>Get the title id from the URL (looks like <strong>tt0363771</strong>):</li>
+            <li>Get the IMDB id from the URL (looks like <strong>tt0363771</strong>):</li>
             <ul>
                 <li>example: https://www.imdb.com/title/<strong>tt0363771</strong>/?ref_=fn_all_ttl_1</li>
             </ul>
@@ -18,17 +18,23 @@
     </div>
 
     <div class="video-player-grid">
-        <div>
-            <p>Movies</p>
-            <iframe [src]="movieURL" allowfullscreen></iframe>
-        </div>
-        <div>
-            <p>Shows</p>
-            <iframe [src]="showURL" allowfullscreen></iframe>
-        </div>
+        @if (movieExists) {
+            <div>
+                <iframe [src]="movieURL" allowfullscreen="yes" scrolling="yes"></iframe>
+            </div>
+        }
+        @else if (showExists) {
+            <div>
+                <iframe [src]="showURL" allowfullscreen></iframe>
+            </div>
+        }
+        @else if (hasSearched) {
+            <div>
+                No Results
+            </div>
+        }
     </div>
 </div>
-
 
 
 
