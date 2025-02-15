@@ -155,7 +155,12 @@ export class VidsrcMoviesShowsComponent{
   
           this.showURL = this.domSanitizer.bypassSecurityTrustResourceUrl(iframeSource);
 
-          this.loadShowSeasonsEpisodes(titleID)
+          var mediaType = this.searchResult.find(x => {
+            return x.id === titleID
+          }).media_type
+          if (mediaType === 'tv') {
+            this.loadShowSeasonsEpisodes(titleID)
+          }
         },
         error: (err) => {
           this.showExists = false;
@@ -173,7 +178,6 @@ export class VidsrcMoviesShowsComponent{
     const getTMDBSeasonsEpisodes$: Observable<any> = this.vidsrcService.getTMDBSeasonsEpisodes(titleID)
     getTMDBSeasonsEpisodes$.subscribe({
       next: (httpResponse) => {
-        console.log(httpResponse)
         var seasons: any[] = httpResponse.seasons;
         seasons.forEach(season => {
           if (season.season_number > 0) {
@@ -184,13 +188,6 @@ export class VidsrcMoviesShowsComponent{
             this.tmdbSeasonsEpisodes.set(season.season_number, numberOfEpisodes)
           }
         })
-        console.log(this.tmdbSeasonsEpisodes)
-      },
-      error: (err) => {
-        console.log(`ERROR: ${err}`)
-      },
-      complete: () => {
-        console.log('COMPLETE')
       }
     })
   }
