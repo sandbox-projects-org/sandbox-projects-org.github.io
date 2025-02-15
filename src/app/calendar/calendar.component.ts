@@ -30,7 +30,6 @@ export class CalendarComponent implements OnDestroy {
 
     // initialize subscription to observable
     this.subscription = this.dateObservable$.subscribe(x => {
-      console.log(x)
       this.currentDate = x
       this.isTodayChristmas = (this.currentDate.getMonth() === this.christmasDate.getMonth() && this.currentDate.getDay() === this.christmasDate.getDay());
       this.daysTillChristmas = this.getDaysTillChristmas(this.currentDate, this.christmasDate);

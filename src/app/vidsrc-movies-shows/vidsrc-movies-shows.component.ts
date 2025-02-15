@@ -62,12 +62,10 @@ export class VidsrcMoviesShowsComponent{
   loadMovieShow(value: string) {
     this.hasSearched = true;
     this.isLoading = true;
-    console.log(value)
     if (value.toString().slice(0, 2) === 'tt') {
       this.search$ = this.vidsrcService.getIMDBMovie(value)
       this.search$.subscribe({
         next: (httpResponse) => {
-          console.log(httpResponse)
           this.movieExists = true;
           const parser = new DOMParser();
           const htmlDoc = parser.parseFromString(httpResponse.body!, 'text/html');
