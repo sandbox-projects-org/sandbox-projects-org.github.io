@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
-import {MatList, MatListModule} from '@angular/material/list';
+import {MatSelectModule} from '@angular/material/select';
 
 
 @NgModule({
@@ -21,7 +21,7 @@ import {MatList, MatListModule} from '@angular/material/list';
     MatFormFieldModule,
     MatTooltipModule,
     CommonModule,
-    MatListModule
+    MatSelectModule
   ]
 })
 export class AngularMaterialModule { }

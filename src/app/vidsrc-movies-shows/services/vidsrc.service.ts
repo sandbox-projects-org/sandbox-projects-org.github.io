@@ -44,7 +44,11 @@ export class VidsrcService {
     return this.http.get(`${this._TMDB_SHOW_ENDPOINT}${tmdbID}&season=${season}&episode=${episode}`, this._httpOptions)
   }
 
-  searchTMDB(input: string) {
-    return this.http.get(`https://api.themoviedb.org/3/search/multi?query=${input}&include_adult=true`, this._TMDB_Search_Options)
+  searchTMDB(title: string) {
+    return this.http.get(`https://api.themoviedb.org/3/search/multi?query=${title}&include_adult=true`, this._TMDB_Search_Options)
+  }
+
+  getTMDBSeasonsEpisodes(tmdbID: string) {
+    return this.http.get(`https://api.themoviedb.org/3/tv/${tmdbID}`, this._TMDB_Search_Options)
   }
 }

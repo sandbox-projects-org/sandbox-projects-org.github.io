@@ -15,56 +15,66 @@ export class VidsrcMoviesShowsComponent{
   movieURL: any = '';
   showURL: any = '';
 
-
   searchResult: any[] = [];
+  tmdbSeasonsEpisodes: Map<number, number[]> = new Map()
 
-  hasSearched = false;
+  titleID = '';
+  selectedSeason = 1;
+  selectedEpisode = 1;
+  hasSearchedTitle = false;
+  hasLoadedVideo = false;
   movieExists = false;
   showExists = false;
   isLoading = false;
 
-  search$: Observable<any>;
+  // searchMovieShowTitle$: Observable<any>;
+  // searchMovieShowId$: Observable<any>;
 
   constructor(
     private vidsrcService: VidsrcService,
     private domSanitizer: DomSanitizer
   ){
-    this.search$ = new Observable();
+    // this.searchMovieShowTitle$ = new Observable();
+    // this.searchMovieShowId$ = new Observable();
   }
 
-  searchMovieShow(value: string) {
+  searchTMDBMovieShow(value: string) {
     this.searchResult = [];
 
     // seach directly for movie if value is IMDB id or TMDB id
     if (value.slice(0, 5) === 'imdb:' || value.slice(0, 5) === 'tmdb:') {
-      this.loadMovieShow(value.slice(5));
+      var id = value.slice(5);
+      this.titleID = id;
+      this.loadMovieShow(this.titleID);
     }
 
     // search TMDB catalog
     else {
-    this.search$ = this.vidsrcService.searchTMDB(value)
-    this.search$.subscribe({
-      next: (httpResponse) => {
-        var results: any[] = httpResponse.results;
-        results.forEach(item => {
-          if (item.media_type === 'movie' || item.media_type === 'tv') {
-            var posterPath = item.poster_path;
-            item.poster_path = `https://image.tmdb.org/t/p/w500${posterPath}`
-            this.searchResult.push(item)
-          }
-        })
-      }
-    })
-    
-  }
+      this.hasSearchedTitle = true;
+      const searchTMDB$: Observable<any> = this.vidsrcService.searchTMDB(value)
+      searchTMDB$.subscribe({
+        next: (httpResponse) => {
+          var results: any[] = httpResponse.results;
+          results.forEach(item => {
+            if (item.media_type === 'movie' || item.media_type === 'tv') {
+              var posterPath = item.poster_path;
+              item.poster_path = `https://image.tmdb.org/t/p/w500${posterPath}`
+              this.searchResult.push(item)
+            }
+          })
+        }
+      })
+      
+    }
   }
 
-  loadMovieShow(value: string) {
-    this.hasSearched = true;
+  loadMovieShow(titleID: string, season: number = 1, episode: number = 1) {
+    this.hasLoadedVideo = true;
     this.isLoading = true;
-    if (value.toString().slice(0, 2) === 'tt') {
-      this.search$ = this.vidsrcService.getIMDBMovie(value)
-      this.search$.subscribe({
+    this.titleID = titleID;
+    if (titleID.toString().slice(0, 2) === 'tt') {
+      const getIMDBMovie$ = this.vidsrcService.getIMDBMovie(titleID)
+      getIMDBMovie$.subscribe({
         next: (httpResponse) => {
           this.movieExists = true;
           const parser = new DOMParser();
@@ -85,8 +95,8 @@ export class VidsrcMoviesShowsComponent{
         }
       })
   
-      const vidsrcShow$ = this.vidsrcService.getIMDBShow(value)
-      vidsrcShow$.subscribe({
+      const getIMDBShow$ = this.vidsrcService.getIMDBShow(titleID, season, episode)
+      getIMDBShow$.subscribe({
         next: (httpResponse) => {
           this.showExists = true;
           const parser = new DOMParser();
@@ -109,8 +119,8 @@ export class VidsrcMoviesShowsComponent{
       })
     }
     else {
-      this.search$ = this.vidsrcService.getTMDBMovie(value)
-      this.search$.subscribe({
+      const getTMDBMovie$ = this.vidsrcService.getTMDBMovie(titleID)
+      getTMDBMovie$.subscribe({
         next: (httpResponse) => {
           this.movieExists = true;
           const parser = new DOMParser();
@@ -131,8 +141,8 @@ export class VidsrcMoviesShowsComponent{
         }
       })
   
-      const vidsrcShow$ = this.vidsrcService.getTMDBShow(value)
-      vidsrcShow$.subscribe({
+      const getTMDBShow$ = this.vidsrcService.getTMDBShow(titleID, season, episode)
+      getTMDBShow$.subscribe({
         next: (httpResponse) => {
           this.showExists = true;
           const parser = new DOMParser();
@@ -144,6 +154,8 @@ export class VidsrcMoviesShowsComponent{
           // var showSources = htmlDoc.querySelector('div.servers');
   
           this.showURL = this.domSanitizer.bypassSecurityTrustResourceUrl(iframeSource);
+
+          this.loadShowSeasonsEpisodes(titleID)
         },
         error: (err) => {
           this.showExists = false;
@@ -156,4 +168,39 @@ export class VidsrcMoviesShowsComponent{
     }
   }
   
+  loadShowSeasonsEpisodes(titleID: string) {
+    this.tmdbSeasonsEpisodes = new Map();
+    const getTMDBSeasonsEpisodes$: Observable<any> = this.vidsrcService.getTMDBSeasonsEpisodes(titleID)
+    getTMDBSeasonsEpisodes$.subscribe({
+      next: (httpResponse) => {
+        console.log(httpResponse)
+        var seasons: any[] = httpResponse.seasons;
+        seasons.forEach(season => {
+          if (season.season_number > 0) {
+            var numberOfEpisodes = [];
+            for (var i = 1; i <= season.episode_count; i++) {
+              numberOfEpisodes.push(i);
+            }
+            this.tmdbSeasonsEpisodes.set(season.season_number, numberOfEpisodes)
+          }
+        })
+        console.log(this.tmdbSeasonsEpisodes)
+      },
+      error: (err) => {
+        console.log(`ERROR: ${err}`)
+      },
+      complete: () => {
+        console.log('COMPLETE')
+      }
+    })
+  }
+
+  changeSeason(season: number) {
+    this.selectedSeason = season;
+    this.loadMovieShow(this.titleID, season)
+  }
+  changeEpisode(episode: number) {
+    this.selectedEpisode = episode;
+    this.loadMovieShow(this.titleID, this.selectedSeason, episode)
+  }
 }
