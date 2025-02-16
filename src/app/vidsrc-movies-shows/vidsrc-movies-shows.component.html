@@ -37,7 +37,7 @@
         @if(searchResult.length > 0) {
             <div class="search-item-grid">
                 @for (item of searchResult; track item) {
-                    <div class="search-result-items" (click)="loadMovieShow(item.id, item.media_type)" style="cursor: pointer">
+                    <div class="search-result-items" (click)="loadMovieShow(item.id)" style="cursor: pointer">
                         <img [src]="item.poster_path">
                         <div>
                             <div>

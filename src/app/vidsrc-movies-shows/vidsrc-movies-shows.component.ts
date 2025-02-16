@@ -21,7 +21,6 @@ export class VidsrcMoviesShowsComponent{
   tmdbSeasonsEpisodes: Map<number, number[]> = new Map()
 
   titleID = '';
-  mediaType = ''
   selectedSeason = 1;
   selectedEpisode = 1;
   hasSearchedTitle = false;
@@ -75,14 +74,13 @@ export class VidsrcMoviesShowsComponent{
     }
   }
 
-  loadMovieShow(titleID: string, mediaType: string = '', season: number = 1, episode: number = 1) {
+  loadMovieShow(titleID: string, season: number = 1, episode: number = 1) {
     this.hasLoadedVideo = true;
     this.isLoading = true;
     this.tmdbSeasonsEpisodes = new Map();
     this.selectedSeason = season;
     this.selectedEpisode = episode;
     this.titleID = titleID;
-    this.mediaType = mediaType
     if (titleID.toString().slice(0, 2) === 'tt') {
       const getIMDBMovie$ = this.vidsrcService.getIMDBMovie(titleID)
       getIMDBMovie$.subscribe({
@@ -130,7 +128,6 @@ export class VidsrcMoviesShowsComponent{
       })
     }
     else {
-      if (mediaType != 'tv') {
         const getTMDBMovie$ = this.vidsrcService.getTMDBMovie(titleID)
         getTMDBMovie$.subscribe({
           next: (httpResponse) => {
@@ -152,7 +149,6 @@ export class VidsrcMoviesShowsComponent{
             this.isLoading = false;
           }
         })
-      }
   
       const getTMDBShow$ = this.vidsrcService.getTMDBShow(titleID, season, episode)
       getTMDBShow$.subscribe({
@@ -206,10 +202,10 @@ export class VidsrcMoviesShowsComponent{
 
   changeSeason(season: number) {
     this.selectedSeason = season;
-    this.loadMovieShow(this.titleID, this.mediaType, season)
+    this.loadMovieShow(this.titleID, season)
   }
   changeEpisode(episode: number) {
     this.selectedEpisode = episode;
-    this.loadMovieShow(this.titleID, this.mediaType, this.selectedSeason, episode)
+    this.loadMovieShow(this.titleID, this.selectedSeason, episode)
   }
 }
