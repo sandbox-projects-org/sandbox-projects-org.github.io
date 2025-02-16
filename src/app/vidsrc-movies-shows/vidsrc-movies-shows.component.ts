@@ -12,6 +12,8 @@ import { Observable } from 'rxjs';
   styleUrl: './vidsrc-movies-shows.component.scss'
 })
 export class VidsrcMoviesShowsComponent{
+  description = false;
+
   movieURL: any = '';
   showURL: any = '';
 
@@ -36,6 +38,10 @@ export class VidsrcMoviesShowsComponent{
   ){
     // this.searchMovieShowTitle$ = new Observable();
     // this.searchMovieShowId$ = new Observable();
+  }
+
+  toggleInstructions() {
+    this.description = !this.description
   }
 
   searchTMDBMovieShow(value: string) {

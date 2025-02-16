@@ -1,31 +1,38 @@
 <div class="vidsrc-page-grid">
-    <div>
-        <p>Instructions for fat jon</p>
-        <ol>
-            <li>Search for Movie/Show</li>
-        </ol>
-        <div>OR</div>
-        <ol>
-            <li>Go to <a href="https://www.imdb.com" target=_blank>IMDB</a> or <a href="https://www.themoviedb.org" target="_blank">TMDB</a></li>
-            <li>Search for your movie/show</li>
-            <li>Get the movie/show ID from the URL (looks like <strong>tt0363771</strong> or <strong>411</strong>):</li>
-            <ul>
-                <li>IMDB example: https://www.imdb.com/title/<strong>tt0363771</strong>/?ref_=fn_all_ttl_1</li>
-                <li>TMDB example: https://www.themoviedb.org/movie/<strong>411</strong>-the-chronicles-of-narnia-the-lion-the-witch-and-the-wardrobe</li>
-            </ul>
-            <li>Copy that title id into search bar with either a 'imdb:' or 'tmdb:' prefix</li>
-            <ul>
-                <li>IMDB example: <strong>imdb:tt0363771</strong></li>
-                <li>TMDB example: <strong>tmdb:411</strong></li>
-            </ul>
-        </ol>
+
+    <div class="description-grid">
+        <button mat-flat-button (click)="toggleInstructions()">{{description ? 'Hide Description' : 'Show Description'}}</button>
+        @if(description) {
+            <p>Instructions for fat jon</p>
+            <ol>
+                <li>Search for Movie/Show</li>
+            </ol>
+            <div>OR</div>
+            <ol>
+                <li>Go to <a href="https://www.imdb.com" target=_blank>IMDB</a> or <a href="https://www.themoviedb.org" target="_blank">TMDB</a></li>
+                <li>Search for your movie/show</li>
+                <li>Get the movie/show ID from the URL (looks like <strong>tt0363771</strong> or <strong>411</strong>):</li>
+                <ul>
+                    <li>IMDB example: https://www.imdb.com/title/<strong>tt0363771</strong>/?ref_=fn_all_ttl_1</li>
+                    <li>TMDB example: https://www.themoviedb.org/movie/<strong>411</strong>-the-chronicles-of-narnia-the-lion-the-witch-and-the-wardrobe</li>
+                </ul>
+                <li>Copy that title id into search bar with either a 'imdb:' or 'tmdb:' prefix</li>
+                <ul>
+                    <li>IMDB example: <strong>imdb:tt0363771</strong></li>
+                    <li>TMDB example: <strong>tmdb:411</strong></li>
+                </ul>
+            </ol>
+        }
     </div>
 
     <div class="search-grid">
     <div class="search-result-grid">
         <div class="search-input-grid">
-            <input type="search" (keydown.enter)="searchTMDBMovieShow(searchInput.value)" #searchInput>
-            <button (click)="searchTMDBMovieShow(searchInput.value)">Search</button>
+            <mat-form-field>
+                <input matInput placeholder="Search" type="search" (keydown.enter)="searchTMDBMovieShow(searchInput.value)" #searchInput>
+            </mat-form-field>
+            <button mat-flat-button (click)="searchTMDBMovieShow(searchInput.value)">Search</button>
+            
         </div>
         @if(searchResult.length > 0) {
             <div class="search-item-grid">
@@ -56,47 +63,49 @@
     </div>
 
     <div class="video-player-grid">
-        <div>
-            @if (isLoading) {
-                <div>Loading ...</div>
-            }
-            @else {
-                @if (movieExists) {
-                    <div>
-                        <iframe [src]="movieURL" allowfullscreen="yes" scrolling="yes"></iframe>
-                    </div>
+        <div class="video-player-items">
+            <div>
+                @if (tmdbSeasonsEpisodes.size != 0) {
+                    <mat-form-field>
+                        <mat-label>Select a Season</mat-label>
+                        <mat-select [(value)]="selectedSeason">
+                            @for (season of tmdbSeasonsEpisodes.keys(); track season) {
+                                <mat-option [value]="season" (click)="changeSeason(season)">{{season}}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Select an Episode</mat-label>
+                        <mat-select [(value)]="selectedEpisode">
+                            @for (episode of tmdbSeasonsEpisodes.get(selectedSeason); track episode) {
+                                <mat-option [value]="episode" (click)="changeEpisode(episode)">{{episode}}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
                 }
-                @else if (showExists) {
-                    <div>
-                        <iframe [src]="showURL" allowfullscreen="yes" scrolling="yes"></iframe>
-                    </div>
+            </div>
+            <div>
+                @if (isLoading) {
+                    <div>Loading ...</div>
                 }
-                @else if (hasLoadedVideo) {
-                    <div>
-                        No Results
-                    </div>
+                @else {
+                    @if (movieExists) {
+                        <div>
+                            <iframe [src]="movieURL" allowfullscreen="yes" scrolling="yes"></iframe>
+                        </div>
+                    }
+                    @else if (showExists) {
+                        <div>
+                            <iframe [src]="showURL" allowfullscreen="yes" scrolling="yes"></iframe>
+                        </div>
+                    }
+                    @else if (hasLoadedVideo) {
+                        <div>
+                            No Results
+                        </div>
+                    }
                 }
-            }
-        </div>
-        <div>
-            @if (tmdbSeasonsEpisodes.size != 0) {
-                <mat-form-field>
-                    <mat-label>Select a Season</mat-label>
-                    <mat-select [(value)]="selectedSeason">
-                        @for (season of tmdbSeasonsEpisodes.keys(); track season) {
-                            <mat-option [value]="season" (click)="changeSeason(season)">{{season}}</mat-option>
-                        }
-                    </mat-select>
-                  </mat-form-field>
-                  <mat-form-field>
-                    <mat-label>Select an Episode</mat-label>
-                    <mat-select [(value)]="selectedEpisode">
-                        @for (episode of tmdbSeasonsEpisodes.get(selectedSeason); track episode) {
-                            <mat-option [value]="episode" (click)="changeEpisode(episode)">{{episode}}</mat-option>
-                        }
-                    </mat-select>
-                  </mat-form-field>
-            }
+            </div>
         </div>
     </div>
 </div>

@@ -4,33 +4,54 @@
     row-gap: 30px;
 }
 
+.description-grid {
+    display: grid;
+}
+
 .video-player-grid {
     display: grid;
-    grid-auto-flow: column;
+    align-items: center
+}
+
+.video-player-items {
+    display: grid;
+    justify-items: center;
 }
 
 iframe {
     border: 1em outset #ddd;
+    margin: 0;
 }
 
 .search-item-grid {
     display: grid;
     row-gap: 10px;
+    overflow: auto;
+    height: 25em;
+    border: 1em outset #ddd;
 }
 
 .search-result-items {
     display: grid;
     grid-auto-flow: column;
-    border: medium solid black;
+    border: 1em solid black;
     :hover {
         background-color: grey;
     }
 }
 
+.search-result-grid {
+    display: grid;
+    justify-items: center;
+    row-gap: 15px;
+}
+
 .search-grid {
     display: grid;
     grid-auto-flow: column;
-    grid-column: span 2;
+    grid-template-columns: 50% 50%;
+    width: 100%;
+    justify-items: center;
 }
 
 img {
