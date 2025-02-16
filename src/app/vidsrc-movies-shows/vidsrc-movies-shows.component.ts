@@ -78,6 +78,9 @@ export class VidsrcMoviesShowsComponent{
   loadMovieShow(titleID: string, mediaType: string = '', season: number = 1, episode: number = 1) {
     this.hasLoadedVideo = true;
     this.isLoading = true;
+    this.tmdbSeasonsEpisodes = new Map();
+    this.selectedSeason = season;
+    this.selectedEpisode = episode;
     this.titleID = titleID;
     this.mediaType = mediaType
     if (titleID.toString().slice(0, 2) === 'tt') {
@@ -184,7 +187,6 @@ export class VidsrcMoviesShowsComponent{
   }
   
   loadShowSeasonsEpisodes(titleID: string) {
-    this.tmdbSeasonsEpisodes = new Map();
     const getTMDBSeasonsEpisodes$: Observable<any> = this.vidsrcService.getTMDBSeasonsEpisodes(titleID)
     getTMDBSeasonsEpisodes$.subscribe({
       next: (httpResponse) => {
