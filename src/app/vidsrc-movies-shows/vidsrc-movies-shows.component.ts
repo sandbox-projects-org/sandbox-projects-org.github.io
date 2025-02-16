@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AngularMaterialModule } from '../shared/modules/angular-material.module';
 import { VidsrcService } from './services/vidsrc.service';
+import { OmdbService } from './services/omdb.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -29,15 +30,11 @@ export class VidsrcMoviesShowsComponent{
   showExists = false;
   isLoading = false;
 
-  // searchMovieShowTitle$: Observable<any>;
-  // searchMovieShowId$: Observable<any>;
-
   constructor(
     private vidsrcService: VidsrcService,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
+    private omdbService: OmdbService
   ){
-    // this.searchMovieShowTitle$ = new Observable();
-    // this.searchMovieShowId$ = new Observable();
   }
 
   toggleInstructions() {

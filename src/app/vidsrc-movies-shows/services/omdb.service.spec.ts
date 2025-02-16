@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ImdbService } from './imdb.service';
+import { OmdbService } from './omdb.service';
 
-describe('ImdbService', () => {
-  let service: ImdbService;
+describe('OmdbService', () => {
+  let service: OmdbService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ImdbService);
+    service = TestBed.inject(OmdbService);
   });
 
   it('should be created', () => {
