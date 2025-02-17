@@ -122,6 +122,7 @@ export class VidsrcMoviesShowsComponent{
     this.seasonsEpisodes = new Map();
     this.tmdbService.getShowSeasonsEpisodes(titleID).subscribe({
       next: (response) => {
+        console.log(response)
         for (const season of response) {
           var episodeList = [];
           for (var i = 1; i <= season.episode_count; i++) {

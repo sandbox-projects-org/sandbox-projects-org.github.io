@@ -21,7 +21,7 @@ import {MatSelectModule} from '@angular/material/select';
     MatFormFieldModule,
     MatTooltipModule,
     CommonModule,
-    MatSelectModule
+    MatSelectModule,
   ]
 })
 export class AngularMaterialModule { }

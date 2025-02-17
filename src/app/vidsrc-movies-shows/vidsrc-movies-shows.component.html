@@ -1,75 +1,70 @@
 <div class="vidsrc-page-grid">
-    <div class="search-grid">
-        <div class="input-grid">
-            <mat-form-field subscriptSizing="dynamic">
-                <input matInput placeholder="Search Movie/TV" type="search" (keydown.enter)="searchTMDBMovieShow(searchInput.value)" #searchInput>
-            </mat-form-field>
-            <button mat-flat-button (click)="searchTMDBMovieShow(searchInput.value)">Search</button>
-            
-        </div>
-        @if(searchResult.length > 0) {
-            <div class="search-result-grid">
-                @for (item of searchResult; track item) {
-                    <div class="search-result-items" (click)="item.media_type === 'movie' ?  loadMovie(item.id) : loadShow(item.id)" style="cursor: pointer">
-                        <img [src]="item.poster_path">
-                        <div>
-                            <div>
-                            TITLE: {{item.title}}
-                        </div>
-                        <div>
-                            TYPE: {{ item.media_type }}
-                        </div>
-                        <div>
-                            DATE: {{item.release_date }}
-                        </div>
-                        <div>
-                            DESCRIPTION: {{item.overview}}
-                        </div>
-                        </div>
-                    </div>
-                }
-            </div>
-        }
-        @else if (hasSearched) {
-            No Results
-        }
+    <div class="search-bar">
+        <mat-form-field subscriptSizing="dynamic">
+            <input matInput placeholder="Search Movie/TV" type="search" (keydown.enter)="searchTMDBMovieShow(searchInput.value)" #searchInput>
+        </mat-form-field>
+        <button mat-flat-button (click)="searchTMDBMovieShow(searchInput.value)">Search</button>
+        
     </div>
-    <div class="video-player-grid">
-        @if (mediaURL != '') {
-            <div>
-                <iframe [src]="mediaURL" allowfullscreen="yes" scrolling="yes"></iframe>
-            </div>
-
-            @if (selectedMediaType === 'tv') {
-                <div>
-                    <mat-form-field>
-                        <mat-label>Select a Season</mat-label>
-                        <mat-select [(value)]="selectedSeason">
-                            @for (season of seasonsEpisodes.keys(); track season) {
-                                <mat-option [value]="season" (click)="changeSeasonEpisode()">{{season}}</mat-option>
-                            }
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Select an Episode</mat-label>
-                        <mat-select [(value)]="selectedEpisode">
-                            @for (episode of seasonsEpisodes.get(selectedSeason); track episode) {
-                                <mat-option [value]="episode" (click)="changeSeasonEpisode()">{{episode}}</mat-option>
-                            }
-                        </mat-select>
-                    </mat-form-field>
+    <div class="content">
+        <div class="search-grid">
+            @if(searchResult.length > 0) {
+                <div class="search-list">
+                    @for (mediaItem of searchResult; track mediaItem) {
+                        <div class="search-list-item" (click)="mediaItem.media_type === 'movie' ?  loadMovie(mediaItem.id) : loadShow(mediaItem.id)">
+                            <div class="poster-parent">
+                                <img [src]="mediaItem.poster_path">
+                            </div>
+                            <div>
+                                <h6>{{mediaItem.title}}</h6>
+                                <p>{{mediaItem.release_date}} | {{mediaItem.media_type}}</p>
+                                <p class="description">{{mediaItem.overview}}</p>
+                            </div>
+                        </div>
+                    }
                 </div>
             }
-        }
-        @else if (hasSearched && !isLoading) {
-            <div>
-                nothing to see here
-            </div>
-        }
-        @else if (hasSearched) {
-            <div>
-                ... Loading
-            </div>
-        }
-    </div>
+            @else if (hasSearched) {
+                No Results
+            }
+        </div>
+        <div class="video-player-grid">
+            @if (mediaURL != '') {
+                <div>
+                    <iframe [src]="mediaURL" allowfullscreen="yes" scrolling="yes"></iframe>
+                </div>
+    
+                @if (selectedMediaType === 'tv') {
+                    <div>
+                        <mat-form-field>
+                            <mat-label>Select a Season</mat-label>
+                            <mat-select [(value)]="selectedSeason">
+                                @for (season of seasonsEpisodes.keys(); track season) {
+                                    <mat-option [value]="season" (click)="changeSeasonEpisode()">{{season}}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Select an Episode</mat-label>
+                            <mat-select [(value)]="selectedEpisode">
+                                @for (episode of seasonsEpisodes.get(selectedSeason); track episode) {
+                                    <mat-option [value]="episode" (click)="changeSeasonEpisode()">{{episode}}</mat-option>
+                                }
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                }
+            }
+            @else if (hasSearched && !isLoading) {
+                <div>
+                    nothing to see here
+                </div>
+            }
+            @else if (hasSearched) {
+                <div>
+                    ... Loading
+                </div>
+            }
+        </div>
+    </div> 
 </div>
