@@ -1,6 +1,6 @@
 <div class="vidsrc-page-grid">
     <div class="search-bar">
-        <mat-form-field subscriptSizing="dynamic">
+        <mat-form-field>
             <input matInput placeholder="Search Movie/TV" type="search" (keydown.enter)="searchTMDBMovieShow(searchInput.value)" #searchInput>
         </mat-form-field>
         <button mat-flat-button (click)="searchTMDBMovieShow(searchInput.value)">Search</button>
