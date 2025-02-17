@@ -1,6 +1,8 @@
 iframe {
     border: 1em outset #ddd;
-    margin: 0;
+    height: 50vh;
+    width: 80vh;
+    aspect-ratio: auto;
 }
 
 button {
