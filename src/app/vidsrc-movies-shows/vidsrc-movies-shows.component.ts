@@ -109,11 +109,13 @@ export class VidsrcMoviesShowsComponent{
   loadShow(mediaItem: IMediaInfo, season: number = 1, episode: number = 1) {
     this.isLoadingMedia = true;
     this.selectedMediaItem = mediaItem;
+    this.selectedSeason = season;
+    this.selectedEpisode = episode;
     this.vidsrcService.getTMDBShow(mediaItem.id, season, episode).subscribe({
       next: (response) => {
         this.mediaURL = this.getMediaURL(response.body!)
-        this.setSeasonsEpisodes(mediaItem.id)
-        this.setEpisodeDetails(mediaItem)
+        this.getSeasonsEpisodes(mediaItem.id)
+        this.getEpisodeDetails(mediaItem)
       },
       error: (err) => {
         this.mediaURL = '';
@@ -127,7 +129,7 @@ export class VidsrcMoviesShowsComponent{
     })
   }
   
-  setSeasonsEpisodes(titleID: string) {
+  getSeasonsEpisodes(titleID: string) {
     this.seasonsEpisodes = new Map();
     this.tmdbService.getShowSeasonsEpisodes(titleID).subscribe({
       next: (response) => {
@@ -148,7 +150,7 @@ export class VidsrcMoviesShowsComponent{
     })
   }
 
-  setEpisodeDetails(mediaItem: IMediaInfo) {
+  getEpisodeDetails(mediaItem: IMediaInfo) {
     if (mediaItem.media_type === EMediaType.TV) {
       this.tmdbService.getEpisodeDetails(mediaItem.id, this.selectedSeason, this.selectedEpisode).subscribe({
         next: (response) => {
