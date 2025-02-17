@@ -17,49 +17,109 @@ button {
     row-gap: 30px;
 }
 
-mat-form-field {
-    width: 60vh;
+.search-bar {
+    display: grid;
+    grid-auto-flow: column;
+
+    mat-form-field {
+        width: 60vh;
+    }
 }
 
 .content {
     display: grid;
-    grid-template-columns: 50% 50%;
-    justify-content: space-evenly;
-    width: 100%;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    justify-items: center;
+    width: 90%
+}
+
+.search-grid {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    height: 60vh;
 }
 
 .search-list {
     display: grid;
+    height: inherit;
     overflow: auto;
-    height: 60vh;
+    color: white;
+    border-radius: 10px;
+    row-gap: 2px;
 }
 
 .search-list-item {
     display: grid;
     grid-auto-flow: column;
-    grid-template-columns: 25% 1fr;
+    grid-template-columns: 30% auto;
     height: 13em;
-
-    img {
-        height: 10em;
+    background-color: black;
+    
+    &:hover {
+        cursor: pointer;
+        opacity: 70%;
+    }
+    &:active {
+        animation: .1s click;
     }
 }
 
-.poster-parent {
+.item-poster {
     display: grid;
-    background-color: black;
     justify-items: center;
     align-items: center;
+    height: inherit;
+
+     img {
+        display: grid;
+        height: inherit;
+        max-width: 100%;
+        box-sizing: border-box;
+        border: 1em groove #CC9901;
+    }
+}
+
+.item-info {
+    display: grid;
+    overflow: hidden;
+    grid-template-rows: 3em 3em auto;
+    margin: 0px 10px;
+
+    h5 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .description {
     display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;  
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    line-height: 1.5em;
+    height: 6em;
     overflow: hidden;
 }
 
 .video-player-grid {
     display: grid;
-    align-items: center
+    align-items: center;
+    justify-items: center;
+}
+
+.seasons-episodes {
+    display: grid;
+    grid-auto-flow: column;
+}
+
+@keyframes click {
+    from {
+        scale: 1;
+    }
+    to {
+        scale: 0.9;
+    }
 }

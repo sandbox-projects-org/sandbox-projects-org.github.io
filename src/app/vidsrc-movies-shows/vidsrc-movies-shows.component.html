@@ -11,12 +11,17 @@
             @if(searchResult.length > 0) {
                 <div class="search-list">
                     @for (mediaItem of searchResult; track mediaItem) {
-                        <div class="search-list-item" (click)="mediaItem.media_type === 'movie' ?  loadMovie(mediaItem.id) : loadShow(mediaItem.id)">
-                            <div class="poster-parent">
+                        <div class="search-list-item" (click)="mediaItem.media_type === 'movie' ?  loadMovie(mediaItem) : loadShow(mediaItem)">
+                            <div class="item-poster">
                                 <img [src]="mediaItem.poster_path">
                             </div>
-                            <div>
-                                <h6>{{mediaItem.title}}</h6>
+                            <div class="item-info">
+                                <h5 
+                                [matTooltip]="mediaItem.title"
+                                matTooltipPosition="below"
+                                matTooltipShowDelay="300">
+                                    {{mediaItem.title}}
+                                </h5>
                                 <p>{{mediaItem.release_date}} | {{mediaItem.media_type}}</p>
                                 <p class="description">{{mediaItem.overview}}</p>
                             </div>
@@ -24,47 +29,62 @@
                     }
                 </div>
             }
-            @else if (hasSearched) {
-                No Results
-            }
-        </div>
-        <div class="video-player-grid">
-            @if (mediaURL != '') {
-                <div>
-                    <iframe [src]="mediaURL" allowfullscreen="yes" scrolling="yes"></iframe>
-                </div>
-    
-                @if (selectedMediaType === 'tv') {
-                    <div>
-                        <mat-form-field>
-                            <mat-label>Select a Season</mat-label>
-                            <mat-select [(value)]="selectedSeason">
-                                @for (season of seasonsEpisodes.keys(); track season) {
-                                    <mat-option [value]="season" (click)="changeSeasonEpisode()">{{season}}</mat-option>
-                                }
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Select an Episode</mat-label>
-                            <mat-select [(value)]="selectedEpisode">
-                                @for (episode of seasonsEpisodes.get(selectedSeason); track episode) {
-                                    <mat-option [value]="episode" (click)="changeSeasonEpisode()">{{episode}}</mat-option>
-                                }
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                }
-            }
-            @else if (hasSearched && !isLoading) {
-                <div>
-                    nothing to see here
-                </div>
-            }
-            @else if (hasSearched) {
+            @else if (isLoadingSearch) {
                 <div>
                     ... Loading
                 </div>
             }
+            @else {
+                <div>
+                    No Results {{":("}}
+                </div>
+            }
         </div>
+
+        @if (hasSearched && searchResult.length > 0) {
+            <div class="video-player-grid">
+                @if(selectedMediaItem) {
+                    @if (mediaURL != '') {
+                        <div>
+                            <iframe [src]="mediaURL" allowfullscreen="yes" scrolling="yes"></iframe>
+                        </div>
+            
+                        @if (selectedMediaItem.media_type === EMediaType.TV) {
+                            <div class="seasons-episodes">
+                                <mat-form-field>
+                                    <mat-label>Select a Season</mat-label>
+                                    <mat-select [(value)]="selectedSeason">
+                                        @for (season of seasonsEpisodes.keys(); track season) {
+                                            <mat-option [value]="season" (click)="changeSeasonEpisode()">{{season}}</mat-option>
+                                        }
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>Select an Episode</mat-label>
+                                    <mat-select [(value)]="selectedEpisode">
+                                        @for (episode of seasonsEpisodes.get(selectedSeason); track episode) {
+                                            <mat-option [value]="episode" (click)="changeSeasonEpisode()">{{episode}}</mat-option>
+                                        }
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div>
+                                {{selectedMediaItem.episode_title}}: {{selectedMediaItem.episode_overview}}
+                            </div>
+                        }
+                    }
+                    @else if (isLoadingMedia) {
+                        <div>
+                            ... Loading
+                        </div>
+                    }
+                    @else {
+                        <div>
+                            No Results {{":("}}
+                        </div>
+                    }
+                }
+        </div>
+        }
     </div> 
 </div>

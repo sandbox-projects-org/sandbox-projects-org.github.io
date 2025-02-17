@@ -16,15 +16,17 @@ import { EMediaType } from './constants';
 })
 export class VidsrcMoviesShowsComponent{
 
+  EMediaType = EMediaType;
+
   hasSearched = false;
-  isLoading = false;
+  isLoadingSearch = false;
+  isLoadingMedia = false;
 
   mediaURL: SafeResourceUrl = '';
   searchResult: IMediaInfo[] = [];
   seasonsEpisodes: Map<number, number[]> = new Map();
 
-  selectedMediaID: string = '';
-  selectedMediaType: EMediaType = EMediaType.MOVIE
+  selectedMediaItem: IMediaInfo | null = null;
   selectedSeason: number = 1;
   selectedEpisode: number = 1;
 
@@ -33,22 +35,28 @@ export class VidsrcMoviesShowsComponent{
     private domSanitizer: DomSanitizer,
     private omdbService: OmdbService,
     private tmdbService: TmdbService
-  ){}
+  ){
+  }
 
   searchTMDBMovieShow(value: string) {
     this.searchResult = [];
+    this.isLoadingSearch = true;
+    this.selectedMediaItem = null;
 
     this.tmdbService.getMoviesShows(value).subscribe({
       next: (response) => {
+        console.log(response)
         for (const media of response.results) {
+          console.log(media.title ? media.title : media.name)
+          console.log(media.poster_path ? 'yes' : 'no')
           if (media.media_type === EMediaType.MOVIE) {
             var mediaItem: IMediaInfo = {
               id: media.id,
               title: media.title,
               media_type: EMediaType.MOVIE,
-              release_date: media.release_date,
-              overview: media.overview,
-              poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
+              release_date: media.release_date ? media.release_date : 'unknown',
+              overview: media.overview ? media.overview : '',
+              poster_path: media.poster_path ? `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`: '/assets/no_poster.jpg'
             };
             this.searchResult.push(mediaItem);
           }
@@ -57,72 +65,72 @@ export class VidsrcMoviesShowsComponent{
               id: media.id,
               title: media.name,
               media_type: EMediaType.TV,
-              release_date: media.first_air_date,
-              overview: media.overview,
-              poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
+              release_date: media.first_air_date ? media.first_air_date : 'unknown',
+              overview: media.overview ? media.overview : '',
+              poster_path: media.poster_path ? `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`: '/assets/no_poster.jpg'
             };
             this.searchResult.push(mediaItem);
           }
         }
+        console.log(this.searchResult)
       },
       error: (err) => {
+        this.hasSearched = true;
+        this.isLoadingSearch = false;
         console.log(err);
       },
       complete: () => {
-        console.log('completed search')
         this.hasSearched = true;
+        this.isLoadingSearch = false;
+        console.log('completed search')
       }
     })
   }
 
-  loadMovie(tmdbID: string) {
-    this.isLoading = true;
-    this.vidsrcService.getTMDBMovie(tmdbID).subscribe({
+  loadMovie(movieItem: IMediaInfo) {
+    this.isLoadingMedia = true;
+    this.selectedMediaItem = movieItem;
+    this.vidsrcService.getTMDBMovie(movieItem.id).subscribe({
       next: (response) => {
         this.mediaURL = this.getMediaURL(response.body!);
-        this.selectedMediaID = tmdbID;
-        this.selectedMediaType = EMediaType.MOVIE;
       },
       error: (err) => {
         this.mediaURL = '';
-        this.selectedMediaID = '';
-        this.isLoading = false;
+        this.isLoadingMedia = false;
         console.log(err);
       },
       complete: () => {
-        this.isLoading = false;
+        this.isLoadingMedia = false;
         console.log('completed loading movie');
       }
     })
   }
 
-  loadShow(tmdbID: string, season: number = 1, episode: number = 1) {
-    this.isLoading = true;
-    this.vidsrcService.getTMDBShow(tmdbID, season, episode).subscribe({
+  loadShow(mediaItem: IMediaInfo, season: number = 1, episode: number = 1) {
+    this.isLoadingMedia = true;
+    this.selectedMediaItem = mediaItem;
+    this.vidsrcService.getTMDBShow(mediaItem.id, season, episode).subscribe({
       next: (response) => {
         this.mediaURL = this.getMediaURL(response.body!)
-        this.selectedMediaID = tmdbID;
-        this.selectedMediaType = EMediaType.TV;
-        this.getSeasonsEpisodes(tmdbID)
+        this.setSeasonsEpisodes(mediaItem.id)
+        this.setEpisodeDetails(mediaItem)
       },
       error: (err) => {
         this.mediaURL = '';
-        this.selectedMediaID = '';
-        this.isLoading = false;
+        this.isLoadingMedia = false;
         console.log(err);
       },
       complete: () => {
-        this.isLoading = false;
+        this.isLoadingMedia = false;
         console.log('completed loading movie');
       }
     })
   }
   
-  getSeasonsEpisodes(titleID: string) {
+  setSeasonsEpisodes(titleID: string) {
     this.seasonsEpisodes = new Map();
     this.tmdbService.getShowSeasonsEpisodes(titleID).subscribe({
       next: (response) => {
-        console.log(response)
         for (const season of response) {
           var episodeList = [];
           for (var i = 1; i <= season.episode_count; i++) {
@@ -140,8 +148,21 @@ export class VidsrcMoviesShowsComponent{
     })
   }
 
+  setEpisodeDetails(mediaItem: IMediaInfo) {
+    if (mediaItem.media_type === EMediaType.TV) {
+      this.tmdbService.getEpisodeDetails(mediaItem.id, this.selectedSeason, this.selectedEpisode).subscribe({
+        next: (response) => {
+          this.selectedMediaItem!.season = this.selectedSeason;
+          this.selectedMediaItem!.episode = this.selectedEpisode;
+          this.selectedMediaItem!.episode_title = response.name;
+          this.selectedMediaItem!.episode_overview = response.overview;
+        }
+      })
+    }
+  }
+
   changeSeasonEpisode() {
-    this.loadShow(this.selectedMediaID, this.selectedSeason, this.selectedEpisode)
+    this.loadShow(this.selectedMediaItem!, this.selectedSeason, this.selectedEpisode)
   }
 
   getMediaURL(html: string): SafeResourceUrl {
