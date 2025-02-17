@@ -61,9 +61,14 @@
                 </div>
             }
         }
-        @else if (hasSearched) {
+        @else if (hasSearched && !isLoading) {
             <div>
                 nothing to see here
+            </div>
+        }
+        @else if (hasSearched) {
+            <div>
+                ... Loading
             </div>
         }
     </div>

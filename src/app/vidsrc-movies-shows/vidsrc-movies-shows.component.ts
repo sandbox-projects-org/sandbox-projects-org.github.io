@@ -17,6 +17,7 @@ import { EMediaType } from './constants';
 export class VidsrcMoviesShowsComponent{
 
   hasSearched = false;
+  isLoading = false;
 
   mediaURL: SafeResourceUrl = '';
   searchResult: IMediaInfo[] = [];
@@ -75,6 +76,7 @@ export class VidsrcMoviesShowsComponent{
   }
 
   loadMovie(tmdbID: string) {
+    this.isLoading = true;
     this.vidsrcService.getTMDBMovie(tmdbID).subscribe({
       next: (response) => {
         this.mediaURL = this.getMediaURL(response.body!);
@@ -84,30 +86,33 @@ export class VidsrcMoviesShowsComponent{
       error: (err) => {
         this.mediaURL = '';
         this.selectedMediaID = '';
+        this.isLoading = false;
         console.log(err);
       },
       complete: () => {
+        this.isLoading = false;
         console.log('completed loading movie');
       }
     })
   }
 
   loadShow(tmdbID: string, season: number = 1, episode: number = 1) {
+    this.isLoading = true;
     this.vidsrcService.getTMDBShow(tmdbID, season, episode).subscribe({
       next: (response) => {
-
         this.mediaURL = this.getMediaURL(response.body!)
         this.selectedMediaID = tmdbID;
         this.selectedMediaType = EMediaType.TV;
-        
         this.getSeasonsEpisodes(tmdbID)
       },
       error: (err) => {
         this.mediaURL = '';
         this.selectedMediaID = '';
+        this.isLoading = false;
         console.log(err);
       },
       complete: () => {
+        this.isLoading = false;
         console.log('completed loading movie');
       }
     })
