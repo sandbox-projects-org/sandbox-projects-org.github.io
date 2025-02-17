@@ -40,15 +40,7 @@ export class VidsrcService {
     return this.http.get(`${this._TMDB_MOVIE_ENDPOINT}${tmdbID}`, this._httpOptions)
   }
 
-  getTMDBShow(tmdbID: string, season: number = 1, episode: number = 1): Observable<HttpResponse<string>> {
+  getTMDBShow(tmdbID: string, season: number, episode: number): Observable<HttpResponse<string>> {
     return this.http.get(`${this._TMDB_SHOW_ENDPOINT}${tmdbID}&season=${season}&episode=${episode}`, this._httpOptions)
-  }
-
-  searchTMDB(title: string) {
-    return this.http.get(`https://api.themoviedb.org/3/search/multi?query=${title}&include_adult=true`, this._TMDB_Search_Options)
-  }
-
-  getTMDBSeasonsEpisodes(tmdbID: string) {
-    return this.http.get(`https://api.themoviedb.org/3/tv/${tmdbID}`, this._TMDB_Search_Options)
   }
 }

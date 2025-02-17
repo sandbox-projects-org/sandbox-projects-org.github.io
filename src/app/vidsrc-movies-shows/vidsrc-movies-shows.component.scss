@@ -1,11 +1,16 @@
 .vidsrc-page-grid {
     display: grid;
     justify-items: center;
+    grid-auto-flow: column;
+    grid-template-columns: 50% 50%;
+    width: 100%;
     row-gap: 30px;
 }
 
-.description-grid {
+.search-grid {
     display: grid;
+    justify-items: center;
+    row-gap: 15px;
 }
 
 .video-player-grid {
@@ -13,17 +18,7 @@
     align-items: center
 }
 
-.video-player-items {
-    display: grid;
-    justify-items: center;
-}
-
-iframe {
-    border: 1em outset #ddd;
-    margin: 0;
-}
-
-.search-item-grid {
+.search-result-grid {
     display: grid;
     row-gap: 10px;
     overflow: auto;
@@ -40,18 +35,9 @@ iframe {
     }
 }
 
-.search-result-grid {
-    display: grid;
-    justify-items: center;
-    row-gap: 15px;
-}
-
-.search-grid {
-    display: grid;
-    grid-auto-flow: column;
-    grid-template-columns: 50% 50%;
-    width: 100%;
-    justify-items: center;
+iframe {
+    border: 1em outset #ddd;
+    margin: 0;
 }
 
 img {

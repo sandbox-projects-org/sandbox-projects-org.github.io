@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AngularMaterialModule } from '../shared/modules/angular-material.module';
 import { VidsrcService } from './services/vidsrc.service';
 import { OmdbService } from './services/omdb.service';
-import { Observable } from 'rxjs';
+import { TmdbService } from './services/tmdb.service';
+import { IMediaInfo } from './interfaces';
+import { EMediaType } from './constants';
 
 @Component({
   selector: 'app-vidsrc-movies-shows',
@@ -13,196 +15,137 @@ import { Observable } from 'rxjs';
   styleUrl: './vidsrc-movies-shows.component.scss'
 })
 export class VidsrcMoviesShowsComponent{
-  description = false;
 
-  movieURL: any = '';
-  showURL: any = '';
+  hasSearched = false;
 
-  searchResult: any[] = [];
-  tmdbSeasonsEpisodes: Map<number, number[]> = new Map()
+  mediaURL: SafeResourceUrl = '';
+  searchResult: IMediaInfo[] = [];
+  seasonsEpisodes: Map<number, number[]> = new Map();
 
-  titleID = '';
-  selectedSeason = 1;
-  selectedEpisode = 1;
-  hasSearchedTitle = false;
-  hasLoadedVideo = false;
-  movieExists = false;
-  showExists = false;
-  isLoading = false;
+  selectedMediaID: string = '';
+  selectedMediaType: EMediaType = EMediaType.MOVIE
+  selectedSeason: number = 1;
+  selectedEpisode: number = 1;
 
   constructor(
     private vidsrcService: VidsrcService,
     private domSanitizer: DomSanitizer,
-    private omdbService: OmdbService
-  ){
-  }
-
-  toggleInstructions() {
-    this.description = !this.description
-  }
+    private omdbService: OmdbService,
+    private tmdbService: TmdbService
+  ){}
 
   searchTMDBMovieShow(value: string) {
     this.searchResult = [];
 
-    // seach directly for movie if value is IMDB id or TMDB id
-    if (value.slice(0, 5) === 'imdb:' || value.slice(0, 5) === 'tmdb:') {
-      var id = value.slice(5);
-      this.titleID = id;
-      this.loadMovieShow(this.titleID);
-    }
-
-    // search TMDB catalog
-    else {
-      this.hasSearchedTitle = true;
-      const searchTMDB$: Observable<any> = this.vidsrcService.searchTMDB(value)
-      searchTMDB$.subscribe({
-        next: (httpResponse) => {
-          var results: any[] = httpResponse.results;
-          results.forEach(item => {
-            if (item.media_type === 'movie' || item.media_type === 'tv') {
-              var posterPath = item.poster_path;
-              item.poster_path = `https://image.tmdb.org/t/p/w500${posterPath}`
-              this.searchResult.push(item)
-            }
-          })
-        }
-      })
-      
-    }
-  }
-
-  loadMovieShow(titleID: string, season: number = 1, episode: number = 1) {
-    this.hasLoadedVideo = true;
-    this.isLoading = true;
-    this.tmdbSeasonsEpisodes = new Map();
-    this.selectedSeason = season;
-    this.selectedEpisode = episode;
-    this.titleID = titleID;
-    if (titleID.toString().slice(0, 2) === 'tt') {
-      const getIMDBMovie$ = this.vidsrcService.getIMDBMovie(titleID)
-      getIMDBMovie$.subscribe({
-        next: (httpResponse) => {
-          this.movieExists = true;
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(httpResponse.body!, 'text/html');
-          
-          // const movieTitle = htmlDoc.querySelector('title')!.text;
-          var iframeSource = htmlDoc.querySelector('iframe#player_iframe')!.getAttribute('src')!;
-          // var movieSources = htmlDoc.querySelector('div.servers');
-  
-          this.movieURL = this.domSanitizer.bypassSecurityTrustResourceUrl(iframeSource);
-        },
-        error: (err) => {
-          this.movieExists = false;
-          this.isLoading = false;
-        },
-        complete: () => {
-          this.isLoading = false;
-        }
-      })
-  
-      const getIMDBShow$ = this.vidsrcService.getIMDBShow(titleID, season, episode)
-      getIMDBShow$.subscribe({
-        next: (httpResponse) => {
-          this.showExists = true;
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(httpResponse.body!, 'text/html');
-          
-          
-          // const showTitle = htmlDoc.querySelector('title')!.text;
-          var iframeSource = htmlDoc.querySelector('iframe#player_iframe')!.getAttribute('src')!;
-          // var showSources = htmlDoc.querySelector('div.servers');
-  
-          this.showURL = this.domSanitizer.bypassSecurityTrustResourceUrl(iframeSource);
-        },
-        error: (err) => {
-          this.showExists = false;
-          this.isLoading = false;
-        },
-        complete: () => {
-          this.isLoading = false;
-        }
-      })
-    }
-    else {
-        const getTMDBMovie$ = this.vidsrcService.getTMDBMovie(titleID)
-        getTMDBMovie$.subscribe({
-          next: (httpResponse) => {
-            this.movieExists = true;
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(httpResponse.body!, 'text/html');
-            
-            // const movieTitle = htmlDoc.querySelector('title')!.text;
-            var iframeSource = htmlDoc.querySelector('iframe#player_iframe')!.getAttribute('src')!;
-            // var movieSources = htmlDoc.querySelector('div.servers');
-    
-            this.movieURL = this.domSanitizer.bypassSecurityTrustResourceUrl(iframeSource);
-          },
-          error: (err) => {
-            this.movieExists = false;
-            this.isLoading = false;
-          },
-          complete: () => {
-            this.isLoading = false;
+    this.tmdbService.getMoviesShows(value).subscribe({
+      next: (response) => {
+        for (const media of response.results) {
+          if (media.media_type === EMediaType.MOVIE) {
+            var mediaItem: IMediaInfo = {
+              id: media.id,
+              title: media.title,
+              media_type: EMediaType.MOVIE,
+              release_date: media.release_date,
+              overview: media.overview,
+              poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
+            };
+            this.searchResult.push(mediaItem);
           }
-        })
-  
-      const getTMDBShow$ = this.vidsrcService.getTMDBShow(titleID, season, episode)
-      getTMDBShow$.subscribe({
-        next: (httpResponse) => {
-          this.showExists = true;
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(httpResponse.body!, 'text/html');
-          
-          
-          // const showTitle = htmlDoc.querySelector('title')!.text;
-          var iframeSource = htmlDoc.querySelector('iframe#player_iframe')!.getAttribute('src')!;
-          // var showSources = htmlDoc.querySelector('div.servers');
-  
-          this.showURL = this.domSanitizer.bypassSecurityTrustResourceUrl(iframeSource);
-
-          var mediaType = this.searchResult.find(x => {
-            return x.id === titleID
-          }).media_type
-          if (mediaType === 'tv') {
-            this.loadShowSeasonsEpisodes(titleID)
+          if (media.media_type === EMediaType.TV) {
+            var mediaItem: IMediaInfo = {
+              id: media.id,
+              title: media.name,
+              media_type: EMediaType.TV,
+              release_date: media.first_air_date,
+              overview: media.overview,
+              poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
+            };
+            this.searchResult.push(mediaItem);
           }
-        },
-        error: (err) => {
-          this.showExists = false;
-          this.isLoading = false;
-        },
-        complete: () => {
-          this.isLoading = false;
         }
-      })
-    }
-  }
-  
-  loadShowSeasonsEpisodes(titleID: string) {
-    const getTMDBSeasonsEpisodes$: Observable<any> = this.vidsrcService.getTMDBSeasonsEpisodes(titleID)
-    getTMDBSeasonsEpisodes$.subscribe({
-      next: (httpResponse) => {
-        var seasons: any[] = httpResponse.seasons;
-        seasons.forEach(season => {
-          if (season.season_number > 0) {
-            var numberOfEpisodes = [];
-            for (var i = 1; i <= season.episode_count; i++) {
-              numberOfEpisodes.push(i);
-            }
-            this.tmdbSeasonsEpisodes.set(season.season_number, numberOfEpisodes)
-          }
-        })
+      },
+      error: (err) => {
+        console.log(err);
+      },
+      complete: () => {
+        console.log('completed search')
+        this.hasSearched = true;
       }
     })
   }
 
-  changeSeason(season: number) {
-    this.selectedSeason = season;
-    this.loadMovieShow(this.titleID, season)
+  loadMovie(tmdbID: string) {
+    this.vidsrcService.getTMDBMovie(tmdbID).subscribe({
+      next: (response) => {
+        this.mediaURL = this.getMediaURL(response.body!);
+        this.selectedMediaID = tmdbID;
+        this.selectedMediaType = EMediaType.MOVIE;
+      },
+      error: (err) => {
+        this.mediaURL = '';
+        this.selectedMediaID = '';
+        console.log(err);
+      },
+      complete: () => {
+        console.log('completed loading movie');
+      }
+    })
   }
-  changeEpisode(episode: number) {
-    this.selectedEpisode = episode;
-    this.loadMovieShow(this.titleID, this.selectedSeason, episode)
+
+  loadShow(tmdbID: string, season: number = 1, episode: number = 1) {
+    this.vidsrcService.getTMDBShow(tmdbID, season, episode).subscribe({
+      next: (response) => {
+
+        this.mediaURL = this.getMediaURL(response.body!)
+        this.selectedMediaID = tmdbID;
+        this.selectedMediaType = EMediaType.TV;
+        
+        this.getSeasonsEpisodes(tmdbID)
+      },
+      error: (err) => {
+        this.mediaURL = '';
+        this.selectedMediaID = '';
+        console.log(err);
+      },
+      complete: () => {
+        console.log('completed loading movie');
+      }
+    })
+  }
+  
+  getSeasonsEpisodes(titleID: string) {
+    this.seasonsEpisodes = new Map();
+    this.tmdbService.getShowSeasonsEpisodes(titleID).subscribe({
+      next: (response) => {
+        for (const season of response) {
+          var episodeList = [];
+          for (var i = 1; i <= season.episode_count; i++) {
+            episodeList.push(i);
+          }
+          this.seasonsEpisodes.set(season.season_number, episodeList)
+        }
+      },
+      error: (err) => {
+        console.log(err);
+      },
+      complete: () => {
+        console.log('completed getting episodes');
+      }
+    })
+  }
+
+  changeSeasonEpisode() {
+    this.loadShow(this.selectedMediaID, this.selectedSeason, this.selectedEpisode)
+  }
+
+  getMediaURL(html: string): SafeResourceUrl {
+    const parser = new DOMParser();
+    const htmlDoc = parser.parseFromString(html, 'text/html');
+    
+    // const movieTitle = htmlDoc.querySelector('title')!.text;
+    var iframeSource = htmlDoc.querySelector('iframe#player_iframe')!.getAttribute('src')!;
+    
+    // var movieSources = htmlDoc.querySelector('div.servers');
+    return this.domSanitizer.bypassSecurityTrustResourceUrl(iframeSource);
   }
 }
