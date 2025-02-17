@@ -11,11 +11,14 @@
     display: grid;
     justify-items: center;
     row-gap: 15px;
+    width: 100%;
 }
 
-.video-player-grid {
+.input-grid {
     display: grid;
-    align-items: center
+    grid-auto-flow: column;
+    align-items: center;
+    width: 80%;
 }
 
 .search-result-grid {
@@ -35,6 +38,11 @@
     }
 }
 
+.video-player-grid {
+    display: grid;
+    align-items: center
+}
+
 iframe {
     border: 1em outset #ddd;
     margin: 0;
@@ -42,4 +50,8 @@ iframe {
 
 img {
     height: 10em;
+}
+button {
+    border-radius: 10px;
+    width: 50%;
 }
