@@ -1,8 +1,7 @@
 iframe {
     border: 1em outset #ddd;
-    height: 50vh;
-    width: 80vh;
-    aspect-ratio: auto;
+    height: 40vh;
+    width: 60vh
 }
 
 button {
@@ -108,11 +107,18 @@ button {
     display: grid;
     align-items: center;
     justify-items: center;
+    width: 90%;
+    row-gap: 5px;
 }
 
 .seasons-episodes {
     display: grid;
     grid-auto-flow: column;
+}
+
+.episode-metadata {
+    display: grid;
+    
 }
 
 @keyframes click {

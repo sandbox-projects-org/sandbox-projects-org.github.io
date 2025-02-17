@@ -45,9 +45,10 @@
             <div class="video-player-grid">
                 @if(selectedMediaItem) {
                     @if (mediaURL != '') {
-                        <div>
-                            <iframe [src]="mediaURL" allowfullscreen="yes" scrolling="yes"></iframe>
-                        </div>
+                        <h5>
+                            {{selectedMediaItem.title}}
+                        </h5>
+                        <iframe [src]="mediaURL" allowfullscreen="yes" scrolling="yes"></iframe>
             
                         @if (selectedMediaItem.media_type === EMediaType.TV) {
                             <div class="seasons-episodes">
@@ -68,8 +69,13 @@
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                            <div>
-                                {{selectedMediaItem.episode_title}}: {{selectedMediaItem.episode_overview}}
+                            <div class="episode-metadata">
+                                <div>
+                                    <strong>Episode Title:</strong> {{selectedMediaItem.episode_title}}
+                                </div>
+                                <div>
+                                    <strong>Description:</strong> {{selectedMediaItem.episode_overview}}
+                                </div>
                             </div>
                         }
                     }
