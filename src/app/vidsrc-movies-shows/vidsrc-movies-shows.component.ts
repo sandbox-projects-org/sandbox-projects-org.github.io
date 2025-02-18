@@ -112,7 +112,6 @@ export class VidsrcMoviesShowsComponent{
         this.getEpisodeDetails(mediaItem)
 
         this.getSeasonsEpisodesMap(mediaItem.id);
-        console.log(this.seasonsEpisodes.get(1))
       },
       error: (err) => {
         this.mediaURL = '';
