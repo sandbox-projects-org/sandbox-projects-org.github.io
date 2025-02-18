@@ -12,3 +12,16 @@ export interface IMediaInfo {
     episode_title?: string;
     episode_overview?: string;
 }
+
+export interface ISeasonInfo {
+    season_number: number;
+    name: string;
+    episode_count: number;
+    episodes: IEpisodeInfo[];
+}
+
+export interface IEpisodeInfo {
+    episode_number: number;
+    name: string;
+    overview: string;
+}

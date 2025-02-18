@@ -73,6 +73,18 @@ export class TmdbService {
     )
   }
 
+  getShowDetails(tmdbID: string) {
+    return this.http.get<any>(`${this._TMDB_TV_DETAILS_ENDPOINT}/${tmdbID}`, this._httpOptions).pipe(
+      map(x => x.body)
+    )
+  }
+
+  getSeasonDetails(tmdbID: string, season: number) {
+    return this.http.get<any>(`${this._TMDB_TV_DETAILS_ENDPOINT}/${tmdbID}/season/${season}`, this._httpOptions).pipe(
+      map(x => x.body)
+    )
+  }
+
   getEpisodeDetails(tmdbID: string, season: number, episode: number) {
     return this.http.get<any>(`${this._TMDB_TV_DETAILS_ENDPOINT}/${tmdbID}/season/${season}/episode/${episode}`, this._httpOptions).pipe(
       map(x => x.body)

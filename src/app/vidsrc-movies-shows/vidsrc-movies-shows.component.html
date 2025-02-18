@@ -56,15 +56,15 @@
                                     <mat-label>Select a Season</mat-label>
                                     <mat-select [(value)]="selectedSeason">
                                         @for (season of seasonsEpisodes.keys(); track season) {
-                                            <mat-option [value]="season" (click)="changeSeasonEpisode()">{{season}}</mat-option>
+                                            <mat-option [value]="season" (click)="changeSeasonEpisode()">{{seasonsEpisodes.get(season)?.name}}</mat-option>
                                         }
                                     </mat-select>
                                 </mat-form-field>
                                 <mat-form-field>
                                     <mat-label>Select an Episode</mat-label>
                                     <mat-select [(value)]="selectedEpisode">
-                                        @for (episode of seasonsEpisodes.get(selectedSeason); track episode) {
-                                            <mat-option [value]="episode" (click)="changeSeasonEpisode()">{{episode}}</mat-option>
+                                        @for (episode of seasonsEpisodes.get(selectedSeason)?.episodes; track episode) {
+                                            <mat-option [value]="episode.episode_number" (click)="changeSeasonEpisode()">{{episode.episode_number}}: {{episode.name}}</mat-option>
                                         }
                                     </mat-select>
                                 </mat-form-field>

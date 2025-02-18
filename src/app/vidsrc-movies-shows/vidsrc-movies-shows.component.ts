@@ -4,7 +4,7 @@ import { AngularMaterialModule } from '../shared/modules/angular-material.module
 import { VidsrcService } from './services/vidsrc.service';
 import { OmdbService } from './services/omdb.service';
 import { TmdbService } from './services/tmdb.service';
-import { IMediaInfo } from './interfaces';
+import { IEpisodeInfo, IMediaInfo, ISeasonInfo } from './interfaces';
 import { EMediaType } from './constants';
 
 @Component({
@@ -24,7 +24,7 @@ export class VidsrcMoviesShowsComponent{
 
   mediaURL: SafeResourceUrl = '';
   searchResult: IMediaInfo[] = [];
-  seasonsEpisodes: Map<number, number[]> = new Map();
+  seasonsEpisodes: Map<number, ISeasonInfo> = new Map();
 
   selectedMediaItem: IMediaInfo | null = null;
   selectedSeason: number = 1;
@@ -35,8 +35,7 @@ export class VidsrcMoviesShowsComponent{
     private domSanitizer: DomSanitizer,
     private omdbService: OmdbService,
     private tmdbService: TmdbService
-  ){
-  }
+  ){}
 
   searchTMDBMovieShow(value: string) {
     this.searchResult = [];
@@ -45,10 +44,7 @@ export class VidsrcMoviesShowsComponent{
 
     this.tmdbService.getMoviesShows(value).subscribe({
       next: (response) => {
-        console.log(response)
         for (const media of response.results) {
-          console.log(media.title ? media.title : media.name)
-          console.log(media.poster_path ? 'yes' : 'no')
           if (media.media_type === EMediaType.MOVIE) {
             var mediaItem: IMediaInfo = {
               id: media.id,
@@ -72,7 +68,6 @@ export class VidsrcMoviesShowsComponent{
             this.searchResult.push(mediaItem);
           }
         }
-        console.log(this.searchResult)
       },
       error: (err) => {
         this.hasSearched = true;
@@ -114,8 +109,10 @@ export class VidsrcMoviesShowsComponent{
     this.vidsrcService.getTMDBShow(mediaItem.id, season, episode).subscribe({
       next: (response) => {
         this.mediaURL = this.getMediaURL(response.body!)
-        this.getSeasonsEpisodes(mediaItem.id)
         this.getEpisodeDetails(mediaItem)
+
+        this.getSeasonsEpisodesMap(mediaItem.id);
+        console.log(this.seasonsEpisodes.get(1))
       },
       error: (err) => {
         this.mediaURL = '';
@@ -129,27 +126,6 @@ export class VidsrcMoviesShowsComponent{
     })
   }
   
-  getSeasonsEpisodes(titleID: string) {
-    this.seasonsEpisodes = new Map();
-    this.tmdbService.getShowSeasonsEpisodes(titleID).subscribe({
-      next: (response) => {
-        for (const season of response) {
-          var episodeList = [];
-          for (var i = 1; i <= season.episode_count; i++) {
-            episodeList.push(i);
-          }
-          this.seasonsEpisodes.set(season.season_number, episodeList)
-        }
-      },
-      error: (err) => {
-        console.log(err);
-      },
-      complete: () => {
-        console.log('completed getting episodes');
-      }
-    })
-  }
-
   getEpisodeDetails(mediaItem: IMediaInfo) {
     if (mediaItem.media_type === EMediaType.TV) {
       this.tmdbService.getEpisodeDetails(mediaItem.id, this.selectedSeason, this.selectedEpisode).subscribe({
@@ -176,5 +152,51 @@ export class VidsrcMoviesShowsComponent{
     
     // var movieSources = htmlDoc.querySelector('div.servers');
     return this.domSanitizer.bypassSecurityTrustResourceUrl(iframeSource);
+  }
+
+  getSeasonsEpisodesMap(titleID: string) {
+    this.seasonsEpisodes = new Map();
+    this.tmdbService.getShowDetails(titleID).subscribe({
+      next: (response) => {
+        for (const season of response.seasons) {
+          if (season.season_number > 0) {
+            this.seasonsEpisodes.set(season.season_number, {
+              season_number: season.season_number,
+              name: season.name,
+              episode_count: season.episode_count,
+              episodes: this.createEpisodeItemList(titleID, season.season_number)
+            })
+          }
+        }
+      },
+      error: (err) => {
+        console.log(err)
+      },
+      complete: () => {
+        console.log('completed creating seasonsEpisodeMap')
+      }
+    })
+  }
+
+  createEpisodeItemList(titleID: string, season: number): IEpisodeInfo[] {
+    var episodeItemList: IEpisodeInfo[] = [];
+    this.tmdbService.getSeasonDetails(titleID, season).subscribe({
+      next: (response) => {
+        for (const episode of response.episodes) {
+          episodeItemList.push({
+            episode_number: episode.episode_number,
+            name: episode.name,
+            overview: episode.overview
+          })
+        }
+      },
+      error: (err) => {
+        console.log(err);
+      },
+      complete: () => {
+        console.log('completed creating episodes list')
+      }
+    })
+    return episodeItemList;
   }
 }
