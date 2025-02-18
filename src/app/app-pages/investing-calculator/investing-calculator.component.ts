@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AngularMaterialModule } from '../shared/modules/angular-material.module';
+import { AngularMaterialModule } from '../../shared/modules/angular-material.module';
 import { ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({

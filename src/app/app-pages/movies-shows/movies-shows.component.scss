@@ -1,19 +1,19 @@
 iframe {
     border: 1em outset #ddd;
-    height: 40vh;
-    width: 60vh
+    width: 80%;
+    aspect-ratio: 16/9;
 }
 
 button {
     border-radius: 10px;
-    width: 20vh;
-    height: 4em;
+    height: 100%;
 }
 
 .vidsrc-page-grid {
     display: grid;
     justify-items: center;
     row-gap: 30px;
+    padding: 1em;
 }
 
 .search-bar {
@@ -21,7 +21,7 @@ button {
     grid-auto-flow: column;
 
     mat-form-field {
-        width: 60vh;
+        width: 40vw;
     }
 }
 

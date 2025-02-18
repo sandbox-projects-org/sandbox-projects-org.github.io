@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { AngularMaterialModule } from '../shared/modules/angular-material.module';
+import { AngularMaterialModule } from '../../shared/modules/angular-material.module';
 import { VidsrcService } from './services/vidsrc.service';
 import { OmdbService } from './services/omdb.service';
 import { TmdbService } from './services/tmdb.service';
@@ -8,13 +8,13 @@ import { IEpisodeInfo, IMediaInfo, ISeasonInfo } from './interfaces';
 import { EMediaType } from './constants';
 
 @Component({
-  selector: 'app-vidsrc-movies-shows',
+  selector: 'app-movies-shows',
   standalone: true,
   imports: [AngularMaterialModule],
-  templateUrl: './vidsrc-movies-shows.component.html',
-  styleUrl: './vidsrc-movies-shows.component.scss'
+  templateUrl: './movies-shows.component.html',
+  styleUrl: './movies-shows.component.scss'
 })
-export class VidsrcMoviesShowsComponent{
+export class MoviesShowsComponent {
 
   EMediaType = EMediaType;
 

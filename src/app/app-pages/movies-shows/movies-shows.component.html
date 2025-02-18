@@ -1,6 +1,6 @@
 <div class="vidsrc-page-grid">
     <div class="search-bar">
-        <mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
             <input matInput placeholder="Search Movie/TV" type="search" (keydown.enter)="searchTMDBMovieShow(searchInput.value)" #searchInput>
         </mat-form-field>
         <button mat-flat-button (click)="searchTMDBMovieShow(searchInput.value)">Search</button>
@@ -75,6 +75,13 @@
                                 </div>
                                 <div>
                                     <strong>Description:</strong> {{selectedMediaItem.episode_overview}}
+                                </div>
+                            </div>
+                        }
+                        @else {
+                            <div class="episode-metadata">
+                                <div>
+                                    <strong>Description:</strong> {{selectedMediaItem.overview}}
                                 </div>
                             </div>
                         }
