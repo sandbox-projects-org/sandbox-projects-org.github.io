@@ -1,0 +1,26 @@
+{
+    "/VIDSRCME_VIDSRC_ICU_BASE_URL": {
+      "target": "https://vidsrcme.vidsrc.icu",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": {
+        "^/VIDSRCME_VIDSRC_ICU_BASE_URL": ""
+      }
+    },
+    "/VIDSRC_ME_BASE_URL": {
+      "target": "https://vidsrc.me",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": {
+        "^/VIDSRC_BASE_URL": ""
+      }
+    },
+    "/IMDB_BASE_URL": {
+      "target": "https://www.themoviedb.org",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": {
+        "^/IMDB_BASE_URL": ""
+      }
+    }
+}

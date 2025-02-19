@@ -7,9 +7,11 @@ import { Observable } from 'rxjs';
 })
 export class VidsrcService {
 
-  constructor(private http: HttpClient) { }
+   // Has no ads
+   private _VIDSRC_API_URL = '/VIDSRCME_VIDSRC_ICU_BASE_URL'
 
-  private _VIDSRC_API_URL = 'https://vidsrcme.vidsrc.icu'
+   // Has ads
+   // private _VIDSRC_API_URL = '/VIDSRC_ME_BASE_URL'
 
   private _IMDB_MOVIE_ENDPOINT = `${this._VIDSRC_API_URL}/embed/movie?imdb=`
   private _IMDB_SHOW_ENDPOINT = `${this._VIDSRC_API_URL}/embed/tv?imdb=`
@@ -27,6 +29,8 @@ export class VidsrcService {
       Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MjIzNjlmZTRjOWU0NmUyZjk3YjExM2ZkODM2ZWZkOSIsIm5iZiI6MTcwMTI5NDQzMC40NzksInN1YiI6IjY1NjdiMTVlNmMwYjM2MDBhZTUwNGI4NiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.w9CbNfyRS54DMDwag6-YcAmGjVqbi3KZj1S3UdelaPw'
     }
   }
+
+  constructor(private http: HttpClient) { }
 
   getIMDBMovie(imdbID: string): Observable<HttpResponse<string>> {
     return this.http.get(`${this._IMDB_MOVIE_ENDPOINT}${imdbID}`, this._httpOptions)
