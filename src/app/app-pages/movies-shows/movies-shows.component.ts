@@ -6,6 +6,7 @@ import { OmdbService } from './services/omdb.service';
 import { TmdbService } from './services/tmdb.service';
 import { IEpisodeInfo, IMediaInfo, ISeasonInfo } from './interfaces';
 import { EMediaType } from './constants';
+import { ImdbService } from './services/imdb.service';
 
 @Component({
   selector: 'app-movies-shows',
@@ -34,8 +35,21 @@ export class MoviesShowsComponent {
     private vidsrcService: VidsrcService,
     private domSanitizer: DomSanitizer,
     private omdbService: OmdbService,
-    private tmdbService: TmdbService
-  ){}
+    private tmdbService: TmdbService,
+    private imdbService: ImdbService
+  ){
+    imdbService.getSearch('rick').subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (err:any) => {
+        console.log(`ERROR: ${err.body}`)
+      },
+      complete: () => {
+        console.log('complete')
+      }
+    })
+  }
 
   searchTMDBMovieShow(value: string) {
     this.searchResult = [];
@@ -87,7 +101,7 @@ export class MoviesShowsComponent {
     this.selectedMediaItem = movieItem;
     this.vidsrcService.getTMDBMovie(movieItem.id).subscribe({
       next: (response) => {
-        this.mediaURL = this.getMediaURL(response.body!);
+        this.mediaURL = this.getMediaURL(response);
       },
       error: (err) => {
         this.mediaURL = '';
@@ -108,7 +122,7 @@ export class MoviesShowsComponent {
     this.selectedEpisode = episode;
     this.vidsrcService.getTMDBShow(mediaItem.id, season, episode).subscribe({
       next: (response) => {
-        this.mediaURL = this.getMediaURL(response.body!)
+        this.mediaURL = this.getMediaURL(response)
         this.getEpisodeDetails(mediaItem)
 
         this.getSeasonsEpisodesMap(mediaItem.id);

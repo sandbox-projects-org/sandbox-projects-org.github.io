@@ -16,7 +16,7 @@
       }
     },
     "/IMDB_BASE_URL": {
-      "target": "https://www.themoviedb.org",
+      "target": "https://www.imdb.com",
       "secure": true,
       "changeOrigin": true,
       "pathRewrite": {
