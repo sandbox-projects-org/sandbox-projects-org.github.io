@@ -6,8 +6,10 @@ import { map } from 'rxjs';
   providedIn: 'root'
 })
 export class ImdbService {
-
-  private _IMDB_API_URL = '/IMDB_BASE_URL'
+  
+  // proxy only works in localhost
+  // private _IMDB_API_URL = '/IMDB_BASE_URL'
+  private _IMDB_API_URL = 'https://www.imdb.com'
 
   private _IMDB_SEARCH_ENDPOINT = `${this._IMDB_API_URL}/find/?q=`
 

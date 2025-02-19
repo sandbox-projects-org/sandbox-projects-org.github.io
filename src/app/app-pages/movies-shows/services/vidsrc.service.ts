@@ -7,11 +7,15 @@ import { map, Observable } from 'rxjs';
 })
 export class VidsrcService {
 
-   // Has no ads
-   private _VIDSRC_API_URL = '/VIDSRCME_VIDSRC_ICU_BASE_URL'
+  // proxies only work with localhost
+  //  Has no ads
+  //  private _VIDSRC_API_URL = '/VIDSRCME_VIDSRC_ICU_BASE_URL'
 
-   // Has ads
-   // private _VIDSRC_API_URL = '/VIDSRC_ME_BASE_URL'
+  //  Has ads
+  //  private _VIDSRC_API_URL = '/VIDSRC_ME_BASE_URL'
+
+   private _VIDSRC_API_URL = 'https://vidsrcme.vidsrc.icu'
+
 
   private _IMDB_MOVIE_ENDPOINT = `${this._VIDSRC_API_URL}/embed/movie?imdb=`
   private _IMDB_SHOW_ENDPOINT = `${this._VIDSRC_API_URL}/embed/tv?imdb=`
