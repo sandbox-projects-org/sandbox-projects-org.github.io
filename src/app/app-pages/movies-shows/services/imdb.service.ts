@@ -7,9 +7,9 @@ import { map } from 'rxjs';
 })
 export class ImdbService {
 
-  private _IMDB_BASE_URL = '/IMDB_BASE_URL'
+  private _IMDB_API_URL = '/IMDB_BASE_URL'
 
-  private _IMDB_SEARCH_ENDPOINT = `${this._IMDB_BASE_URL}/find/?q=`
+  private _IMDB_SEARCH_ENDPOINT = `${this._IMDB_API_URL}/find/?q=`
 
   constructor(private http: HttpClient) { }
 
