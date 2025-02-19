@@ -38,19 +38,7 @@ export class MoviesShowsComponent {
     private omdbService: OmdbService,
     private tmdbService: TmdbService,
     private imdbService: ImdbService
-  ){
-    // imdbService.getSearch('rick').subscribe({
-    //   next: (response) => {
-    //     console.log(response);
-    //   },
-    //   error: (err:any) => {
-    //     console.log(`ERROR: ${err.body}`)
-    //   },
-    //   complete: () => {
-    //     console.log('complete')
-    //   }
-    // })
-  }
+  ){}
 
   searchTMDBMovieShow(value: string) {
     this.searchResult = [];
