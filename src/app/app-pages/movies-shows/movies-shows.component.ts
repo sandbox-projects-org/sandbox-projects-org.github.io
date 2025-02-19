@@ -22,6 +22,7 @@ export class MoviesShowsComponent {
   hasSearched = false;
   isLoadingSearch = false;
   isLoadingMedia = false;
+  autoPlay = false;
 
   mediaURL: SafeResourceUrl = '';
   searchResult: IMediaInfo[] = [];
@@ -120,7 +121,7 @@ export class MoviesShowsComponent {
     this.selectedMediaItem = mediaItem;
     this.selectedSeason = season;
     this.selectedEpisode = episode;
-    this.vidsrcService.getTMDBShow(mediaItem.id, season, episode).subscribe({
+    this.vidsrcService.getTMDBShow(mediaItem.id, season, episode, this.autoPlay).subscribe({
       next: (response) => {
         this.mediaURL = this.getMediaURL(response)
         this.getEpisodeDetails(mediaItem)
