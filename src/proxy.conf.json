@@ -12,7 +12,7 @@
       "secure": true,
       "changeOrigin": true,
       "pathRewrite": {
-        "^/VIDSRC_BASE_URL": ""
+        "^/VIDSRC_ME_BASE_URL": ""
       }
     },
     "/IMDB_BASE_URL": {
