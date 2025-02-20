@@ -10,5 +10,6 @@ import { AngularMaterialModule } from '../shared/modules/angular-material.module
   styleUrl: './homepage.component.scss'
 })
 export class HomepageComponent {
-
+  password = 'asdf';
+  input = '';
 }
