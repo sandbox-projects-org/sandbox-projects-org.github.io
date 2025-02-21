@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Component, Sanitizer } from '@angular/core';
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { AngularMaterialModule } from '../../shared/modules/angular-material.module';
 import { VidsrcService } from './services/vidsrc.service';
 import { OmdbService } from './services/omdb.service';
@@ -16,6 +16,8 @@ import { ImdbService } from './services/imdb.service';
   styleUrl: './movies-shows.component.scss'
 })
 export class MoviesShowsComponent {
+
+  testingSrcDoc: SafeHtml = '';
 
   EMediaType = EMediaType;
 
@@ -157,6 +159,7 @@ export class MoviesShowsComponent {
     this.vidsrcService.getSourceAgain(iframeSource).subscribe({
       next: (response) => {
         // console.log(response);
+        const responsa = response;
 
         const beginningIndex = response.indexOf("src: '") + 6;
         const endingIndex= response.indexOf("',\n               frameborder:");
@@ -165,11 +168,24 @@ export class MoviesShowsComponent {
         // this.testMedia = this.domSanitizer.bypassSecurityTrustResourceUrl(url);
         this.vidsrcService.getSourceAgainAgain(url).subscribe({
           next: (response) => {
-            console.log(response);
+            // console.log(response);
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(response, 'text/html');
-            document.getElementById('#testiframe')?.insertAdjacentHTML("afterbegin", response)
-            console.log(htmlDoc)
+
+            // remove element that enables ads
+            htmlDoc.body.lastElementChild?.remove();
+
+            const innerSrcDoc = `srcdoc: '<!DOCTYPE html>${htmlDoc.documentElement.outerHTML}`;
+
+            const srcDoc = responsa.slice(0, beginningIndex - 6) + innerSrcDoc + responsa.slice(endingIndex);
+
+            this.testingSrcDoc = this.domSanitizer.bypassSecurityTrustHtml(srcDoc);
+
+            // console.log('fat: ' + responsea);
+            // console.log(responsea.slice(begIndex, endingIndex))
+            console.log(responsa.slice(0, beginningIndex - 6) + innerSrcDoc)
+            console.log(innerSrcDoc + 'OOOOOOOOOOOO' + responsa.slice(endingIndex))
+
           },
           error: (err) => {
             console.log(`ERROR: ${err}`)
