@@ -17,8 +17,6 @@ import { ImdbService } from './services/imdb.service';
 })
 export class MoviesShowsComponent {
 
-  testingSrcDoc: SafeHtml = '';
-
   EMediaType = EMediaType;
 
   hasSearched = false;
@@ -26,7 +24,7 @@ export class MoviesShowsComponent {
   isLoadingMedia = false;
   autoPlay = false;
 
-  testMedia: SafeResourceUrl = '';
+  testMedia: SafeHtml = '';
   mediaURL: SafeResourceUrl = '';
   searchResult: IMediaInfo[] = [];
   seasonsEpisodes: Map<number, ISeasonInfo> = new Map();
@@ -154,54 +152,34 @@ export class MoviesShowsComponent {
     
     // const movieTitle = htmlDoc.querySelector('title')!.text;
     var iframeSource = htmlDoc.querySelector('iframe#player_iframe')!.getAttribute('src')!;
-    console.log(iframeSource)
 
-    this.vidsrcService.getSourceAgain(iframeSource).subscribe({
-      next: (response) => {
-        // console.log(response);
-        const responsa = response;
+    // console.log(iframeSource)
 
-        const beginningIndex = response.indexOf("src: '") + 6;
-        const endingIndex= response.indexOf("',\n               frameborder:");
-        const url = 'https://edgedeliverynetwork.com' + response.slice(beginningIndex, endingIndex);
-        console.log(url)
-        // this.testMedia = this.domSanitizer.bypassSecurityTrustResourceUrl(url);
-        this.vidsrcService.getSourceAgainAgain(url).subscribe({
-          next: (response) => {
-            // console.log(response);
-            const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(response, 'text/html');
+    // this.vidsrcService.getSourceAgain(iframeSource).subscribe({
+    //   next: (response) => {
 
-            // remove element that enables ads
-            htmlDoc.body.lastElementChild?.remove();
+    //     // const beginningIndex = response.indexOf("src: '") + 6;
+    //     // const endingIndex= response.indexOf("',\n               frameborder:");
+    //     // const url = 'https://edgedeliverynetwork.com' + response.slice(beginningIndex, endingIndex);
+    //     // console.log(url)
+    //     var insertBaseURLIndex_s = response.indexOf('href="/s') + 6
+    //     var modifyHref = response.slice(0, insertBaseURLIndex_s) + this.vidsrcService.EDGE_DELIVERY_NETWORK_API_URL + response.slice(insertBaseURLIndex_s)
 
-            const innerSrcDoc = `srcdoc: '<!DOCTYPE html>${htmlDoc.documentElement.outerHTML}`;
+    //     var insertBaseURLIndex_b = modifyHref.indexOf('href="/b') + 6
+    //     var modifyHref2 = modifyHref.slice(0, insertBaseURLIndex_b) + this.vidsrcService.EDGE_DELIVERY_NETWORK_API_URL + response.slice(insertBaseURLIndex_b)
+    //     console.log(modifyHref)
+    //     // console.log(response)
 
-            const srcDoc = responsa.slice(0, beginningIndex - 6) + innerSrcDoc + responsa.slice(endingIndex);
-
-            this.testingSrcDoc = this.domSanitizer.bypassSecurityTrustHtml(srcDoc);
-
-            // console.log('fat: ' + responsea);
-            // console.log(responsea.slice(begIndex, endingIndex))
-            console.log(responsa.slice(0, beginningIndex - 6) + innerSrcDoc)
-            console.log(innerSrcDoc + 'OOOOOOOOOOOO' + responsa.slice(endingIndex))
-
-          },
-          error: (err) => {
-            console.log(`ERROR: ${err}`)
-          },
-          complete: () => {
-            console.log('asdfasdad')
-          }
-        })
-      },
-      error: (err) => {
-        console.log(`ERROR: ${err}`)
-      },
-      complete: () => {
-        console.log('asdfasdad')
-      }
-    })
+    //     this.testMedia = this.domSanitizer.bypassSecurityTrustHtml(modifyHref2)
+    //     // this.testMedia = this.domSanitizer.bypassSecurityTrustResourceUrl(url);
+    //   },
+    //   error: (err) => {
+    //     console.log(`ERROR: ${err}`)
+    //   },
+    //   complete: () => {
+    //     console.log('completed getSourceAgain')
+    //   }
+    // })
     
     // var movieSources = htmlDoc.querySelector('div.servers');
     return this.domSanitizer.bypassSecurityTrustResourceUrl(iframeSource);

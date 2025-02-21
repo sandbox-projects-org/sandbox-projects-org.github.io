@@ -13,7 +13,23 @@ button {
     display: grid;
     justify-items: center;
     row-gap: 30px;
-    padding: 1em;
+}
+
+.search-header {
+    display: grid;
+    z-index: 90;
+    height: 78px;
+    width: 100%;
+}
+
+.search-grid {
+    display: grid;
+    position: fixed;
+    align-items: center;
+    justify-items: center;
+    background-color: black;
+    height: inherit;
+    width: inherit;
 }
 
 .search-bar {
@@ -27,20 +43,19 @@ button {
 
 .content {
     display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 1fr;
     justify-items: center;
-    width: 90%
+    width: 90%;
+    overflow: auto;
 }
 
-.search-grid {
+.content-grid {
     display: grid;
     justify-items: center;
     align-items: center;
-    height: 60vh;
+    // height: 80vh;
 }
 
-.search-list {
+.content-list {
     display: grid;
     height: inherit;
     overflow: auto;
@@ -49,7 +64,7 @@ button {
     row-gap: 2px;
 }
 
-.search-list-item {
+.content-list-item {
     display: grid;
     grid-auto-flow: column;
     grid-template-columns: 30% auto;
