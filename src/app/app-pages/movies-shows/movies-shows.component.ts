@@ -24,6 +24,7 @@ export class MoviesShowsComponent {
   isLoadingMedia = false;
   autoPlay = false;
 
+  testMedia: SafeResourceUrl = '';
   mediaURL: SafeResourceUrl = '';
   searchResult: IMediaInfo[] = [];
   seasonsEpisodes: Map<number, ISeasonInfo> = new Map();
@@ -151,6 +152,40 @@ export class MoviesShowsComponent {
     
     // const movieTitle = htmlDoc.querySelector('title')!.text;
     var iframeSource = htmlDoc.querySelector('iframe#player_iframe')!.getAttribute('src')!;
+    console.log(iframeSource)
+
+    this.vidsrcService.getSourceAgain(iframeSource).subscribe({
+      next: (response) => {
+        // console.log(response);
+
+        const beginningIndex = response.indexOf("src: '") + 6;
+        const endingIndex= response.indexOf("',\n               frameborder:");
+        const url = 'https://edgedeliverynetwork.com' + response.slice(beginningIndex, endingIndex);
+        console.log(url)
+        // this.testMedia = this.domSanitizer.bypassSecurityTrustResourceUrl(url);
+        this.vidsrcService.getSourceAgainAgain(url).subscribe({
+          next: (response) => {
+            console.log(response);
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(response, 'text/html');
+            document.getElementById('#testiframe')?.insertAdjacentHTML("afterbegin", response)
+            console.log(htmlDoc)
+          },
+          error: (err) => {
+            console.log(`ERROR: ${err}`)
+          },
+          complete: () => {
+            console.log('asdfasdad')
+          }
+        })
+      },
+      error: (err) => {
+        console.log(`ERROR: ${err}`)
+      },
+      complete: () => {
+        console.log('asdfasdad')
+      }
+    })
     
     // var movieSources = htmlDoc.querySelector('div.servers');
     return this.domSanitizer.bypassSecurityTrustResourceUrl(iframeSource);

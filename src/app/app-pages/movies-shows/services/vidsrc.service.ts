@@ -7,20 +7,22 @@ import { map, Observable } from 'rxjs';
 })
 export class VidsrcService {
 
+  private _EDGE_DELIVERY_NETWORK_API_URL= '/EDGE_DELIVERY_NETWORK_BASE_URL'
+
   // proxies only work with localhost
   //  Has no ads
   //  private _VIDSRC_API_URL = '/VIDSRCME_VIDSRC_ICU_BASE_URL'
 
   //  Has ads
-  //  private _VIDSRC_API_URL = '/VIDSRC_ME_BASE_URL'
+   private _VIDSRC_API_URL = '/VIDSRC_ME_BASE_URL'
 
-   private _VIDSRC_API_URL = 'https://vidsrcme.vidsrc.icu'
+  //  private _VIDSRC_API_URL = 'https://vidsrcme.vidsrc.icu'
 
 
   private _IMDB_MOVIE_ENDPOINT = `${this._VIDSRC_API_URL}/embed/movie?imdb=`
   private _IMDB_SHOW_ENDPOINT = `${this._VIDSRC_API_URL}/embed/tv?imdb=`
 
-   private _TMDB_MOVIE_ENDPOINT = `${this._VIDSRC_API_URL}/embed/movie?tmdb=`
+  private _TMDB_MOVIE_ENDPOINT = `${this._VIDSRC_API_URL}/embed/movie?tmdb=`
   private _TMDB_SHOW_ENDPOINT = `${this._VIDSRC_API_URL}/embed/tv?tmdb=`
 
   private _httpOptions: object = {
@@ -50,6 +52,21 @@ export class VidsrcService {
 
   getTMDBShow(tmdbID: string, season: number, episode: number, autonext: boolean): Observable<string> {
     return this.http.get<any>(`${this._TMDB_SHOW_ENDPOINT}${tmdbID}&season=${season}&episode=${episode}${autonext ? '&autonext=1' : ''}`, this._httpOptions).pipe(
+      map(x => x.body)
+    )
+    return this.http.get<any>(`${this._TMDB_SHOW_ENDPOINT}${tmdbID}&season=${season}&episode=${episode}&autonext=1`, this._httpOptions).pipe(
+      map(x => x.body)
+    )
+  }
+
+  getSourceAgain(urlpath: string) {
+    return this.http.get<any>(`https:${urlpath}`, this._httpOptions).pipe(
+      map(x => x.body)
+    )
+  }
+
+  getSourceAgainAgain(urlpath: string) {
+    return this.http.get<any>(`${this._EDGE_DELIVERY_NETWORK_API_URL}${urlpath}`, this._httpOptions).pipe(
       map(x => x.body)
     )
   }

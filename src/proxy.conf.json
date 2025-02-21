@@ -22,5 +22,13 @@
       "pathRewrite": {
         "^/IMDB_BASE_URL": ""
       }
+    },
+    "/EDGE_DELIVERY_NETWORK_BASE_URL": {
+      "target": "https://edgedeliverynetwork.com",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": {
+        "^/EDGE_DELIVERY_NETWORK_BASE_URL": ""
+      }
     }
 }
