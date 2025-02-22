@@ -164,6 +164,11 @@
     #monitor {
         display: none;
     }
+    
+    .content {
+        width: 99%;
+    }
+
     #phone {
         display: grid;
         grid-template-columns: 50% 50%;
