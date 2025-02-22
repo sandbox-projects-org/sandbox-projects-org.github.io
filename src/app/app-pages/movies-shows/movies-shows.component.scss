@@ -1,23 +1,4 @@
-@media (orientation: landscape) {
-    iframe {
-        border: 1em outset #ddd;
-        height: 50vh;
-        aspect-ratio: 15/10;
-    }
-}
-
-@media (orientation: portrait) {
-    iframe {
-        border: 1em outset #ddd;
-        width: 80vw;
-        aspect-ratio: 15/10;
-    }
-}
-
-button {
-    border-radius: 10px;
-    height: 100%;
-}
+@use '@angular/material' as mat;
 
 .vidsrc-page-grid {
     display: grid;
@@ -47,7 +28,13 @@ button {
     grid-auto-flow: column;
 
     mat-form-field {
-        width: 40vw;
+        width: 50vw;
+    }
+
+    button {
+        @include mat.fab-overrides((
+      container-shape: 4px,
+    ));
     }
 }
 
@@ -67,10 +54,7 @@ button {
 
 .content-list {
     display: grid;
-    height: inherit;
-    overflow: auto;
     color: white;
-    border-radius: 10px;
     row-gap: 2px;
 }
 
@@ -151,5 +135,79 @@ button {
     }
     to {
         scale: 0.9;
+    }
+}
+
+
+
+@media (orientation: landscape) {
+    iframe {
+        border: 1em outset #ddd;
+        height: 50vh;
+        aspect-ratio: 15/10;
+    }
+}
+
+@media (orientation: portrait) {
+    iframe {
+        border: 1em outset #ddd;
+        width: 80vw;
+        aspect-ratio: 15/10;
+    }
+}
+
+#phone {
+    display: none;
+}
+
+@media screen and (max-width: 950px) {
+    #monitor {
+        display: none;
+    }
+    #phone {
+        display: grid;
+        grid-template-columns: 50% 50%;
+        row-gap: 2px;
+        column-gap: 2px;
+
+        .content-list-item-phone {
+            display: grid;
+            align-items: end;
+            color: white;
+            background-color: black;
+            // height: 13em;
+            // background-color: black;
+            
+            &:hover {
+                cursor: pointer;
+                opacity: 70%;
+            }
+            &:active {
+                animation: .1s click;
+            }
+        }
+        
+        .item-poster-phone {
+            display: grid;
+            align-items: end;
+        
+             img {
+                display: grid;
+                width: 100%;
+            }
+        }
+        
+        .item-info-phone {
+            display: grid;
+            overflow: hidden;
+            grid-template-rows: 3em 3em auto;
+            margin: 0px 10px;
+        
+            h5 {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
     }
 }

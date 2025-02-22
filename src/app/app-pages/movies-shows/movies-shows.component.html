@@ -4,8 +4,11 @@
             <div class="search-bar">
                 <mat-form-field subscriptSizing="dynamic">
                     <input matInput placeholder="Search Movie/TV" type="search" (keydown.enter)="searchTMDBMovieShow(searchInput.value)" #searchInput>
+                    <button matSuffix mat-fab (click)="searchTMDBMovieShow(searchInput.value)">
+                        <mat-icon>search</mat-icon>
+                    </button>
                 </mat-form-field>
-                <button mat-flat-button (click)="searchTMDBMovieShow(searchInput.value)">Search</button>
+                
             </div>
         </div>
     </div>
@@ -14,7 +17,7 @@
         <div class="content-grid">
             @if(searchResult.length > 0) {
                 @if(!selectedMediaItem) {
-                    <div class="content-list">
+                    <div id="monitor" class="content-list">
                         @for (mediaItem of searchResult; track mediaItem) {
                             <div class="content-list-item" (click)="mediaItem.media_type === 'movie' ?  loadMovie(mediaItem) : loadShow(mediaItem)">
                                 <div class="item-poster">
@@ -29,6 +32,19 @@
                                     </h5>
                                     <p>{{mediaItem.release_date}} | {{mediaItem.media_type}}</p>
                                     <p class="description">{{mediaItem.overview}}</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div id="phone" class="content-list-phone">
+                        @for (mediaItem of searchResult; track mediaItem) {
+                            <div class="content-list-item-phone" (click)="mediaItem.media_type === 'movie' ?  loadMovie(mediaItem) : loadShow(mediaItem)">
+                                <div class="item-poster-phone">
+                                    <img [src]="mediaItem.poster_path">
+                                </div>
+                                <div class="item-info-phone">
+                                    <h5>{{mediaItem.title}}</h5>
+                                    <p>{{mediaItem.release_date}} | {{mediaItem.media_type}}</p>
                                 </div>
                             </div>
                         }
