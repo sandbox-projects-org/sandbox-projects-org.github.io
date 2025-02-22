@@ -1,6 +1,7 @@
 iframe {
     border: 1em outset #ddd;
-    width: 90%;
+    max-width: 90%;
+    min-height: 50vh;
     aspect-ratio: 15/10;
 }
 
