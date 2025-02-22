@@ -26,10 +26,7 @@
 .search-bar {
     display: grid;
     grid-auto-flow: column;
-
-    mat-form-field {
-        width: 50vw;
-    }
+    width: 50%;
 
     button {
         @include mat.fab-overrides((
@@ -164,7 +161,11 @@
     #monitor {
         display: none;
     }
-    
+
+    .search-bar {
+        width: 90%;
+    }
+
     .content {
         width: 99%;
     }
