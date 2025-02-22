@@ -30,6 +30,7 @@ export class MoviesShowsComponent {
   seasonsEpisodes: Map<number, ISeasonInfo> = new Map();
 
   selectedMediaItem: IMediaInfo | null = null;
+  savedMediaItem: IMediaInfo | null = null;
   selectedSeason: number = 1;
   selectedEpisode: number = 1;
 
@@ -39,12 +40,19 @@ export class MoviesShowsComponent {
     private omdbService: OmdbService,
     private tmdbService: TmdbService,
     private imdbService: ImdbService
-  ){}
+  ){
+    window.addEventListener('popstate', (event: PopStateEvent) => {
+      this.selectedMediaItem = null;
+      console.log(event.state)
+    })
+  }
 
   searchTMDBMovieShow(value: string) {
     this.searchResult = [];
     this.isLoadingSearch = true;
     this.selectedMediaItem = null;
+    history.pushState(this.selectedMediaItem, "", window.location.href)
+    // console.log(history.state)
 
     this.tmdbService.getMoviesShows(value).subscribe({
       next: (response) => {
