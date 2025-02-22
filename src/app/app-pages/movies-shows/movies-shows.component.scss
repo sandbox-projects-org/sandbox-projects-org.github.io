@@ -1,7 +1,9 @@
 iframe {
     border: 1em outset #ddd;
-    max-width: 90%;
-    min-height: 50vh;
+    max-width: 90vw;
+    max-height: 50vh;
+    min-width: 45vh;
+    min-height: 30vw;
     aspect-ratio: 15/10;
 }
 
@@ -13,7 +15,7 @@ button {
 .vidsrc-page-grid {
     display: grid;
     justify-items: center;
-    row-gap: 30px;
+    row-gap: 10px;
 }
 
 .search-header {
