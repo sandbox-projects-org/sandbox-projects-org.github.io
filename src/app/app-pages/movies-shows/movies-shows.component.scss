@@ -1,10 +1,17 @@
-iframe {
-    border: 1em outset #ddd;
-    max-width: 90%;
-    max-height: 50vh;
-    min-width: 30vh;
-    min-height: 20vw;
-    aspect-ratio: 15/10;
+@media (orientation: landscape) {
+    iframe {
+        border: 1em outset #ddd;
+        height: 50vh;
+        aspect-ratio: 15/10;
+    }
+}
+
+@media (orientation: portrait) {
+    iframe {
+        border: 1em outset #ddd;
+        width: 80vw;
+        aspect-ratio: 15/10;
+    }
 }
 
 button {
