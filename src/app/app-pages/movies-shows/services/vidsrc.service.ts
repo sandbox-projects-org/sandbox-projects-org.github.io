@@ -39,8 +39,8 @@ export class VidsrcService {
     )
   }
 
-  getIMDBShow(imdbID: string, season: number, episode: number, autonext: boolean): Observable<string> {
-    return this.http.get<any>(`${this._IMDB_SHOW_ENDPOINT}${imdbID}&season=${season}&episode=${episode}${autonext ? '&autonext=1' : ''}`, this._httpOptions).pipe(
+  getIMDBShow(imdbID: string, season: number, episode: number): Observable<string> {
+    return this.http.get<any>(`${this._IMDB_SHOW_ENDPOINT}${imdbID}&season=${season}&episode=${episode}`, this._httpOptions).pipe(
       map(x => x.body)
     )
   }
@@ -51,11 +51,8 @@ export class VidsrcService {
     )
   }
 
-  getTMDBShow(tmdbID: string, season: number, episode: number, autonext: boolean): Observable<string> {
-    // return this.http.get<any>(`${this._TMDB_SHOW_ENDPOINT}${tmdbID}&season=${season}&episode=${episode}${autonext ? '&autonext=1' : ''}`, this._httpOptions).pipe(
-    //   map(x => x.body)
-    // )
-    return this.http.get<any>(`${this._TMDB_SHOW_ENDPOINT}${tmdbID}&season=${season}&episode=${episode}&autonext=1`, this._httpOptions).pipe(
+  getTMDBShow(tmdbID: string, season: number, episode: number): Observable<string> {
+    return this.http.get<any>(`${this._TMDB_SHOW_ENDPOINT}${tmdbID}&season=${season}&episode=${episode}`, this._httpOptions).pipe(
       map(x => x.body)
     )
   }

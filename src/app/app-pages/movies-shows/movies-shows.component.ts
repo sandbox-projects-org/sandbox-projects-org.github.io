@@ -41,18 +41,12 @@ export class MoviesShowsComponent {
     private tmdbService: TmdbService,
     private imdbService: ImdbService
   ){
-    window.addEventListener('popstate', (event: PopStateEvent) => {
-      this.selectedMediaItem = null;
-      console.log(event.state)
-    })
   }
 
   searchTMDBMovieShow(value: string) {
     this.searchResult = [];
     this.isLoadingSearch = true;
     this.selectedMediaItem = null;
-    history.pushState(this.selectedMediaItem, "", window.location.href)
-    // console.log(history.state)
 
     this.tmdbService.getMoviesShows(value).subscribe({
       next: (response) => {
@@ -118,7 +112,7 @@ export class MoviesShowsComponent {
     this.selectedMediaItem = mediaItem;
     this.selectedSeason = season;
     this.selectedEpisode = episode;
-    this.vidsrcService.getTMDBShow(mediaItem.id, season, episode, this.autoPlay).subscribe({
+    this.vidsrcService.getTMDBShow(mediaItem.id, season, episode).subscribe({
       next: (response) => {
         this.mediaURL = this.getMediaURL(response)
         this.getEpisodeDetails(mediaItem)
