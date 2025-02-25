@@ -1,0 +1,35 @@
+.video-player-grid {
+    display: grid;
+    justify-self: center;
+    align-items: center;
+    justify-items: center;
+    width: 95%;
+    row-gap: 5px;
+    margin-bottom: 4em;
+}
+
+.seasons-episodes {
+    display: grid;
+    grid-auto-flow: column;
+}
+
+.episode-metadata {
+    display: grid;
+    
+}
+
+@media (orientation: landscape) {
+    iframe {
+        border: 1em outset #ddd;
+        height: 50vh;
+        aspect-ratio: 15/10;
+    }
+}
+
+@media (orientation: portrait) {
+    iframe {
+        border: 1em outset #ddd;
+        width: 80vw;
+        aspect-ratio: 15/10;
+    }
+}

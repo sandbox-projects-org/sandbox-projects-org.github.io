@@ -109,23 +109,6 @@
     overflow: hidden;
 }
 
-.video-player-grid {
-    display: grid;
-    align-items: center;
-    justify-items: center;
-    row-gap: 5px;
-}
-
-.seasons-episodes {
-    display: grid;
-    grid-auto-flow: column;
-}
-
-.episode-metadata {
-    display: grid;
-    
-}
-
 @keyframes click {
     from {
         scale: 1;
@@ -135,23 +118,6 @@
     }
 }
 
-
-
-@media (orientation: landscape) {
-    iframe {
-        border: 1em outset #ddd;
-        height: 50vh;
-        aspect-ratio: 15/10;
-    }
-}
-
-@media (orientation: portrait) {
-    iframe {
-        border: 1em outset #ddd;
-        width: 80vw;
-        aspect-ratio: 15/10;
-    }
-}
 
 #phone {
     display: none;

@@ -1,130 +1,71 @@
 <div class="vidsrc-page-grid">
-    <div class="search-header">
-        <div class="search-grid">
-            <div class="search-bar">
-                <mat-form-field subscriptSizing="dynamic">
-                    <input matInput placeholder="Search Movie/TV" type="search" (keydown.enter)="searchTMDBMovieShow(searchInput.value)" #searchInput>
-                    <button matSuffix mat-fab (click)="searchTMDBMovieShow(searchInput.value)">
-                        <mat-icon>search</mat-icon>
-                    </button>
-                </mat-form-field>
-                
-            </div>
-        </div>
-    </div>
-    
-    <div class="content">
-        <div class="content-grid">
-            @if(searchResult.length > 0) {
-                @if(!selectedMediaItem) {
-                    <div id="monitor" class="content-list">
-                        @for (mediaItem of searchResult; track mediaItem) {
-                            <div class="content-list-item" (click)="mediaItem.media_type === 'movie' ?  loadMovie(mediaItem) : loadShow(mediaItem)">
-                                <div class="item-poster">
-                                    <img [src]="mediaItem.poster_path">
-                                </div>
-                                <div class="item-info">
-                                    <h5 
-                                    [matTooltip]="mediaItem.title"
-                                    matTooltipPosition="below"
-                                    matTooltipShowDelay="300">
-                                        {{mediaItem.title}}
-                                    </h5>
-                                    <p>{{mediaItem.release_date}} | {{mediaItem.media_type}}</p>
-                                    <p class="description">{{mediaItem.overview}}</p>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                    <div id="phone" class="content-list-phone">
-                        @for (mediaItem of searchResult; track mediaItem) {
-                            <div class="content-list-item-phone" (click)="mediaItem.media_type === 'movie' ?  loadMovie(mediaItem) : loadShow(mediaItem)">
-                                <div class="item-poster-phone">
-                                    <img [src]="mediaItem.poster_path">
-                                </div>
-                                <div class="item-info-phone">
-                                    <h5>{{mediaItem.title}}</h5>
-                                    <p>{{mediaItem.release_date}} | {{mediaItem.media_type}}</p>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                }
-                
-                @else {
-                    <div class="video-player-grid">
-                        @if (mediaURL != '') {
-                            <h5>
-                                {{selectedMediaItem.title}}
-                            </h5>
-                            <iframe [src]="mediaURL" allowfullscreen="yes" scrolling="yes"></iframe>
-                
-                            @if (selectedMediaItem.media_type === EMediaType.TV) {
-                                <!-- <mat-slide-toggle
-                                (change)="autoPlay = !autoPlay; loadShow(selectedMediaItem)">
-                                    Autoplay next episodes
-                                </mat-slide-toggle> -->
-                                <div class="seasons-episodes">
-                                    <mat-form-field>
-                                        <mat-label>Select a Season</mat-label>
-                                        <mat-select [(value)]="selectedSeason">
-                                            @for (season of seasonsEpisodes.keys(); track season) {
-                                                <mat-option [value]="season" (click)="changeSeasonEpisode()">{{seasonsEpisodes.get(season)?.name}}</mat-option>
-                                            }
-                                        </mat-select>
-                                    </mat-form-field>
-                                    <mat-form-field>
-                                        <mat-label>Select an Episode</mat-label>
-                                        <mat-select [(value)]="selectedEpisode">
-                                            @for (episode of seasonsEpisodes.get(selectedSeason)?.episodes; track episode) {
-                                                <mat-option [value]="episode.episode_number" (click)="changeSeasonEpisode()">{{episode.episode_number}}: {{episode.name}}</mat-option>
-                                            }
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-                                <div class="episode-metadata">
-                                    <div>
-                                        <strong>Episode Title:</strong> {{selectedMediaItem.episode_title}}
-                                    </div>
-                                    <div>
-                                        <strong>Description:</strong> {{selectedMediaItem.episode_overview}}
-                                    </div>
-                                </div>
-                            }
-                            @else {
-                                <div class="episode-metadata">
-                                    <div>
-                                        <strong>Description:</strong> {{selectedMediaItem.overview}}
-                                    </div>
-                                </div>
-                            }
-                        }
-                        @else if (isLoadingMedia) {
-                            <div>
-                                ... Loading
-                            </div>
-                        }
-                        @else {
-                            <div>
-                                No Results {{":("}}
-                            </div>
-                        }
-                    </div>
-                }
-            }
-            @else if (isLoadingSearch) {
-                <div>
-                    ... Loading
-                </div>
-            }
-            @else if (hasSearched) {
-                <div>
-                    No Results {{":("}}
-                </div>
-            }
-        </div>
-    </div> 
+	<div class="search-header">
+		<div class="search-grid">
+			<div class="search-bar">
+				<mat-form-field subscriptSizing="dynamic">
+					<input
+						matInput
+						placeholder="Search Movie/TV"
+						type="search"
+						(keydown.enter)="searchTMDBMovieShow(searchInput.value)"
+						#searchInput
+					/>
+					<button
+						matSuffix
+						mat-fab
+						(click)="searchTMDBMovieShow(searchInput.value)"
+					>
+						<mat-icon>search</mat-icon>
+					</button>
+				</mat-form-field>
+			</div>
+		</div>
+	</div>
+
+	<router-outlet></router-outlet>
+	@if (showResults) {
+	<div class="content">
+		<div class="content-grid">
+			@if(searchResult.length > 0) {
+			<div id="monitor" class="content-list">
+				@for (mediaItem of searchResult; track mediaItem) {
+				<div class="content-list-item" (click)="loadVideo(mediaItem)">
+					<div class="item-poster">
+						<img [src]="mediaItem.poster_path" />
+					</div>
+					<div class="item-info">
+						<h5
+							[matTooltip]="mediaItem.title"
+							matTooltipPosition="below"
+							matTooltipShowDelay="300"
+						>
+							{{ mediaItem.title }}
+						</h5>
+						<p>{{ mediaItem.release_date }} | {{ mediaItem.media_type }}</p>
+						<p class="description">{{ mediaItem.overview }}</p>
+					</div>
+				</div>
+				}
+			</div>
+			<div id="phone" class="content-list-phone">
+				@for (mediaItem of searchResult; track mediaItem) {
+				<div class="content-list-item-phone" (click)="loadVideo(mediaItem)">
+					<div class="item-poster-phone">
+						<img [src]="mediaItem.poster_path" />
+					</div>
+					<div class="item-info-phone">
+						<h5>{{ mediaItem.title }}</h5>
+						<p>{{ mediaItem.release_date }} | {{ mediaItem.media_type }}</p>
+					</div>
+				</div>
+				}
+			</div>
+			} @else if (isLoadingSearch) {
+			<div>... Loading</div>
+			} @else {
+			<div>No Results {{ ":(" }}</div>
+			}
+		</div>
+	</div>
+	}
 </div>
-
-
-<!-- <iframe id="testframe" [srcdoc]="testMedia" allowfullscreen="yes" scrolling="yes" style="height: 100%; width: 100%;"></iframe> -->
