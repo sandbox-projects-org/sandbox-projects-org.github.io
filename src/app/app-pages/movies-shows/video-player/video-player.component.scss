@@ -1,15 +1,9 @@
 .video-player-grid {
 	display: grid;
 	justify-items: center;
-	margin-bottom: 4em;
-	width: 100%;
-}
-
-.video-player-content {
-	display: grid;
-	justify-items: center;
-	width: 90%;
 	row-gap: 10px;
+	width: 90vw;
+	margin-bottom: 4em;
 }
 
 .seasons-episodes {
@@ -39,20 +33,19 @@
 	}
 }
 .no-result {
-    display: grid;
-    background-color: white;
-    justify-items: center;
-    align-items: center;
-    align-content: center;
-
+	display: grid;
+	background-color: white;
+	justify-items: center;
+	align-items: center;
+	align-content: center;
 }
 
 img {
-    display: grid;
+	display: grid;
 	max-width: 50%;
 	max-height: 50%;
 }
 
 .loading {
-    margin-top: 10vh;
+	margin-top: 10vh;
 }
