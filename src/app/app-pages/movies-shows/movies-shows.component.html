@@ -24,48 +24,54 @@
 
 	<router-outlet></router-outlet>
 	@if (showResults) {
-	<div class="content">
-		<div class="content-grid">
-			@if(searchResult.length > 0) {
-			<div id="monitor" class="content-list">
-				@for (mediaItem of searchResult; track mediaItem) {
-				<div class="content-list-item" (click)="loadVideo(mediaItem)">
-					<div class="item-poster">
-						<img [src]="mediaItem.poster_path" />
-					</div>
-					<div class="item-info">
-						<h5
-							[matTooltip]="mediaItem.title"
-							matTooltipPosition="below"
-							matTooltipShowDelay="300"
-						>
-							{{ mediaItem.title }}
-						</h5>
-						<p>{{ mediaItem.release_date }} | {{ mediaItem.media_type }}</p>
-						<p class="description">{{ mediaItem.overview }}</p>
-					</div>
+	<div class="content-grid">
+		@if(searchResult.length > 0) {
+		<div class="content-monitor">
+			@for (mediaItem of searchResult; track mediaItem) {
+			<div class="content-item-monitor" (click)="loadVideo(mediaItem)">
+				<div class="item-poster">
+					<img [src]="mediaItem.poster_path" />
 				</div>
-				}
-			</div>
-			<div id="phone" class="content-list-phone">
-				@for (mediaItem of searchResult; track mediaItem) {
-				<div class="content-list-item-phone" (click)="loadVideo(mediaItem)">
-					<div class="item-poster-phone">
-						<img [src]="mediaItem.poster_path" />
-					</div>
-					<div class="item-info-phone">
-						<h5>{{ mediaItem.title }}</h5>
-						<p>{{ mediaItem.release_date }} | {{ mediaItem.media_type }}</p>
-					</div>
+				<div class="item-info">
+					<h5
+						[matTooltip]="mediaItem.title"
+						matTooltipPosition="below"
+						matTooltipShowDelay="300"
+						matTooltipClass="mat-tooltip"
+					>
+						{{ mediaItem.title }}
+					</h5>
+					<p>{{ mediaItem.release_date }} | {{ mediaItem.media_type }}</p>
+					<p
+						class="description"
+						[matTooltip]="mediaItem.overview"
+						matTooltipPosition="below"
+						matTooltipShowDelay="500"
+					>
+						{{ mediaItem.overview }}
+					</p>
 				</div>
-				}
 			</div>
-			} @else if (isLoadingSearch) {
-			<div>... Loading</div>
-			} @else {
-			<div>No Results {{ ":(" }}</div>
 			}
 		</div>
+		<div class="content-phone">
+			@for (mediaItem of searchResult; track mediaItem) {
+			<div class="content-item-phone" (click)="loadVideo(mediaItem)">
+				<div class="item-poster-phone">
+					<img [src]="mediaItem.poster_path" />
+				</div>
+				<div class="item-info-phone">
+					<h5>{{ mediaItem.title }}</h5>
+					<p>{{ mediaItem.release_date }} | {{ mediaItem.media_type }}</p>
+				</div>
+			</div>
+			}
+		</div>
+		} @else if (isLoadingSearch) {
+		<div>... Loading</div>
+		} @else {
+		<div>No Results {{ ":(" }}</div>
+		}
 	</div>
 	}
 </div>

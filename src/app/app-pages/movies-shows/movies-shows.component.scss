@@ -35,27 +35,22 @@
     }
 }
 
-.content {
-    display: grid;
-    justify-items: center;
-    width: 90%;
-    overflow: auto;
-}
-
 .content-grid {
     display: grid;
     justify-items: center;
     align-items: center;
-    // height: 80vh;
+    width: 90%;
 }
 
-.content-list {
+.content-monitor {
     display: grid;
+    grid-template-columns: repeat(3, 1fr);
     color: white;
     row-gap: 2px;
+    column-gap: 2px;
 }
 
-.content-list-item {
+.content-item-monitor {
     display: grid;
     grid-auto-flow: column;
     grid-template-columns: 30% auto;
@@ -72,17 +67,12 @@
 }
 
 .item-poster {
-    display: grid;
-    justify-items: center;
-    align-items: center;
-    height: inherit;
+    display: contents;
+	aspect-ratio: 15/10;
 
      img {
-        display: grid;
-        height: inherit;
         max-width: 100%;
-        box-sizing: border-box;
-        border: 1em groove #CC9901;
+        align-self: center;
     }
 }
 
@@ -119,12 +109,14 @@
 }
 
 
-#phone {
+
+
+.content-phone {
     display: none;
 }
 
 @media screen and (max-width: 950px) {
-    #monitor {
+    .content-monitor {
         display: none;
     }
 
@@ -136,19 +128,17 @@
         width: 95%;
     }
 
-    #phone {
+    .content-phone {
         display: grid;
         grid-template-columns: 50% 50%;
         row-gap: 2px;
         column-gap: 2px;
 
-        .content-list-item-phone {
+        .content-item-phone {
             display: grid;
             align-items: end;
             color: white;
             background-color: black;
-            // height: 13em;
-            // background-color: black;
             
             &:hover {
                 cursor: pointer;

@@ -16,6 +16,8 @@ import { AngularMaterialModule } from "../../../shared/modules/angular-material.
 export class VideoPlayerComponent {
 	EMediaType = EMediaType;
 
+	isLoading = true;
+
 	mediaURL: SafeResourceUrl = "";
 	mediaItem: IMediaInfo;
 	seasonsEpisodes: Map<number, ISeasonInfo> = new Map();
@@ -48,9 +50,11 @@ export class VideoPlayerComponent {
 				this.mediaURL = this.getMediaURL(response);
 			},
 			error: (err) => {
+				this.isLoading = false;
 				console.log(err);
 			},
 			complete: () => {
+				this.isLoading = false;
 				console.log("completed loading movie");
 			},
 		});
@@ -66,9 +70,11 @@ export class VideoPlayerComponent {
 					this.getSeasonsEpisodesMap(mediaItem.id);
 				},
 				error: (err) => {
+					this.isLoading = false;
 					console.log(err);
 				},
 				complete: () => {
+					this.isLoading = false;
 					console.log("completed loading movie");
 				},
 			});

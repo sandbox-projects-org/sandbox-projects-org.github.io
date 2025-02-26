@@ -44,6 +44,7 @@ export class MoviesShowsComponent {
 
 		this.tmdbService.getMoviesShows(value).subscribe({
 			next: (response) => {
+				console.log(response)
 				for (const media of response.results) {
 					if (media.media_type === EMediaType.MOVIE) {
 						var mediaItem: IMediaInfo = {
@@ -54,7 +55,7 @@ export class MoviesShowsComponent {
 							overview: media.overview ? media.overview : "",
 							poster_path: media.poster_path
 								? `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
-								: "/assets/no_poster.jpg",
+								: "/assets/no_image.jpg",
 						};
 						this.searchResult.push(mediaItem);
 					}
@@ -69,7 +70,7 @@ export class MoviesShowsComponent {
 							overview: media.overview ? media.overview : "",
 							poster_path: media.poster_path
 								? `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
-								: "/assets/no_poster.jpg",
+								: "/assets/no_image.jpg",
 						};
 						this.searchResult.push(mediaItem);
 					}

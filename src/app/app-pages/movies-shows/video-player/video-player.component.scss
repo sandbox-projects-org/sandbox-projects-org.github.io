@@ -1,35 +1,58 @@
 .video-player-grid {
-    display: grid;
-    justify-self: center;
-    align-items: center;
-    justify-items: center;
-    row-gap: 5px;
-    margin-bottom: 4em;
-    width: 85%;
+	display: grid;
+	justify-items: center;
+	margin-bottom: 4em;
+	width: 100%;
+}
+
+.video-player-content {
+	display: grid;
+	justify-items: center;
+	width: 90%;
+	row-gap: 10px;
 }
 
 .seasons-episodes {
-    display: grid;
-    grid-auto-flow: column;
+	display: grid;
+	grid-auto-flow: column;
 }
 
 .episode-metadata {
-    display: grid;
-    
+	display: grid;
 }
 
 @media (orientation: landscape) {
-    iframe {
-        border: 1em outset #ddd;
-        height: 50vh;
-        aspect-ratio: 15/10;
-    }
+	iframe,
+	.no-result {
+		border: 1em outset #ddd;
+		height: 50vh;
+		aspect-ratio: 15/10;
+	}
 }
 
 @media (orientation: portrait) {
-    iframe {
-        border: 1em outset #ddd;
-        width: 80vw;
-        aspect-ratio: 15/10;
-    }
+	iframe,
+	.no-result {
+		border: 1em outset #ddd;
+		width: 80vw;
+		aspect-ratio: 15/10;
+	}
+}
+.no-result {
+    display: grid;
+    background-color: white;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+
+}
+
+img {
+    display: grid;
+	max-width: 50%;
+	max-height: 50%;
+}
+
+.loading {
+    margin-top: 10vh;
 }

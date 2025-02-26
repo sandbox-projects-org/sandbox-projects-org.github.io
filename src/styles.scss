@@ -30,7 +30,10 @@
 :root {
     // @include mat.all-component-themes($theme);
     @include mat.all-component-themes(customTheme.$light-theme);
-
+    @include mat.tooltip-overrides((
+        container-color: white,
+        supporting-text-color: black,
+      ));
   }
 
 
