@@ -28,7 +28,10 @@ export class VidsrcService {
 
   private _httpOptions: object = {
     responseType: 'text',
-    observe: 'response'
+    observe: 'response',
+    params: {
+      ds_lang: 'ko'
+    }
   };
 
   constructor(private http: HttpClient) { }
