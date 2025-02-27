@@ -35,7 +35,7 @@
 .search-bar {
     display: grid;
     grid-auto-flow: column;
-    width: 50%;
+    width: 90%;
 
     button {
         @include mat.fab-overrides((
@@ -48,64 +48,35 @@
     display: grid;
     justify-items: center;
     align-items: center;
-    width: 90%;
+    width: 95%;
 }
 
-.content-monitor {
+.content-items {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    color: white;
-    row-gap: 2px;
-    column-gap: 2px;
-}
-
-.content-item-monitor {
-    display: grid;
-    grid-auto-flow: column;
-    grid-template-columns: 30% auto;
-    background-color: black;
-    
-    &:hover {
-        cursor: pointer;
-        opacity: 70%;
-    }
-    &:active {
-        animation: .1s click;
-    }
+    gap: 4px;
 }
 
 .item-poster {
-    display: contents;
-	aspect-ratio: 15/10;
+    display: grid;
+	aspect-ratio: 10/15;
+    overflow: hidden;
+    background-color: black;
+    align-items: center;
 
      img {
-        max-width: 100%;
+        display: grid;
+        width: 100%;
         max-height: 100%;
-        align-self: center;
+
+        &:hover {
+            cursor: pointer;
+            opacity: 70%;
+        }
+        &:active {
+            animation: .1s click;
+        }
     }
-}
-
-.item-info {
-    display: grid;
-    overflow: hidden;
-    grid-template-rows: 3em 3em auto;
-    margin: 0px 10px;
-
-    h5 {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
-
-.description {
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
-    -webkit-box-orient: vertical;
-    line-height: 1.5em;
-    height: 6em;
-    overflow: hidden;
 }
 
 @keyframes click {
@@ -118,67 +89,42 @@
 }
 
 
-
-
-.content-phone {
-    display: none;
+@media screen and (min-width: 1201px) {
+    .search-bar {
+        width: 50%;
+    }
+    .content-items {
+        grid-template-columns: repeat(7, 1fr);
+    }
 }
 
-@media screen and (max-width: 950px) {
-    .content-monitor {
-        display: none;
-    }
-
+@media screen and (max-width: 1200px) {
     .search-bar {
-        width: 90%;
+        width: 50%;
+    }
+    .content-items {
+        grid-template-columns: repeat(6, 1fr);
     }
 
-    .content {
-        width: 95%;
+}
+
+@media screen and (max-width: 1024px) {
+    .search-bar {
+        width: 50%;
     }
+    .content-items {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
 
-    .content-phone {
-        display: grid;
-        grid-template-columns: 50% 50%;
-        row-gap: 2px;
-        column-gap: 2px;
+@media screen and (max-width: 768px) {
+    .content-items {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
 
-        .content-item-phone {
-            display: grid;
-            align-items: end;
-            color: white;
-            background-color: black;
-            
-            &:hover {
-                cursor: pointer;
-                opacity: 70%;
-            }
-            &:active {
-                animation: .1s click;
-            }
-        }
-        
-        .item-poster-phone {
-            display: grid;
-            align-items: end;
-        
-             img {
-                display: grid;
-                width: 100%;
-            }
-        }
-        
-        .item-info-phone {
-            display: grid;
-            overflow: hidden;
-            grid-template-rows: 3em 3em auto;
-            margin: 0px 10px;
-        
-            h5 {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-        }
+@media screen and (max-width: 480px) {
+    .content-items {
+        grid-template-columns: repeat(3, 1fr);
     }
 }

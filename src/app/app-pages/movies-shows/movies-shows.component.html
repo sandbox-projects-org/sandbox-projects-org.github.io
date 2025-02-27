@@ -26,44 +26,10 @@
 	@if (showResults) {
 	<div class="content-grid">
 		@if(searchResult.results) {
-		<div class="content-monitor">
+		<div class="content-items">
 			@for (mediaItem of searchResult.results; track mediaItem) {
-			<div class="content-item-monitor" (click)="loadVideo(mediaItem)">
-				<div class="item-poster">
-					<img [src]="mediaItem.poster_path" />
-				</div>
-				<div class="item-info">
-					<h5
-						[matTooltip]="mediaItem.title"
-						matTooltipPosition="below"
-						matTooltipShowDelay="300"
-						matTooltipClass="mat-tooltip"
-					>
-						{{ mediaItem.title }}
-					</h5>
-					<p>{{ mediaItem.release_date }} | {{ mediaItem.media_type }}</p>
-					<p
-						class="description"
-						[matTooltip]="mediaItem.overview"
-						matTooltipPosition="below"
-						matTooltipShowDelay="500"
-					>
-						{{ mediaItem.overview }}
-					</p>
-				</div>
-			</div>
-			}
-		</div>
-		<div class="content-phone">
-			@for (mediaItem of searchResult.results; track mediaItem) {
-			<div class="content-item-phone" (click)="loadVideo(mediaItem)">
-				<div class="item-poster-phone">
-					<img [src]="mediaItem.poster_path" />
-				</div>
-				<div class="item-info-phone">
-					<h5>{{ mediaItem.title }}</h5>
-					<p>{{ mediaItem.release_date }} | {{ mediaItem.media_type }}</p>
-				</div>
+			<div class="item-poster" (click)="loadVideo(mediaItem)">
+				<img [src]="mediaItem.poster_path" />
 			</div>
 			}
 		</div>

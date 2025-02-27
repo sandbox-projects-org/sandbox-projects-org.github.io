@@ -68,6 +68,8 @@ export class MoviesShowsComponent {
 		this.scrollTop();
 
 		this.loadSearchResults(searchTitle, this.searchResult.page);
+		this.loadMoreSearchResults(5);
+		console.log(this.searchResult.results)
 	}
 
 	loadSearchResults(title: string, page: number) {
@@ -77,36 +79,35 @@ export class MoviesShowsComponent {
 				this.searchResult.total_results = response.total_results;
 
 				for (const media of response.results) {
-					if (media.media_type === EMediaType.MOVIE) {
-						var mediaItem: IMediaInfo = {
-							id: media.id,
-							title: media.title,
-							media_type: EMediaType.MOVIE,
-							release_date: media.release_date
-								? new Date(media.release_date).getFullYear().toString()
-								: "XXXX",
-							overview: media.overview ? media.overview : "",
-							poster_path: media.poster_path
-								? `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
-								: "/assets/no_image.jpg",
-						};
-						this.searchResult.results.push(mediaItem);
+					if (media.poster_path) {
+						if (media.media_type === EMediaType.MOVIE) {
+							var mediaItem: IMediaInfo = {
+								id: media.id,
+								title: media.title,
+								media_type: EMediaType.MOVIE,
+								release_date: media.release_date
+									? new Date(media.release_date).getFullYear().toString()
+									: "XXXX",
+								overview: media.overview ? media.overview : "",
+								poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
+							};
+							this.searchResult.results.push(mediaItem);
+						}
+						if (media.media_type === EMediaType.TV) {
+							var mediaItem: IMediaInfo = {
+								id: media.id,
+								title: media.name,
+								media_type: EMediaType.TV,
+								release_date: media.first_air_date
+									? new Date(media.first_air_date).getFullYear().toString()
+									: "XXXX",
+								overview: media.overview ? media.overview : "",
+								poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
+							};
+							this.searchResult.results.push(mediaItem);
+						}
 					}
-					if (media.media_type === EMediaType.TV) {
-						var mediaItem: IMediaInfo = {
-							id: media.id,
-							title: media.name,
-							media_type: EMediaType.TV,
-							release_date: media.first_air_date
-								? new Date(media.first_air_date).getFullYear().toString()
-								: "XXXX",
-							overview: media.overview ? media.overview : "",
-							poster_path: media.poster_path
-								? `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
-								: "/assets/no_image.jpg",
-						};
-						this.searchResult.results.push(mediaItem);
-					}
+					
 				}
 			},
 			error: (err) => {
@@ -125,10 +126,12 @@ export class MoviesShowsComponent {
 		});
 	}
 
-	loadMoreSearchResults() {
-		if (this.searchResult.page < this.searchResult.total_pages) {
-			++this.searchResult.page;
-			this.loadSearchResults(this.searchResult.title, this.searchResult.page);
+	loadMoreSearchResults(pagesToLoad: number = 1) {
+		for (let page = 1; page <= pagesToLoad; page++) {
+			if (this.searchResult.page < this.searchResult.total_pages) {
+				++this.searchResult.page;
+				this.loadSearchResults(this.searchResult.title, this.searchResult.page);
+			}
 		}
 	}
 

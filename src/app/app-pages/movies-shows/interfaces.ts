@@ -14,7 +14,7 @@ export interface IMediaInfo {
 	media_type: EMediaType;
 	release_date: string;
 	overview: string;
-	poster_path?: string;
+	poster_path: string;
 	season?: number;
 	episode?: number;
 	episode_title?: string;
