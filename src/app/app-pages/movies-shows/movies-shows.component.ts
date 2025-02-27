@@ -16,7 +16,6 @@ export class MoviesShowsComponent {
 	EMediaType = EMediaType;
 	isLoadingSearch = false;
 	showResults = false;
-	showScrollTop = false;
 
 	searchResult: ISearchResults = {
 		title: "",
@@ -53,11 +52,6 @@ export class MoviesShowsComponent {
 					document.body.scrollHeight - window.innerHeight * 0.5
 				) {
 					this.loadMoreSearchResults();
-				}
-				if (window.scrollY > 2000) {
-					this.showScrollTop = true;
-				} else {
-					this.showScrollTop = false;
 				}
 			}
 		});
@@ -145,9 +139,5 @@ export class MoviesShowsComponent {
 			relativeTo: this.route,
 			state: { mediaItem: mediaItem },
 		});
-	}
-
-	scrollTop() {
-		window.scrollTo({ top: 0, behavior: "smooth" });
 	}
 }
