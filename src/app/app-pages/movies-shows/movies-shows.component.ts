@@ -82,7 +82,9 @@ export class MoviesShowsComponent {
 							id: media.id,
 							title: media.title,
 							media_type: EMediaType.MOVIE,
-							release_date: media.release_date ? media.release_date : "unknown",
+							release_date: media.release_date
+								? new Date(media.release_date).getFullYear().toString()
+								: "XXXX",
 							overview: media.overview ? media.overview : "",
 							poster_path: media.poster_path
 								? `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
@@ -96,8 +98,8 @@ export class MoviesShowsComponent {
 							title: media.name,
 							media_type: EMediaType.TV,
 							release_date: media.first_air_date
-								? media.first_air_date
-								: "unknown",
+								? new Date(media.first_air_date).getFullYear().toString()
+								: "XXXX",
 							overview: media.overview ? media.overview : "",
 							poster_path: media.poster_path
 								? `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
