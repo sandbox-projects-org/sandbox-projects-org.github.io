@@ -1,5 +1,13 @@
 import { EMediaType } from "./constants";
 
+export interface ISearchResults {
+	title: string;
+	results: IMediaInfo[];
+	page: number;
+	total_pages: number;
+	total_results: number;
+}
+
 export interface IMediaInfo {
 	id: string;
 	title: string;

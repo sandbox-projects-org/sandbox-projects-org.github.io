@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { AngularMaterialModule } from "../../shared/modules/angular-material.module";
 import { TmdbService } from "./services/tmdb.service";
-import { IMediaInfo } from "./interfaces";
+import { IMediaInfo, ISearchResults } from "./interfaces";
 import { EMediaType } from "./constants";
 import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
 
@@ -16,8 +16,22 @@ export class MoviesShowsComponent {
 	EMediaType = EMediaType;
 	isLoadingSearch = false;
 	showResults = false;
+	showScrollTop = false;
 
-	searchResult: IMediaInfo[] = [];
+	searchResult: ISearchResults = {
+		title: "",
+		results: [],
+		page: 1,
+		total_pages: 0,
+		total_results: 0,
+	};
+	resetSearchResult: ISearchResults = {
+		title: "",
+		results: [],
+		page: 1,
+		total_pages: 0,
+		total_results: 0,
+	};
 
 	constructor(
 		private tmdbService: TmdbService,
@@ -26,25 +40,46 @@ export class MoviesShowsComponent {
 	) {
 		window.addEventListener("popstate", (event) => {
 			if (location.pathname === "/app-movies-shows") {
-				this.searchResult = history.state.searchResult;
-        this.showResults = true;
+				this.showResults = true;
 			}
-      if (location.pathname === '/app-movies-shows/app-video-player') {
-        this.showResults = false;
-      }
+			if (location.pathname === "/app-movies-shows/app-video-player") {
+				this.showResults = false;
+			}
+		});
+		window.addEventListener("scroll", (event) => {
+			if (location.pathname === "/app-movies-shows") {
+				if (
+					window.scrollY + window.innerHeight >
+					document.body.scrollHeight - window.innerHeight * 0.5
+				) {
+					this.loadMoreSearchResults();
+				}
+				if (window.scrollY > 2000) {
+					this.showScrollTop = true;
+				} else {
+					this.showScrollTop = false;
+				}
+			}
 		});
 	}
 
-	searchTMDBMovieShow(value: string) {
+	searchTMDBMovieShow(searchTitle: string) {
 		this.router.navigate(["app-movies-shows"]);
 
-		this.searchResult = [];
+		this.searchResult = structuredClone(this.resetSearchResult);
+		this.searchResult.title = searchTitle;
 		this.isLoadingSearch = true;
 		this.showResults = true;
 
-		this.tmdbService.getMoviesShows(value).subscribe({
+		this.loadSearchResults(searchTitle, this.searchResult.page);
+	}
+
+	loadSearchResults(title: string, page: number) {
+		this.tmdbService.getMoviesShows(title, page).subscribe({
 			next: (response) => {
-				console.log(response)
+				this.searchResult.total_pages = response.total_pages;
+				this.searchResult.total_results = response.total_results;
+
 				for (const media of response.results) {
 					if (media.media_type === EMediaType.MOVIE) {
 						var mediaItem: IMediaInfo = {
@@ -57,7 +92,7 @@ export class MoviesShowsComponent {
 								? `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
 								: "/assets/no_image.jpg",
 						};
-						this.searchResult.push(mediaItem);
+						this.searchResult.results.push(mediaItem);
 					}
 					if (media.media_type === EMediaType.TV) {
 						var mediaItem: IMediaInfo = {
@@ -72,7 +107,7 @@ export class MoviesShowsComponent {
 								? `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
 								: "/assets/no_image.jpg",
 						};
-						this.searchResult.push(mediaItem);
+						this.searchResult.results.push(mediaItem);
 					}
 				}
 			},
@@ -92,6 +127,13 @@ export class MoviesShowsComponent {
 		});
 	}
 
+	loadMoreSearchResults() {
+		if (this.searchResult.page < this.searchResult.total_pages) {
+			++this.searchResult.page;
+			this.loadSearchResults(this.searchResult.title, this.searchResult.page);
+		}
+	}
+
 	loadVideo(mediaItem: IMediaInfo) {
 		history.replaceState(
 			{ searchResult: this.searchResult },
@@ -103,5 +145,9 @@ export class MoviesShowsComponent {
 			relativeTo: this.route,
 			state: { mediaItem: mediaItem },
 		});
+	}
+
+	scrollTop() {
+		window.scrollTo({ top: 0, behavior: "smooth" });
 	}
 }

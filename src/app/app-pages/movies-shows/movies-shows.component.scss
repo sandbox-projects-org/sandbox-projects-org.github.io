@@ -6,6 +6,15 @@
     row-gap: 10px;
 }
 
+.scroll-top {
+    position: fixed;
+    z-index: 90;
+    top: 90%;
+    background-color: white;
+    border-radius: 50%;
+    opacity: 85%;
+}
+
 .search-header {
     display: grid;
     z-index: 90;

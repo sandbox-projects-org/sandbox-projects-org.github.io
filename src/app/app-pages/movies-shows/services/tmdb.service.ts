@@ -10,12 +10,8 @@ export class TmdbService {
   public TMDB_POSTER_PATH_URL = 'https://image.tmdb.org/t/p/w500'
   private _TMDB_API_URL = 'https://api.themoviedb.org/3';
 
-  private _TMDB_SEARCH_MOVIE_ENDPOINT = `${this._TMDB_API_URL}/search/movie`;
-  private _TMDB_SEARCH_TV_ENDPOINT = `${this._TMDB_API_URL}/search/tv`;
   private _TMDB_SEARCH_MULTI_ENDPOINT = `${this._TMDB_API_URL}/search/multi`;
-  private _TMDB_MOVIE_DETAILS_ENDPOINT = `${this._TMDB_API_URL}/movie`;
   private _TMDB_TV_DETAILS_ENDPOINT = `${this._TMDB_API_URL}/tv`;
-  private _TMDB_FIND_BY_IMDB_ID_ENDPOINT = `${this._TMDB_API_URL}/find`;
 
 
   private _httpOptions: object = {
@@ -31,44 +27,8 @@ export class TmdbService {
 
   constructor(private http: HttpClient) {}
 
-  getMovies(title: string) {
-    return this.http.get<any>(`${this._TMDB_SEARCH_MOVIE_ENDPOINT}?query=${title}`, this._httpSearchOptions).pipe(
-      map(x => x.body)
-    )
-  }
-
-  getShows(title: string) {
-    return this.http.get<any>(`${this._TMDB_SEARCH_TV_ENDPOINT}?query=${title}`, this._httpSearchOptions).pipe(
-      map(x => x.body)
-    )
-  }
-
-  getMoviesShows(title: string) {
-    return this.http.get<any>(`${this._TMDB_SEARCH_MULTI_ENDPOINT}?query=${title}`, this._httpSearchOptions).pipe(
-      map(x => x.body)
-    )
-  }
-
-  getMovieImdbId(tmdbID: string) {
-    return this.http.get<any>(`${this._TMDB_MOVIE_DETAILS_ENDPOINT}/${tmdbID}/external_ids`, this._httpOptions).pipe(
-      map(x => x.body.imdb_id)
-    )
-  }
-
-  getShowImdbId(tmdbID: number) {
-    return this.http.get<any>(`${this._TMDB_TV_DETAILS_ENDPOINT}/${tmdbID}/external_ids`, this._httpOptions).pipe(
-      map(x => x.body.imdb_id)
-    )
-  }
-
-  getShowSeasonsEpisodes(tmdbID: string) {
-    return this.http.get<any>(`${this._TMDB_TV_DETAILS_ENDPOINT}/${tmdbID}`, this._httpOptions).pipe(
-      map(response => response.body.seasons.filter((season: { season_number: number; }) => season.season_number > 0)),
-    )
-  }
-
-  getMovieDetails(tmdbID: string) {
-    return this.http.get<any>(`${this._TMDB_MOVIE_DETAILS_ENDPOINT}/${tmdbID}`, this._httpOptions).pipe(
+  getMoviesShows(title: string, page: number) {
+    return this.http.get<any>(`${this._TMDB_SEARCH_MULTI_ENDPOINT}?query=${title}&page=${page}`, this._httpSearchOptions).pipe(
       map(x => x.body)
     )
   }
@@ -91,9 +51,9 @@ export class TmdbService {
     )
   }
 
-  getTmdbIdFromImdbId(imdbID: string) {
-    return this.http.get<any>(`${this._TMDB_FIND_BY_IMDB_ID_ENDPOINT}/${imdbID}`, this._httpFindByIMDBOptions).pipe(
-      map(x => x.body)
-    )
-  }
+  // getTmdbIdFromImdbId(imdbID: string) {
+  //   return this.http.get<any>(`${this._TMDB_FIND_BY_IMDB_ID_ENDPOINT}/${imdbID}`, this._httpFindByIMDBOptions).pipe(
+  //     map(x => x.body)
+  //   )
+  // }
 }

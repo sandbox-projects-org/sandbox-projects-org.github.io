@@ -25,9 +25,9 @@
 	<router-outlet></router-outlet>
 	@if (showResults) {
 	<div class="content-grid">
-		@if(searchResult.length > 0) {
+		@if(searchResult.results) {
 		<div class="content-monitor">
-			@for (mediaItem of searchResult; track mediaItem) {
+			@for (mediaItem of searchResult.results; track mediaItem) {
 			<div class="content-item-monitor" (click)="loadVideo(mediaItem)">
 				<div class="item-poster">
 					<img [src]="mediaItem.poster_path" />
@@ -55,7 +55,7 @@
 			}
 		</div>
 		<div class="content-phone">
-			@for (mediaItem of searchResult; track mediaItem) {
+			@for (mediaItem of searchResult.results; track mediaItem) {
 			<div class="content-item-phone" (click)="loadVideo(mediaItem)">
 				<div class="item-poster-phone">
 					<img [src]="mediaItem.poster_path" />
@@ -73,5 +73,12 @@
 		<div>No Results {{ ":(" }}</div>
 		}
 	</div>
+	}
+	@if (showScrollTop) {
+		<div class="scroll-top">
+			<button mat-icon-button (click)="scrollTop()">
+				<mat-icon>arrow_upward</mat-icon>
+			</button>
+		</div>
 	}
 </div>
