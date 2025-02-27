@@ -21,7 +21,7 @@ export class TmdbService {
     observe: 'response'
   }
 
-  private _httpSearchOptions: object = Object.defineProperty(structuredClone(this._httpOptions), 'params', {value: {include_adult: 'true'}});
+  private _httpSearchOptions: object = Object.defineProperty(structuredClone(this._httpOptions), 'params', {value: {include_adult: 'false'}});
   private _httpFindByIMDBOptions: object = Object.defineProperty(structuredClone(this._httpOptions), 'params', {value: {external_source: 'imdb_id'}});
 
 
