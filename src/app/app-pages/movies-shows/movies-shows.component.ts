@@ -65,6 +65,8 @@ export class MoviesShowsComponent {
 		this.isLoadingSearch = true;
 		this.showResults = true;
 
+		this.scrollTop();
+
 		this.loadSearchResults(searchTitle, this.searchResult.page);
 	}
 
@@ -139,5 +141,9 @@ export class MoviesShowsComponent {
 			relativeTo: this.route,
 			state: { mediaItem: mediaItem },
 		});
+	}
+
+	scrollTop() {
+		window.scrollTo({ top: 0 });
 	}
 }
