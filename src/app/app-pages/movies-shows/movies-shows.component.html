@@ -32,9 +32,12 @@
 				class="item-poster"
 				[matTooltip]="mediaItem.title"
 				matTooltipShowDelay="500"
+				matTooltipTouchGestures="off"
 				(click)="loadVideo(mediaItem)"
 			>
-				<img [src]="mediaItem.poster_path" />
+				<div class="poster-image">
+					<img [src]="mediaItem.poster_path" />
+				</div>
 				<div class="poster-description">
 					<h6>{{ mediaItem.title }}</h6>
 					<p>{{ mediaItem.release_date }} | {{ mediaItem.media_type }}</p>
