@@ -7,13 +7,13 @@
 						matInput
 						placeholder="Search Movie/TV"
 						type="search"
-						(keydown.enter)="searchTMDBMovieShow(searchInput.value)"
+						(keydown.enter)="searchTMDBMovieShow(searchInput.value); blur(searchInput)"
 						#searchInput
 					/>
 					<button
 						matSuffix
 						mat-fab
-						(click)="searchTMDBMovieShow(searchInput.value)"
+						(click)="searchTMDBMovieShow(searchInput.value); blur(searchInput)"
 					>
 						<mat-icon>search</mat-icon>
 					</button>

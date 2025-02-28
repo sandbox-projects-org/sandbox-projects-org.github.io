@@ -197,4 +197,8 @@ export class MoviesShowsComponent {
 	scrollTop() {
 		window.scrollTo({ top: 0 });
 	}
+
+	blur(inputElement: HTMLInputElement) {
+		inputElement.blur()
+	}
 }
