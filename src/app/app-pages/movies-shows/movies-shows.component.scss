@@ -1,130 +1,160 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
 .vidsrc-page-grid {
-    display: grid;
-    justify-items: center;
-    row-gap: 10px;
+	display: grid;
+	justify-items: center;
+	row-gap: 10px;
 }
 
 .scroll-top {
-    position: fixed;
-    z-index: 90;
-    top: 90%;
-    background-color: white;
-    border-radius: 50%;
-    opacity: 85%;
+	position: fixed;
+	z-index: 90;
+	top: 90%;
+	background-color: white;
+	border-radius: 50%;
+	opacity: 85%;
 }
 
 .search-header {
-    display: grid;
-    z-index: 90;
-    height: 78px;
-    width: 100%;
+	display: grid;
+	z-index: 90;
+	height: 78px;
+	width: 100%;
 }
 
 .search-grid {
-    display: grid;
-    position: fixed;
-    align-items: center;
-    justify-items: center;
-    background-color: black;
-    height: inherit;
-    width: inherit;
+	display: grid;
+	position: fixed;
+	align-items: center;
+	justify-items: center;
+	background-color: black;
+	height: inherit;
+	width: inherit;
 }
 
 .search-bar {
-    display: grid;
-    grid-auto-flow: column;
-    width: 90%;
+	display: grid;
+	grid-auto-flow: column;
+	width: 90%;
 
-    button {
-        @include mat.fab-overrides((
-      container-shape: 4px,
-    ));
-    }
+	button {
+		@include mat.fab-overrides(
+			(
+				container-shape: 4px,
+			)
+		);
+	}
 }
 
 .content-grid {
-    display: grid;
-    justify-items: center;
-    align-items: center;
-    width: 95%;
+	display: grid;
+	justify-items: center;
+	align-items: center;
+	width: 95%;
 }
 
 .content-items {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 4px;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 4px;
 }
 
 .item-poster {
+	display: grid;
+	overflow: hidden;
+	background-color: black;
+	color: white;
+	align-items: center;
+    row-gap: 5px;
+
+	img {
+		display: grid;
+		width: 100%;
+		max-height: 100%;
+		aspect-ratio: 10/15;
+	}
+	&:hover {
+		cursor: pointer;
+		opacity: 70%;
+	}
+	&:active {
+		animation: 0.1s click;
+	}
+}
+
+.poster-description {
+	display: grid;
+    justify-self: center;
+    width: 80%;
+    height: 6em;
+    align-content: start;
+	p,
+	h6 {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+        line-height: 1em;
+	}
+}
+
+.no-result {
     display: grid;
-	aspect-ratio: 10/15;
-    overflow: hidden;
-    background-color: black;
-    align-items: center;
+    justify-items: center;
 
-     img {
-        display: grid;
-        width: 100%;
-        max-height: 100%;
-
-        &:hover {
-            cursor: pointer;
-            opacity: 70%;
-        }
-        &:active {
-            animation: .1s click;
-        }
+    img {
+        max-width: 100%;
     }
 }
 
 @keyframes click {
-    from {
-        scale: 1;
-    }
-    to {
-        scale: 0.9;
-    }
-}
-
-
-@media screen and (min-width: 1201px) {
-    .search-bar {
-        width: 50%;
-    }
-    .content-items {
-        grid-template-columns: repeat(7, 1fr);
-    }
-}
-
-@media screen and (max-width: 1200px) {
-    .search-bar {
-        width: 50%;
-    }
-    .content-items {
-        grid-template-columns: repeat(6, 1fr);
-    }
-
-}
-
-@media screen and (max-width: 1024px) {
-    .search-bar {
-        width: 50%;
-    }
-    .content-items {
-        grid-template-columns: repeat(5, 1fr);
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .content-items {
-        grid-template-columns: repeat(4, 1fr);
-    }
+	from {
+		scale: 1;
+	}
+	to {
+		scale: 0.9;
+	}
 }
 
 @media screen and (max-width: 480px) {
-    .content-items {
-        grid-template-columns: repeat(3, 1fr);
-    }
+	.search-bar {
+		width: 90%;
+	}
+	.content-items {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+@media screen and (min-width: 481px) {
+	.search-bar {
+		width: 80%;
+	}
+	.content-items {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media screen and (min-width: 768px) {
+	.search-bar {
+		width: 70%;
+	}
+	.content-items {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+@media screen and (min-width: 992px) {
+	.search-bar {
+		width: 60%;
+	}
+	.content-items {
+		grid-template-columns: repeat(5, 1fr);
+	}
+}
+
+@media screen and (min-width: 1200px) {
+	.search-bar {
+		width: 50%;
+	}
+	.content-items {
+		grid-template-columns: repeat(6, 1fr);
+	}
 }

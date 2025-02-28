@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
+import { IMediaInfo } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,10 @@ export class TmdbService {
   private _TMDB_SEARCH_MULTI_ENDPOINT = `${this._TMDB_API_URL}/search/multi`;
   private _TMDB_TV_DETAILS_ENDPOINT = `${this._TMDB_API_URL}/tv`;
 
+  private _TMDB_MOVIE_GENRES = `${this._TMDB_API_URL}/genre/movie/list`
+  private _TMDB_TV_GENRES = `${this._TMDB_API_URL}/genre/tv/list`
+  
+
 
   private _httpOptions: object = {
     headers: {
@@ -22,7 +27,6 @@ export class TmdbService {
   }
 
   private _httpSearchOptions: object = Object.defineProperty(structuredClone(this._httpOptions), 'params', {value: {include_adult: 'false'}});
-  private _httpFindByIMDBOptions: object = Object.defineProperty(structuredClone(this._httpOptions), 'params', {value: {external_source: 'imdb_id'}});
 
 
   constructor(private http: HttpClient) {}
@@ -51,9 +55,27 @@ export class TmdbService {
     )
   }
 
-  // getTmdbIdFromImdbId(imdbID: string) {
-  //   return this.http.get<any>(`${this._TMDB_FIND_BY_IMDB_ID_ENDPOINT}/${imdbID}`, this._httpFindByIMDBOptions).pipe(
-  //     map(x => x.body)
-  //   )
-  // }
+  getMovieGenres() {
+    return this.http.get<any>(this._TMDB_MOVIE_GENRES, this._httpOptions).pipe(
+      map(x => x.body.genres)
+    )
+  }
+  getTVGenres() {
+    return this.http.get<any>(this._TMDB_TV_GENRES, this._httpOptions).pipe(
+      map(x => x.body.genres)
+    )
+  }
+
+  genreListToString(mediaItem: IMediaInfo): string {
+      var genres = '';
+      for (const genre of mediaItem.genres) {
+        if (genres.length === 0) {
+          genres = genre
+        }
+        else {
+          genres += `, ${genre}`
+        }
+      }
+      return genres;
+    }
 }

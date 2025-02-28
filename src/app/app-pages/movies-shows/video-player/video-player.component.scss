@@ -1,6 +1,14 @@
+iframe,
+h5,
+.seasons-episodes,
+.loading,
+.no-result {
+	justify-self: center;
+}
+
 .video-player-grid {
 	display: grid;
-	justify-items: center;
+	justify-content: center;
 	row-gap: 10px;
 	width: 90vw;
 	margin-bottom: 4em;

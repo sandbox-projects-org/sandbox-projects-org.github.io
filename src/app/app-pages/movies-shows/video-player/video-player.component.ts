@@ -24,7 +24,7 @@ export class VideoPlayerComponent {
 
 	constructor(
 		private vidsrcService: VidsrcService,
-		private tmdbService: TmdbService,
+		public tmdbService: TmdbService,
 		private domSanitizer: DomSanitizer
 	) {
 		this.mediaItem = history.state.mediaItem;

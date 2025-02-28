@@ -17,6 +17,9 @@ export class MoviesShowsComponent {
 	isLoadingSearch = false;
 	showResults = false;
 
+	movieGenres: Map<number, string> = new Map();
+	tvGenres: Map<number, string> = new Map();
+
 	searchResult: ISearchResults = {
 		title: "",
 		results: [],
@@ -33,10 +36,36 @@ export class MoviesShowsComponent {
 	};
 
 	constructor(
-		private tmdbService: TmdbService,
+		public tmdbService: TmdbService,
 		private router: Router,
 		private route: ActivatedRoute
 	) {
+		tmdbService.getMovieGenres().subscribe({
+			next: (response) => {
+				for (const genre of response) {
+					this.movieGenres.set(genre.id, genre.name);
+				}
+			},
+			error: (err) => {
+				console.log(err)
+			},
+			complete: () => {
+				console.log('completed getting movie genre list')
+			}
+		})
+		tmdbService.getTVGenres().subscribe({
+			next: (response) => {
+				for (const genre of response) {
+					this.tvGenres.set(genre.id, genre.name);
+				}
+			},
+			error: (err) => {
+				console.log(err)
+			},
+			complete: () => {
+				console.log('completed getting tv genre list')
+			}
+		})
 		window.addEventListener("popstate", (event) => {
 			if (location.pathname === "/app-movies-shows") {
 				this.showResults = true;
@@ -69,7 +98,6 @@ export class MoviesShowsComponent {
 
 		this.loadSearchResults(searchTitle, this.searchResult.page);
 		this.loadMoreSearchResults(5);
-		console.log(this.searchResult.results)
 	}
 
 	loadSearchResults(title: string, page: number) {
@@ -89,7 +117,8 @@ export class MoviesShowsComponent {
 									? new Date(media.release_date).getFullYear().toString()
 									: "XXXX",
 								overview: media.overview ? media.overview : "",
-								poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
+								poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`,
+								genres: this.getGenres(media.genre_ids, EMediaType.MOVIE)
 							};
 							this.searchResult.results.push(mediaItem);
 						}
@@ -102,7 +131,9 @@ export class MoviesShowsComponent {
 									? new Date(media.first_air_date).getFullYear().toString()
 									: "XXXX",
 								overview: media.overview ? media.overview : "",
-								poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`
+								poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`,
+								genres: this.getGenres(media.genre_ids, EMediaType.TV)
+
 							};
 							this.searchResult.results.push(mediaItem);
 						}
@@ -146,6 +177,21 @@ export class MoviesShowsComponent {
 			relativeTo: this.route,
 			state: { mediaItem: mediaItem },
 		});
+	}
+
+	getGenres(genreIds: number[], media_type: EMediaType): string[] {
+		var genreList: string[] = [];
+		if (media_type === EMediaType.MOVIE) {
+			for (const id of genreIds) {
+				genreList.push(this.movieGenres.get(id)!)
+			}
+		}
+		else {
+			for (const id of genreIds) {
+				genreList.push(this.tvGenres.get(id)!)
+			}
+		}
+		return genreList;
 	}
 
 	scrollTop() {

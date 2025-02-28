@@ -19,6 +19,7 @@ export interface IMediaInfo {
 	episode?: number;
 	episode_title?: string;
 	episode_overview?: string;
+	genres: string[];
 }
 
 export interface ISeasonInfo {

@@ -2,9 +2,13 @@
 	<h5>
 		{{ mediaItem.title }}
 	</h5>
+	<div><strong>Overview:</strong> {{ mediaItem.overview }}</div>
+	@if (mediaItem.genres.length > 0) {
+		<div><strong>Genres:</strong> {{tmdbService.genreListToString(mediaItem)}}</div>
+	}
 
 	@if (mediaURL != '') {
-	<div><strong>Show overview:</strong> {{ mediaItem.overview }}</div>
+	
 	<iframe [src]="mediaURL" allowfullscreen="yes" scrolling="yes"></iframe>
 	@if (mediaItem.media_type === EMediaType.TV) {
 	<div class="seasons-episodes">
