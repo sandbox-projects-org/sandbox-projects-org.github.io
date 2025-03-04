@@ -28,22 +28,25 @@ export class VidsrcService {
 
   private _httpOptions: object = {
     responseType: 'text',
-    observe: 'response'
+    observe: 'response',
+    // params: {
+    //   ds_lang: 'ko'
+    // }
   };
 
   constructor(private http: HttpClient) { }
 
-  getIMDBMovie(imdbID: string): Observable<string> {
-    return this.http.get<any>(`${this._IMDB_MOVIE_ENDPOINT}${imdbID}`, this._httpOptions).pipe(
-      map(x => x.body)
-    )
-  }
+  // getIMDBMovie(imdbID: string): Observable<string> {
+  //   return this.http.get<any>(`${this._IMDB_MOVIE_ENDPOINT}${imdbID}`, this._httpOptions).pipe(
+  //     map(x => x.body)
+  //   )
+  // }
 
-  getIMDBShow(imdbID: string, season: number, episode: number): Observable<string> {
-    return this.http.get<any>(`${this._IMDB_SHOW_ENDPOINT}${imdbID}&season=${season}&episode=${episode}`, this._httpOptions).pipe(
-      map(x => x.body)
-    )
-  }
+  // getIMDBShow(imdbID: string, season: number, episode: number): Observable<string> {
+  //   return this.http.get<any>(`${this._IMDB_SHOW_ENDPOINT}${imdbID}&season=${season}&episode=${episode}`, this._httpOptions).pipe(
+  //     map(x => x.body)
+  //   )
+  // }
 
   getTMDBMovie(tmdbID: string): Observable<string> {
     return this.http.get<any>(`${this._TMDB_MOVIE_ENDPOINT}${tmdbID}`, this._httpOptions).pipe(
@@ -57,15 +60,4 @@ export class VidsrcService {
     )
   }
 
-  getSourceAgain(urlpath: string) {
-    return this.http.get<any>(`https:${urlpath}`, this._httpOptions).pipe(
-      map(x => x.body)
-    )
-  }
-
-  // getSourceAgainAgain(urlpath: string) {
-  //   return this.http.get<any>(`${this._EDGE_DELIVERY_NETWORK_API_URL}${urlpath}`, this._httpOptions).pipe(
-  //     map(x => x.body)
-  //   )
-  // }
 }

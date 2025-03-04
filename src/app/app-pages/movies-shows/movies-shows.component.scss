@@ -1,219 +1,165 @@
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
 .vidsrc-page-grid {
-    display: grid;
-    justify-items: center;
-    row-gap: 10px;
+	display: grid;
+	justify-items: center;
+	row-gap: 10px;
+}
+
+.scroll-top {
+	position: fixed;
+	z-index: 90;
+	top: 90%;
+	background-color: white;
+	border-radius: 50%;
+	opacity: 85%;
 }
 
 .search-header {
-    display: grid;
-    z-index: 90;
-    height: 78px;
-    width: 100%;
+	display: grid;
+	z-index: 90;
+	height: 78px;
+	width: 100%;
 }
 
 .search-grid {
-    display: grid;
-    position: fixed;
-    align-items: center;
-    justify-items: center;
-    background-color: black;
-    height: inherit;
-    width: inherit;
+	display: grid;
+	position: fixed;
+	align-items: center;
+	justify-items: center;
+	background-color: black;
+	height: inherit;
+	width: inherit;
 }
 
 .search-bar {
-    display: grid;
-    grid-auto-flow: column;
-    width: 50%;
+	display: grid;
+	grid-auto-flow: column;
+	width: 90%;
 
-    button {
-        @include mat.fab-overrides((
-      container-shape: 4px,
-    ));
-    }
-}
-
-.content {
-    display: grid;
-    justify-items: center;
-    width: 90%;
-    overflow: auto;
+	button {
+		@include mat.fab-overrides(
+			(
+				container-shape: 4px,
+			)
+		);
+	}
 }
 
 .content-grid {
-    display: grid;
-    justify-items: center;
-    align-items: center;
-    // height: 80vh;
+	display: grid;
+	justify-items: center;
+	align-items: center;
+	width: 95%;
 }
 
-.content-list {
-    display: grid;
-    color: white;
-    row-gap: 2px;
-}
-
-.content-list-item {
-    display: grid;
-    grid-auto-flow: column;
-    grid-template-columns: 30% auto;
-    height: 13em;
-    background-color: black;
-    
-    &:hover {
-        cursor: pointer;
-        opacity: 70%;
-    }
-    &:active {
-        animation: .1s click;
-    }
+.content-items {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 4px;
 }
 
 .item-poster {
-    display: grid;
-    justify-items: center;
-    align-items: center;
-    height: inherit;
-
-     img {
-        display: grid;
-        height: inherit;
-        max-width: 100%;
-        box-sizing: border-box;
-        border: 1em groove #CC9901;
-    }
-}
-
-.item-info {
-    display: grid;
-    overflow: hidden;
-    grid-template-rows: 3em 3em auto;
-    margin: 0px 10px;
-
-    h5 {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
-
-.description {
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
-    -webkit-box-orient: vertical;
-    line-height: 1.5em;
-    height: 6em;
-    overflow: hidden;
-}
-
-.video-player-grid {
-    display: grid;
-    align-items: center;
-    justify-items: center;
+	display: grid;
+	overflow: hidden;
+	background-color: black;
+	color: white;
+	align-items: center;
     row-gap: 5px;
+
+	img {
+		display: grid;
+		width: 100%;
+		max-height: 100%;
+	}
+	&:hover {
+		cursor: pointer;
+		opacity: 70%;
+	}
+	&:active {
+		animation: 0.1s click;
+	}
 }
 
-.seasons-episodes {
+.poster-image {
     display: grid;
-    grid-auto-flow: column;
+    align-items: center;
+    aspect-ratio: 10/15;
 }
 
-.episode-metadata {
+.poster-description {
+	display: grid;
+    justify-self: center;
+    width: 80%;
+    height: 6em;
+    align-content: start;
+	p,
+	h6 {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+        line-height: 1em;
+	}
+}
+
+.no-result {
     display: grid;
-    
+    justify-items: center;
+
+    img {
+        max-width: 100%;
+    }
 }
 
 @keyframes click {
-    from {
-        scale: 1;
-    }
-    to {
-        scale: 0.9;
-    }
+	from {
+		scale: 1;
+	}
+	to {
+		scale: 0.9;
+	}
 }
 
-
-
-@media (orientation: landscape) {
-    iframe {
-        border: 1em outset #ddd;
-        height: 50vh;
-        aspect-ratio: 15/10;
-    }
+@media screen and (max-width: 480px) {
+	.search-bar {
+		width: 90%;
+	}
+	.content-items {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+@media screen and (min-width: 481px) {
+	.search-bar {
+		width: 80%;
+	}
+	.content-items {
+		grid-template-columns: repeat(3, 1fr);
+	}
 }
 
-@media (orientation: portrait) {
-    iframe {
-        border: 1em outset #ddd;
-        width: 80vw;
-        aspect-ratio: 15/10;
-    }
+@media screen and (min-width: 768px) {
+	.search-bar {
+		width: 70%;
+	}
+	.content-items {
+		grid-template-columns: repeat(4, 1fr);
+	}
 }
 
-#phone {
-    display: none;
+@media screen and (min-width: 992px) {
+	.search-bar {
+		width: 60%;
+	}
+	.content-items {
+		grid-template-columns: repeat(5, 1fr);
+	}
 }
 
-@media screen and (max-width: 950px) {
-    #monitor {
-        display: none;
-    }
-
-    .search-bar {
-        width: 90%;
-    }
-
-    .content {
-        width: 95%;
-    }
-
-    #phone {
-        display: grid;
-        grid-template-columns: 50% 50%;
-        row-gap: 2px;
-        column-gap: 2px;
-
-        .content-list-item-phone {
-            display: grid;
-            align-items: end;
-            color: white;
-            background-color: black;
-            // height: 13em;
-            // background-color: black;
-            
-            &:hover {
-                cursor: pointer;
-                opacity: 70%;
-            }
-            &:active {
-                animation: .1s click;
-            }
-        }
-        
-        .item-poster-phone {
-            display: grid;
-            align-items: end;
-        
-             img {
-                display: grid;
-                width: 100%;
-            }
-        }
-        
-        .item-info-phone {
-            display: grid;
-            overflow: hidden;
-            grid-template-rows: 3em 3em auto;
-            margin: 0px 10px;
-        
-            h5 {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-        }
-    }
+@media screen and (min-width: 1200px) {
+	.search-bar {
+		width: 50%;
+	}
+	.content-items {
+		grid-template-columns: repeat(6, 1fr);
+	}
 }
