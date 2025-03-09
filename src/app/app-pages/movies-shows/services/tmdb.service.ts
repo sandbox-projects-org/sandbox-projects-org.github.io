@@ -66,16 +66,4 @@ export class TmdbService {
     )
   }
 
-  genreListToString(mediaItem: IMediaInfo): string {
-      var genres = '';
-      for (const genre of mediaItem.genres) {
-        if (genres.length === 0) {
-          genres = genre
-        }
-        else {
-          genres += `, ${genre}`
-        }
-      }
-      return genres;
-    }
 }

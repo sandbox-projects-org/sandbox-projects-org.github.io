@@ -1,3 +1,4 @@
+import { SafeResourceUrl } from "@angular/platform-browser";
 import { EMediaType } from "./constants";
 
 export interface ISearchResults {
@@ -12,6 +13,7 @@ export interface IMediaInfo {
 	id: string;
 	title: string;
 	media_type: EMediaType;
+	media_url?: SafeResourceUrl;
 	release_date: string;
 	overview: string;
 	poster_path: string;
@@ -19,6 +21,7 @@ export interface IMediaInfo {
 	episode?: number;
 	episode_title?: string;
 	episode_overview?: string;
+	seasonsEpisodes?: Map<number, ISeasonInfo>;
 	genres: string[];
 }
 
