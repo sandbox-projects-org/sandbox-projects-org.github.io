@@ -28,9 +28,6 @@ export class MoviesShowsService {
 	);
 	public searchState$ = this._searchStateSubject.asObservable();
 
-	private _mediaStateSubject = new BehaviorSubject<IMediaInfo | null>(null);
-	public mediaState$ = this._mediaStateSubject.asObservable();
-
 	constructor(private tmdbService: TmdbService, private router: Router) {
 		tmdbService.getMovieGenres().subscribe({
 			next: (response) => {
