@@ -12,6 +12,7 @@ export class TmdbService {
   private _TMDB_API_URL = 'https://api.themoviedb.org/3';
 
   private _TMDB_SEARCH_MULTI_ENDPOINT = `${this._TMDB_API_URL}/search/multi`;
+  private _TMDB_MOVIE_DETAILS_ENDPOINT = `${this._TMDB_API_URL}/movie`;
   private _TMDB_TV_DETAILS_ENDPOINT = `${this._TMDB_API_URL}/tv`;
 
   private _TMDB_MOVIE_GENRES = `${this._TMDB_API_URL}/genre/movie/list`
@@ -33,6 +34,12 @@ export class TmdbService {
 
   getMoviesShows(title: string, page: number) {
     return this.http.get<any>(`${this._TMDB_SEARCH_MULTI_ENDPOINT}?query=${title}&page=${page}`, this._httpSearchOptions).pipe(
+      map(x => x.body)
+    )
+  }
+
+  getMovieDetails(tmdbID: string) {
+    return this.http.get<any>(`${this._TMDB_MOVIE_DETAILS_ENDPOINT}/${tmdbID}`, this._httpOptions).pipe(
       map(x => x.body)
     )
   }

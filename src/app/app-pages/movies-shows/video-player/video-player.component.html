@@ -1,5 +1,5 @@
 <div class="video-player-grid">
-	@if (moviesShowsService.mediaState$| async; as mediaItem) {
+	@if (mediaState$ | async; as mediaItem) {
 	<h2>
 		{{ mediaItem.title }}
 	</h2>
@@ -19,26 +19,26 @@
 	@if (mediaItem.media_type === EMediaType.TV) {
 	<div class="seasons-episodes">
 		<mat-form-field>
-			<mat-label>Select a Season</mat-label>
-			<mat-select [(value)]="mediaItem.season">
-				@for (season of mediaItem.seasonsEpisodes?.keys(); track $index) {
+			<mat-label>Select Season</mat-label>
+			<mat-select [value]="mediaItem.season">
+				@for (season of mediaItem.seasonsEpisodes!.keys(); track $index) {
 				<mat-option
 					[value]="season"
-					(click)="moviesShowsService.changeSeason(season)"
-					>{{ mediaItem.seasonsEpisodes?.get(season)?.name }}</mat-option
+					(click)="changeSeason(season, mediaItem)"
+					>{{ mediaItem.seasonsEpisodes!.get(season)?.name }}</mat-option
 				>
 				}
 			</mat-select>
 		</mat-form-field>
 		<mat-form-field>
-			<mat-label>Select an Episode</mat-label>
-			<mat-select [(value)]="mediaItem.episode">
+			<mat-label>Select Episode</mat-label>
+			<mat-select [value]="mediaItem.episode">
 				@for (episode of
-				mediaItem.seasonsEpisodes?.get(mediaItem.season!)?.episodes; track
+				mediaItem.seasonsEpisodes!.get(mediaItem.season!)?.episodes; track
 				$index) {
 				<mat-option
 					[value]="episode.episode_number"
-					(click)="moviesShowsService.changeEpisode(episode.episode_number)"
+					(click)="changeEpisode(episode.episode_number, mediaItem)"
 					>{{ episode.episode_number }}: {{ episode.name }}</mat-option
 				>
 				}

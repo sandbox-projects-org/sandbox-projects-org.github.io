@@ -1,9 +1,7 @@
 import { Component } from "@angular/core";
 import { AngularMaterialModule } from "../../shared/modules/angular-material.module";
-import { TmdbService } from "./services/tmdb.service";
-import { IMediaInfo, ISearchResults } from "./interfaces";
-import { EMediaType } from "./constants";
-import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
+import { IMediaInfo } from "./interfaces";
+import { ActivatedRoute, RouterOutlet } from "@angular/router";
 import { MoviesShowsService } from "./movies-shows.service";
 
 @Component({
@@ -17,31 +15,33 @@ export class MoviesShowsComponent {
 	showResults = false;
 
 	constructor(
-		private router: Router,
 		private route: ActivatedRoute,
 		public moviesShowsService: MoviesShowsService
 	) {
-		if (localStorage.getItem("searchState") && location.pathname === '/app-movies-shows') {
-			this.showResults = true;
-			const localStorageSearchState = JSON.parse(localStorage.getItem("searchState")!)
-
-			moviesShowsService.updateSearchState(
-				localStorageSearchState
-			);
-			history.replaceState({searchState: localStorageSearchState}, '', `${window.location.origin}/app-movies-shows`)
-		}
-		window.addEventListener("popstate", (event) => {
-			if (location.pathname === "/app-movies-shows") {
-				this.showResults = true;
-				moviesShowsService.updateSearchState(
-					history.state.searchState
-				);
-			}
-			if (location.pathname === "/app-movies-shows/app-video-player") {
-				this.showResults = false;
-			}
-			console.log(moviesShowsService.subscriptionList)
+		route.queryParams.subscribe({
+			next: (params) => {
+				if (params["search"]) {
+					moviesShowsService.loadSearchResults(params["search"]);
+					this.showResults = true;
+				} else {
+					this.showResults = false;
+				}
+			},
+			error: (err) => {
+				console.log("search error");
+				console.log(err);
+			},
+			complete: () => {
+				console.log("completed search");
+			},
 		});
+
+		// scroll to top of page before reloading
+		window.addEventListener('beforeunload', (event) => {
+			this.scrollTop()
+		})
+
+		// infinite scroll for paging
 		window.addEventListener("scroll", (event) => {
 			if (location.pathname === "/app-movies-shows") {
 				if (
@@ -56,18 +56,21 @@ export class MoviesShowsComponent {
 	}
 
 	searchTMDBMovieShow(searchTitle: string) {
-		this.router.navigate(["app-movies-shows"]);
-
-		this.showResults = true;
-
 		this.scrollTop();
-		this.moviesShowsService.loadSearchResults(searchTitle);
 
+		this.moviesShowsService.loadSearchResults(searchTitle);
+		this.moviesShowsService.searchState$.subscribe({
+			next: (searchState) => {
+				if (searchState!.results.length < 12 && searchState!.page < searchState!.total_pages) {
+					this.moviesShowsService.loadMoreSearchResults()
+				}
+			}
+		})
 	}
 
 	loadVideo(mediaItem: IMediaInfo) {
 		this.showResults = false;
-		this.moviesShowsService.loadMedia(mediaItem);
+		this.moviesShowsService.updateMediaState(mediaItem)
 	}
 
 	scrollTop() {
