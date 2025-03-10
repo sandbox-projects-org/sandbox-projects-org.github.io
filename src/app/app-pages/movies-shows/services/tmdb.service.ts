@@ -11,6 +11,8 @@ export class TmdbService {
   public TMDB_POSTER_PATH_URL = 'https://image.tmdb.org/t/p/w500'
   private _TMDB_API_URL = 'https://api.themoviedb.org/3';
 
+  private _TMDB_TRENDING_ENDPOINT = `${this._TMDB_API_URL}/trending/all/day`;
+
   private _TMDB_SEARCH_MULTI_ENDPOINT = `${this._TMDB_API_URL}/search/multi`;
   private _TMDB_MOVIE_DETAILS_ENDPOINT = `${this._TMDB_API_URL}/movie`;
   private _TMDB_TV_DETAILS_ENDPOINT = `${this._TMDB_API_URL}/tv`;
@@ -31,6 +33,12 @@ export class TmdbService {
 
 
   constructor(private http: HttpClient) {}
+
+  getTrending(page: number) {
+    return this.http.get<any>(`${this._TMDB_TRENDING_ENDPOINT}?page=${page}`, this._httpOptions).pipe(
+      map(x => x.body)
+    )
+  }
 
   getMoviesShows(title: string, page: number) {
     return this.http.get<any>(`${this._TMDB_SEARCH_MULTI_ENDPOINT}?query=${title}&page=${page}`, this._httpSearchOptions).pipe(

@@ -13,7 +13,7 @@ export interface IMediaState {
 }
 
 export interface ISearchResults {
-	title: string;
+	title?: string;
 	results: IMediaInfo[];
 	page: number;
 	total_pages: number;

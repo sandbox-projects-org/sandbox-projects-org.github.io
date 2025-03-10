@@ -25,7 +25,14 @@ export class MoviesShowsComponent {
 					moviesShowsService.loadSearchResults(params["search"], true);
 					this.showResults = true;
 				} else {
-					this.showResults = false;
+					console.log(route.snapshot.url[0].path)
+					if (location.pathname === "/app-movies-shows") {
+						this.showResults = true;
+						moviesShowsService.loadTrendingResults(true)
+					}
+					else {
+						this.showResults = false;
+					}
 				}
 			},
 			error: (err) => {
@@ -50,7 +57,13 @@ export class MoviesShowsComponent {
 						document.body.scrollHeight - window.innerHeight * 0.5 &&
 					!this.moviesShowsService.loadingPage
 				) {
-					moviesShowsService.loadSearchResults(route.snapshot.queryParamMap.get('search')!, false);
+					console.log(route.snapshot.queryParamMap.has('search'))
+					if (route.snapshot.queryParamMap.has('search')) {
+						moviesShowsService.loadSearchResults(route.snapshot.queryParamMap.get('search')!, false);
+					}
+					else {
+						moviesShowsService.loadTrendingResults(false)
+					}
 				}
 			}
 		});
