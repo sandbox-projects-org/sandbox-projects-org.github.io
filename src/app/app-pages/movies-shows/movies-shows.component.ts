@@ -25,7 +25,6 @@ export class MoviesShowsComponent {
 					moviesShowsService.loadSearchResults(params["search"], true);
 					this.showResults = true;
 				} else {
-					console.log(route.snapshot.url[0].path)
 					if (location.pathname === "/app-movies-shows") {
 						this.showResults = true;
 						moviesShowsService.loadTrendingResults(true)

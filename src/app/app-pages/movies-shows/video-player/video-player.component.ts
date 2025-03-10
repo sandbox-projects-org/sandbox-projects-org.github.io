@@ -43,7 +43,7 @@ export class VideoPlayerComponent {
 					season: params["season"],
 					episode: params["episode"],
 				};
-				return this.loadMedia(mediaState)
+				return this.loadMedia(mediaState);
 			})
 		);
 	}
@@ -65,6 +65,7 @@ export class VideoPlayerComponent {
 					media_type: mediaState.media_type,
 					// media_url?: SafeResourceUrl;
 					release_date: movieDetails.release_date,
+					runtime: movieDetails.runtime,
 					overview: movieDetails.overview,
 					genres: this.getGenreNamesList(movieDetails.genres),
 				};
@@ -92,20 +93,20 @@ export class VideoPlayerComponent {
 
 	loadShow(mediaState: IMediaState): Observable<IMediaInfo> {
 		return this.tmdbService.getShowDetails(mediaState.id).pipe(
-			concatMap((movieDetails) => {
+			concatMap((showDetails) => {
 				var mediaItem: IMediaInfo = {
-					id: movieDetails.id,
-					title: movieDetails.name,
+					id: showDetails.id,
+					title: showDetails.name,
 					media_type: mediaState.media_type,
 					// media_url?: SafeResourceUrl;
-					release_date: movieDetails.first_air_date,
-					overview: movieDetails.overview,
+					release_date: showDetails.first_air_date,
+					overview: showDetails.overview,
 					season: parseInt(mediaState.season!.toString()),
 					episode: parseInt(mediaState.episode!.toString()),
 					// episode_title?: string;
 					// episode_overview?: string;
 					// seasonsEpisodes?: Map<number, ISeasonInfo>;
-					genres: this.getGenreNamesList(movieDetails.genres),
+					genres: this.getGenreNamesList(showDetails.genres),
 				};
 				var mediaInfoPropertyObservables: Map<
 					string,
@@ -257,6 +258,7 @@ export class VideoPlayerComponent {
 						episode_number: episode.episode_number,
 						name: episode.name,
 						overview: episode.overview,
+						runtime: episode.runtime,
 					});
 				}
 				return of(episodeItemList);
@@ -275,5 +277,17 @@ export class VideoPlayerComponent {
 		var newMediaItem: IMediaInfo = structuredClone(mediaItem);
 		newMediaItem.episode = episode;
 		this.moviesShowsService.updateMediaState(newMediaItem);
+	}
+
+	minutesToHoursAndMinutes(minutes: number) {
+		const hours = Math.floor(minutes / 60);
+		const remainingMinutes = minutes % 60;
+
+		if (hours === 0) {
+			return `${remainingMinutes}m`
+		}
+		else {
+			return `${hours}h ${remainingMinutes}m`;
+		}
 	}
 }

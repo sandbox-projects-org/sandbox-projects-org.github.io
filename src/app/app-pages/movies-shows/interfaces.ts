@@ -25,6 +25,7 @@ export interface IMediaInfo {
 	media_type: EMediaType;
 	media_url?: SafeResourceUrl;
 	release_date: string;
+	runtime?: number;
 	overview: string;
 	poster_path?: string;
 	season?: number;
@@ -46,6 +47,7 @@ export interface IEpisodeInfo {
 	episode_number: number;
 	name: string;
 	overview: string;
+	runtime: number;
 }
 
 export interface IGenre {
