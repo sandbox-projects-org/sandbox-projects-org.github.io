@@ -56,7 +56,6 @@ export class MoviesShowsComponent {
 						document.body.scrollHeight - window.innerHeight * 0.5 &&
 					!this.moviesShowsService.loadingPage
 				) {
-					console.log(route.snapshot.queryParamMap.has('search'))
 					if (route.snapshot.queryParamMap.has('search')) {
 						moviesShowsService.loadSearchResults(route.snapshot.queryParamMap.get('search')!, false);
 					}
