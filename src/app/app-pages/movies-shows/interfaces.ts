@@ -17,7 +17,6 @@ export interface ISearchResults {
 	results: IMediaInfo[];
 	page: number;
 	total_pages: number;
-	total_results: number;
 }
 
 export interface IMediaInfo {

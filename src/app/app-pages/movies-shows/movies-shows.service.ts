@@ -1,10 +1,6 @@
 import { Injectable } from "@angular/core";
 import { TmdbService } from "./services/tmdb.service";
-import {
-	BehaviorSubject,
-	concatMap,
-	of,
-} from "rxjs";
+import { BehaviorSubject, concatMap, Observable, of, tap } from "rxjs";
 import {
 	IMediaInfo,
 	IMediaState,
@@ -60,52 +56,47 @@ export class MoviesShowsService {
 
 	updateSearchState(newSearchResults: ISearchResults) {
 		this._searchStateSubject.next(newSearchResults);
-		var queryParamObject: ISearchState = {
-			search: newSearchResults.title,
-		};
-		this.router.navigate(["app-movies-shows"], {
-			queryParams: queryParamObject,
-		});
 	}
 
-	loadMoreSearchResults(pagesToLoad: number = 1) {
-		for (let page = 1; page <= pagesToLoad; page++) {
-			if (
-				this._searchStateSubject.getValue()!.page <
-				this._searchStateSubject.getValue()!.total_pages
-			) {
-				this.loadSearchResults(
-					this._searchStateSubject.getValue()!.title,
-					++this._searchStateSubject.getValue()!.page
-				);
+	loadSearchResults(title: string, newSearchTitle: boolean) {
+		this.loadingPage = true
+		const page = newSearchTitle ? 1 : ++this._searchStateSubject.getValue()!.page;
+
+		this.loadSearchResults$(title, page).pipe(
+			// need to implement a guaranteed increase of x number 
+			// of search results for every load
+		).subscribe({
+			next: (response) => {
+				this.updateSearchState(response)
+			},
+			error: (err) => {
+				console.log(err)
+			},
+			complete: () => {
+				this.loadingPage = false
+				console.log('completed loading search results')
 			}
-		}
+		})
 	}
 
-	loadSearchResults(title: string, page: number = 1) {
-		this.loadingPage = true;
-
-		this.tmdbService
+	loadSearchResults$(title: string, page: number): Observable<ISearchResults> {
+		return this.tmdbService
 			.getMoviesShows(title, page)
 			.pipe(
 				concatMap((response) => {
 					var newSearchResults: ISearchResults;
-
 					if (page === 1) {
 						newSearchResults = {
 							title: title,
 							results: [],
 							page: page,
 							total_pages: 1,
-							total_results: 0,
 						};
 						newSearchResults.total_pages = response.total_pages;
-						newSearchResults.total_results = response.total_results;
 					} else {
 						newSearchResults = structuredClone(
 							this._searchStateSubject.getValue()!
 						);
-						newSearchResults.page = page;
 					}
 
 					for (const media of response.results) {
@@ -145,18 +136,6 @@ export class MoviesShowsService {
 					return of(newSearchResults);
 				})
 			)
-			.subscribe({
-				next: (response) => {
-					this.updateSearchState(response);
-				},
-				error: (err) => {
-					console.log(err);
-				},
-				complete: () => {
-					this.loadingPage = false;
-					console.log("completed search");
-				},
-			});
 	}
 
 	private getGenres(genreIds: number[], media_type: EMediaType): string[] {

@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { AngularMaterialModule } from "../../shared/modules/angular-material.module";
-import { IMediaInfo } from "./interfaces";
-import { ActivatedRoute, RouterOutlet } from "@angular/router";
+import { IMediaInfo, ISearchState } from "./interfaces";
+import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
 import { MoviesShowsService } from "./movies-shows.service";
 
 @Component({
@@ -15,13 +15,14 @@ export class MoviesShowsComponent {
 	showResults = false;
 
 	constructor(
-		private route: ActivatedRoute,
-		public moviesShowsService: MoviesShowsService
+		public moviesShowsService: MoviesShowsService,
+		route: ActivatedRoute,
+		private router: Router
 	) {
 		route.queryParams.subscribe({
 			next: (params) => {
 				if (params["search"]) {
-					moviesShowsService.loadSearchResults(params["search"]);
+					moviesShowsService.loadSearchResults(params["search"], true);
 					this.showResults = true;
 				} else {
 					this.showResults = false;
@@ -49,7 +50,7 @@ export class MoviesShowsComponent {
 						document.body.scrollHeight - window.innerHeight * 0.5 &&
 					!this.moviesShowsService.loadingPage
 				) {
-					moviesShowsService.loadMoreSearchResults();
+					moviesShowsService.loadSearchResults(route.snapshot.queryParamMap.get('search')!, false);
 				}
 			}
 		});
@@ -58,14 +59,12 @@ export class MoviesShowsComponent {
 	searchTMDBMovieShow(searchTitle: string) {
 		this.scrollTop();
 
-		this.moviesShowsService.loadSearchResults(searchTitle);
-		this.moviesShowsService.searchState$.subscribe({
-			next: (searchState) => {
-				if (searchState!.results.length < 12 && searchState!.page < searchState!.total_pages) {
-					this.moviesShowsService.loadMoreSearchResults()
-				}
-			}
-		})
+		var queryParamObject: ISearchState = {
+					search: searchTitle
+				};
+				this.router.navigate(["app-movies-shows"], {
+					queryParams: queryParamObject,
+				});
 	}
 
 	loadVideo(mediaItem: IMediaInfo) {
