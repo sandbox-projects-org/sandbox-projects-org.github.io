@@ -11,7 +11,7 @@ export class TmdbService {
   public TMDB_POSTER_PATH_URL = 'https://image.tmdb.org/t/p/w500'
   private _TMDB_API_URL = 'https://api.themoviedb.org/3';
 
-  private _TMDB_TRENDING_ENDPOINT = `${this._TMDB_API_URL}/trending/all/day`;
+  private _TMDB_TRENDING_ENDPOINT = `${this._TMDB_API_URL}/trending/all/week`;
 
   private _TMDB_SEARCH_MULTI_ENDPOINT = `${this._TMDB_API_URL}/search/multi`;
   private _TMDB_MOVIE_DETAILS_ENDPOINT = `${this._TMDB_API_URL}/movie`;
