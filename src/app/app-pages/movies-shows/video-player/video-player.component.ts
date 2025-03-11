@@ -128,7 +128,7 @@ export class VideoPlayerComponent {
 						);
 						mediaItem.seasonsEpisodes =
 							mediaInfoPropertyListMap.get("seasonsEpisodes");
-						const episodeDetails = this.getEpisodeDetails(mediaItem);
+						const episodeDetails = mediaItem.seasonsEpisodes?.get(mediaItem.season!)!.episodes[mediaItem.episode! - 1]!;
 						mediaItem.episode_title = episodeDetails.name;
 						mediaItem.episode_overview = episodeDetails.overview;
 						mediaItem.media_url = mediaInfoPropertyListMap.get("media_url");
@@ -137,18 +137,6 @@ export class VideoPlayerComponent {
 				);
 			})
 		);
-	}
-
-	getEpisodeDetails(mediaItem: IMediaInfo): IEpisodeInfo {
-		var episodesList: IEpisodeInfo[] = mediaItem.seasonsEpisodes?.get(
-			parseInt(mediaItem.season!.toString())
-		)!.episodes!;
-		var episodeInfo = episodesList.find((response) => {
-			return (
-				response.episode_number === parseInt(mediaItem.episode!.toString())
-			);
-		})!;
-		return episodeInfo;
 	}
 
 	getGenreNamesList(genreMap: IGenre[]): string[] {
