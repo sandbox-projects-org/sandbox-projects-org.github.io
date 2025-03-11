@@ -234,7 +234,7 @@ export class MoviesShowsService {
 	genreListToString(mediaItem: IMediaInfo): string {
 		var genres = "";
 		for (const genre of mediaItem.genres) {
-			if (genres && genres.length === 0) {
+			if (genres === '') {
 				genres = genre;
 			} else {
 				genres += `, ${genre}`;
