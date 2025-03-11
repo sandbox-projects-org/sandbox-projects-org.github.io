@@ -33,7 +33,7 @@ export class MoviesShowsComponent {
 				console.log(err);
 			},
 			complete: () => {
-				console.log("completed search");
+				console.log("completed searchs");
 			},
 		});
 
