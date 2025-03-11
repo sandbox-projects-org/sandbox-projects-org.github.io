@@ -23,7 +23,7 @@
 	</div>
 
 	<router-outlet></router-outlet>
-	@if (showResults) {
+	@if (moviesShowsService.showSearchResults) {
 	<div class="content-grid">
 		@if(moviesShowsService.searchState$ | async; as searchState) {
 			@if(searchState.results.length > 0 ) {

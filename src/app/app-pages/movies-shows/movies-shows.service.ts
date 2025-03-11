@@ -1,6 +1,13 @@
 import { Injectable } from "@angular/core";
 import { TmdbService } from "./services/tmdb.service";
-import { BehaviorSubject, concatMap, Observable, of, tap } from "rxjs";
+import {
+	BehaviorSubject,
+	concatMap,
+	forkJoin,
+	Observable,
+	of,
+	tap,
+} from "rxjs";
 import {
 	IMediaInfo,
 	IMediaState,
@@ -17,6 +24,7 @@ export class MoviesShowsService {
 	movieGenres: Map<number, string> = new Map();
 	tvGenres: Map<number, string> = new Map();
 
+	showSearchResults = false;
 	loadingPage = false;
 
 	private _searchStateSubject = new BehaviorSubject<ISearchResults | null>(
@@ -24,197 +32,262 @@ export class MoviesShowsService {
 	);
 	public searchState$ = this._searchStateSubject.asObservable();
 
-	constructor(private tmdbService: TmdbService, private router: Router) {
-		tmdbService.getMovieGenres().subscribe({
-			next: (response) => {
-				for (const genre of response) {
-					this.movieGenres.set(genre.id, genre.name);
-				}
-			},
-			error: (err) => {
-				console.log(err);
-			},
-			complete: () => {
-				console.log("completed getting movie genre list");
-			},
-		});
-
-		tmdbService.getTVGenres().subscribe({
-			next: (response) => {
-				for (const genre of response) {
-					this.tvGenres.set(genre.id, genre.name);
-				}
-			},
-			error: (err) => {
-				console.log(err);
-			},
-			complete: () => {
-				console.log("completed getting tv genre list");
-			},
-		});
-	}
+	constructor(private tmdbService: TmdbService, private router: Router) {}
 
 	updateSearchState(newSearchResults: ISearchResults) {
 		this._searchStateSubject.next(newSearchResults);
+		this.showSearchResults = true;
 	}
 
 	loadTrendingResults(initialLoad: boolean) {
-		this.loadingPage = true
+		this.loadingPage = true;
 		const page = initialLoad ? 1 : ++this._searchStateSubject.getValue()!.page;
 
-		this.loadTrendingResults$(page).pipe(
-			// need to implement a guaranteed increase of x number 
+		this.loadTrendingResults$(page)
+			.pipe
+			// need to implement a guaranteed increase of x number
 			// of search results for every load
-		).subscribe({
-			next: (response) => {
-				this.updateSearchState(response)
-			},
-			error: (err) => {
-				console.log(err)
-			},
-			complete: () => {
-				this.loadingPage = false
-				console.log('completed loading search results')
-			}
-		})
+			()
+			.subscribe({
+				next: (response) => {
+					this.updateSearchState(response);
+				},
+				error: (err) => {
+					console.log(err);
+				},
+				complete: () => {
+					this.loadingPage = false;
+					console.log("completed loading search results");
+				},
+			});
 	}
 
 	loadTrendingResults$(page: number): Observable<ISearchResults> {
-		return this.tmdbService
-			.getTrending(page)
-			.pipe(
-				concatMap((response) => {
-					var newSearchResults: ISearchResults;
-					if (page === 1) {
-						newSearchResults = {
-							results: [],
-							page: page,
-							total_pages: 1,
-						};
-						newSearchResults.total_pages = response.total_pages;
-					} else {
-						newSearchResults = structuredClone(
-							this._searchStateSubject.getValue()!
-						);
-					}
+		return this.tmdbService.getTrending(page).pipe(
+			concatMap((trendingResults) => {
+				var genresMaps: Observable<Map<number, string>>[] = [];
+				genresMaps.push(
+					this.tmdbService.getMovieGenres().pipe(
+						concatMap((movieGenresResponse) => {
+							var newMovieGenresMap: Map<number, string> = new Map();
+							for (const genre of movieGenresResponse) {
+								newMovieGenresMap.set(genre.id, genre.name);
+							}
+							return of(newMovieGenresMap);
+						})
+					)
+				);
 
-					for (const media of response.results) {
-						if (media.poster_path && (media.media_type === EMediaType.MOVIE || media.media_type == EMediaType.TV)) {
-							if (media.media_type === EMediaType.MOVIE) {
-								var mediaItem: IMediaInfo = {
-									id: media.id,
-									title: media.title,
-									media_type: EMediaType.MOVIE,
-									release_date: media.release_date
-										? new Date(media.release_date).getFullYear().toString()
-										: "XXXX",
-									overview: media.overview ? media.overview : "",
-									poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`,
-									genres: this.getGenres(media.genre_ids, EMediaType.MOVIE),
-								};
-								newSearchResults.results.push(mediaItem);
+				genresMaps.push(
+					this.tmdbService.getTVGenres().pipe(
+						concatMap((tvGenresResponse) => {
+							var newTvGenresMap: Map<number, string> = new Map();
+							for (const genre of tvGenresResponse) {
+								newTvGenresMap.set(genre.id, genre.name);
 							}
-							if (media.media_type === EMediaType.TV) {
-								var mediaItem: IMediaInfo = {
-									id: media.id,
-									title: media.name,
-									media_type: EMediaType.TV,
-									release_date: media.first_air_date
-										? new Date(media.first_air_date).getFullYear().toString()
-										: "XXXX",
-									overview: media.overview ? media.overview : "",
-									poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`,
-									season: 1,
-									episode: 1,
-									genres: this.getGenres(media.genre_ids, EMediaType.TV),
-								};
-								newSearchResults.results.push(mediaItem);
-							}
-						}
-					}
-					return of(newSearchResults);
-				})
-			)
+							return of(newTvGenresMap);
+						})
+					)
+				);
+
+				return forkJoin(genresMaps).pipe(
+					concatMap((newGenresMaps) => {
+						this.movieGenres = newGenresMaps[0];
+						this.tvGenres = newGenresMaps[1];
+
+						return of(trendingResults).pipe(
+							concatMap((response) => {
+								var newSearchResults: ISearchResults;
+								if (page === 1) {
+									newSearchResults = {
+										results: [],
+										page: page,
+										total_pages: 1,
+									};
+									newSearchResults.total_pages = response.total_pages;
+								} else {
+									newSearchResults = structuredClone(
+										this._searchStateSubject.getValue()!
+									);
+								}
+
+								for (const media of response.results) {
+									if (
+										media.poster_path &&
+										(media.media_type === EMediaType.MOVIE ||
+											media.media_type == EMediaType.TV)
+									) {
+										if (media.media_type === EMediaType.MOVIE) {
+											var mediaItem: IMediaInfo = {
+												id: media.id,
+												title: media.title,
+												media_type: EMediaType.MOVIE,
+												release_date: media.release_date
+													? new Date(media.release_date)
+															.getFullYear()
+															.toString()
+													: "XXXX",
+												overview: media.overview ? media.overview : "",
+												poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`,
+												genres: this.getGenres(
+													media.genre_ids,
+													EMediaType.MOVIE
+												),
+											};
+											newSearchResults.results.push(mediaItem);
+										}
+										if (media.media_type === EMediaType.TV) {
+											var mediaItem: IMediaInfo = {
+												id: media.id,
+												title: media.name,
+												media_type: EMediaType.TV,
+												release_date: media.first_air_date
+													? new Date(media.first_air_date)
+															.getFullYear()
+															.toString()
+													: "XXXX",
+												overview: media.overview ? media.overview : "",
+												poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`,
+												season: 1,
+												episode: 1,
+												genres: this.getGenres(media.genre_ids, EMediaType.TV),
+											};
+											newSearchResults.results.push(mediaItem);
+										}
+									}
+								}
+								return of(newSearchResults);
+							})
+						);
+					})
+				);
+			})
+		);
 	}
 
 	loadSearchResults(title: string, newSearchTitle: boolean) {
-		this.loadingPage = true
-		const page = newSearchTitle ? 1 : ++this._searchStateSubject.getValue()!.page;
+		this.loadingPage = true;
+		const page = newSearchTitle
+			? 1
+			: ++this._searchStateSubject.getValue()!.page;
 
-		this.loadSearchResults$(title, page).pipe(
-			// need to implement a guaranteed increase of x number 
+		this.loadSearchResults$(title, page)
+			.pipe
+			// need to implement a guaranteed increase of x number
 			// of search results for every load
-		).subscribe({
-			next: (response) => {
-				this.updateSearchState(response)
-			},
-			error: (err) => {
-				console.log(err)
-			},
-			complete: () => {
-				this.loadingPage = false
-				console.log('completed loading search results')
-			}
-		})
+			()
+			.subscribe({
+				next: (response) => {
+					this.updateSearchState(response);
+				},
+				error: (err) => {
+					console.log(err);
+				},
+				complete: () => {
+					this.loadingPage = false;
+					console.log("completed loading search results");
+				},
+			});
 	}
 
 	loadSearchResults$(title: string, page: number): Observable<ISearchResults> {
-		return this.tmdbService
-			.getMoviesShows(title, page)
-			.pipe(
-				concatMap((response) => {
-					var newSearchResults: ISearchResults;
-					if (page === 1) {
-						newSearchResults = {
-							title: title,
-							results: [],
-							page: page,
-							total_pages: 1,
-						};
-						newSearchResults.total_pages = response.total_pages;
-					} else {
-						newSearchResults = structuredClone(
-							this._searchStateSubject.getValue()!
-						);
-					}
+		return this.tmdbService.getMoviesShows(title, page).pipe(
+			concatMap((trendingResults) => {
+				var genresMaps: Observable<Map<number, string>>[] = [];
+				genresMaps.push(
+					this.tmdbService.getMovieGenres().pipe(
+						concatMap((movieGenresResponse) => {
+							var newMovieGenresMap: Map<number, string> = new Map();
+							for (const genre of movieGenresResponse) {
+								newMovieGenresMap.set(genre.id, genre.name);
+							}
+							return of(newMovieGenresMap);
+						})
+					)
+				);
 
-					for (const media of response.results) {
-						if (media.poster_path) {
-							if (media.media_type === EMediaType.MOVIE) {
-								var mediaItem: IMediaInfo = {
-									id: media.id,
-									title: media.title,
-									media_type: EMediaType.MOVIE,
-									release_date: media.release_date
-										? new Date(media.release_date).getFullYear().toString()
-										: "XXXX",
-									overview: media.overview ? media.overview : "",
-									poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`,
-									genres: this.getGenres(media.genre_ids, EMediaType.MOVIE),
-								};
-								newSearchResults.results.push(mediaItem);
+				genresMaps.push(
+					this.tmdbService.getTVGenres().pipe(
+						concatMap((tvGenresResponse) => {
+							var newTvGenresMap: Map<number, string> = new Map();
+							for (const genre of tvGenresResponse) {
+								newTvGenresMap.set(genre.id, genre.name);
 							}
-							if (media.media_type === EMediaType.TV) {
-								var mediaItem: IMediaInfo = {
-									id: media.id,
-									title: media.name,
-									media_type: EMediaType.TV,
-									release_date: media.first_air_date
-										? new Date(media.first_air_date).getFullYear().toString()
-										: "XXXX",
-									overview: media.overview ? media.overview : "",
-									poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`,
-									season: 1,
-									episode: 1,
-									genres: this.getGenres(media.genre_ids, EMediaType.TV),
-								};
-								newSearchResults.results.push(mediaItem);
-							}
-						}
-					}
-					return of(newSearchResults);
-				})
-			)
+							return of(newTvGenresMap);
+						})
+					)
+				);
+
+				return forkJoin(genresMaps).pipe(
+					concatMap((newGenresMaps) => {
+						this.movieGenres = newGenresMaps[0];
+						this.tvGenres = newGenresMaps[1];
+
+						return of(trendingResults).pipe(
+							concatMap((response) => {
+								var newSearchResults: ISearchResults;
+								if (page === 1) {
+									newSearchResults = {
+										title: title,
+										results: [],
+										page: page,
+										total_pages: 1,
+									};
+									newSearchResults.total_pages = response.total_pages;
+								} else {
+									newSearchResults = structuredClone(
+										this._searchStateSubject.getValue()!
+									);
+								}
+
+								for (const media of response.results) {
+									if (media.poster_path) {
+										if (media.media_type === EMediaType.MOVIE) {
+											var mediaItem: IMediaInfo = {
+												id: media.id,
+												title: media.title,
+												media_type: EMediaType.MOVIE,
+												release_date: media.release_date
+													? new Date(media.release_date)
+															.getFullYear()
+															.toString()
+													: "XXXX",
+												overview: media.overview ? media.overview : "",
+												poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`,
+												genres: this.getGenres(
+													media.genre_ids,
+													EMediaType.MOVIE
+												),
+											};
+											newSearchResults.results.push(mediaItem);
+										}
+										if (media.media_type === EMediaType.TV) {
+											var mediaItem: IMediaInfo = {
+												id: media.id,
+												title: media.name,
+												media_type: EMediaType.TV,
+												release_date: media.first_air_date
+													? new Date(media.first_air_date)
+															.getFullYear()
+															.toString()
+													: "XXXX",
+												overview: media.overview ? media.overview : "",
+												poster_path: `${this.tmdbService.TMDB_POSTER_PATH_URL}${media.poster_path}`,
+												season: 1,
+												episode: 1,
+												genres: this.getGenres(media.genre_ids, EMediaType.TV),
+											};
+											newSearchResults.results.push(mediaItem);
+										}
+									}
+								}
+								return of(newSearchResults);
+							})
+						);
+					})
+				);
+			})
+		);
 	}
 
 	private getGenres(genreIds: number[], media_type: EMediaType): string[] {
@@ -234,7 +307,7 @@ export class MoviesShowsService {
 	genreListToString(mediaItem: IMediaInfo): string {
 		var genres = "";
 		for (const genre of mediaItem.genres) {
-			if (genres === '') {
+			if (genres === "") {
 				genres = genre;
 			} else {
 				genres += `, ${genre}`;
@@ -244,6 +317,8 @@ export class MoviesShowsService {
 	}
 
 	updateMediaState(newMediaItem: IMediaInfo) {
+		this.showSearchResults = false;
+
 		var queryParamObject: IMediaState = {
 			id: newMediaItem.id,
 			media_type: newMediaItem.media_type,

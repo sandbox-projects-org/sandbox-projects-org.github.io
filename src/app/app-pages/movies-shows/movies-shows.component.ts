@@ -12,7 +12,6 @@ import { MoviesShowsService } from "./movies-shows.service";
 	styleUrl: "./movies-shows.component.scss",
 })
 export class MoviesShowsComponent {
-	showResults = false;
 
 	constructor(
 		public moviesShowsService: MoviesShowsService,
@@ -23,14 +22,9 @@ export class MoviesShowsComponent {
 			next: (params) => {
 				if (params["search"]) {
 					moviesShowsService.loadSearchResults(params["search"], true);
-					this.showResults = true;
 				} else {
 					if (location.pathname === "/app-movies-shows") {
 						moviesShowsService.loadTrendingResults(true)
-						this.showResults = true;
-					}
-					else {
-						this.showResults = false;
 					}
 				}
 			},
@@ -79,7 +73,6 @@ export class MoviesShowsComponent {
 	}
 
 	loadVideo(mediaItem: IMediaInfo) {
-		this.showResults = false;
 		this.moviesShowsService.updateMediaState(mediaItem)
 	}
 
