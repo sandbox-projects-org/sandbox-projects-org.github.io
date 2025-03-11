@@ -26,8 +26,8 @@ export class MoviesShowsComponent {
 					this.showResults = true;
 				} else {
 					if (location.pathname === "/app-movies-shows") {
-						this.showResults = true;
 						moviesShowsService.loadTrendingResults(true)
+						this.showResults = true;
 					}
 					else {
 						this.showResults = false;
