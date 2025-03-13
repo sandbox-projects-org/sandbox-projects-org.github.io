@@ -274,6 +274,9 @@ export class VideoPlayerComponent {
 		if (hours === 0) {
 			return `${remainingMinutes}m`
 		}
+		if (minutes === 0) {
+			return `${hours}h`
+		}
 		else {
 			return `${hours}h ${remainingMinutes}m`;
 		}
