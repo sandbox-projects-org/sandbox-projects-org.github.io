@@ -52,7 +52,7 @@
 	</div>
 	<div>
 		<div><strong>Episode title:</strong> {{ mediaItem.episode_title }}</div>
-		<div><strong>Episode runtime:</strong> {{minutesToHoursAndMinutes(mediaItem.seasonsEpisodes!.get(mediaItem.season!)!.episodes[mediaItem.episode!].runtime)}}</div>
+		<div><strong>Episode runtime:</strong> {{minutesToHoursAndMinutes(mediaItem.seasonsEpisodes!.get(mediaItem.season!)!.episodes[mediaItem.episode! - 1].runtime)}}</div>
 		<div>
 			<strong>Episode overview:</strong> {{ mediaItem.episode_overview }}
 		</div>

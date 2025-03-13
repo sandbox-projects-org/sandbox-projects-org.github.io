@@ -330,7 +330,6 @@ export class MoviesShowsService {
 
 		this.router.navigate(["app-movies-shows/app-video-player"], {
 			queryParams: queryParamObject,
-			state: { mediaState: newMediaItem },
 		});
 	}
 }
