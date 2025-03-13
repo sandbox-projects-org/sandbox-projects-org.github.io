@@ -24,7 +24,7 @@ export class MoviesShowsComponent {
 					moviesShowsService.loadSearchResults(params["search"], true);
 				} else {
 					if (location.pathname === "/app-movies-shows") {
-						moviesShowsService.loadTrendingResults(true)
+						moviesShowsService.loadSearchResults('', true)
 					}
 				}
 			},
@@ -54,7 +54,7 @@ export class MoviesShowsComponent {
 						moviesShowsService.loadSearchResults(route.snapshot.queryParamMap.get('search')!, false);
 					}
 					else {
-						moviesShowsService.loadTrendingResults(false)
+						moviesShowsService.loadSearchResults('', false)
 					}
 				}
 			}
