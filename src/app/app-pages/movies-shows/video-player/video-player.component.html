@@ -1,33 +1,49 @@
 <div class="video-player-grid">
-	<h5>
+	@if (mediaState$ | async; as mediaItem) {
+	<h2>
 		{{ mediaItem.title }}
-	</h5>
+	</h2>
 	<div><strong>Overview:</strong> {{ mediaItem.overview }}</div>
-	@if (mediaItem.genres.length > 0) {
-		<div><strong>Genres:</strong> {{tmdbService.genreListToString(mediaItem)}}</div>
+	@if (mediaItem.runtime) {
+		<div>
+			<strong>Runtime:</strong> {{minutesToHoursAndMinutes(mediaItem.runtime)}}
+		</div>
 	}
+	@if (mediaItem.genres.length > 0) {
+	<div>
+		<strong>Genres:</strong>
+		{{ moviesShowsService.genreListToString(mediaItem) }}
+	</div>
+	} @if (mediaItem.media_url) {
 
-	@if (mediaURL != '') {
-	
-	<iframe [src]="mediaURL" allowfullscreen="yes" scrolling="yes"></iframe>
+	<iframe
+		[src]="mediaItem.media_url"
+		allowfullscreen="yes"
+		scrolling="yes"
+	></iframe>
 	@if (mediaItem.media_type === EMediaType.TV) {
 	<div class="seasons-episodes">
 		<mat-form-field>
-			<mat-label>Select a Season</mat-label>
-			<mat-select [(value)]="mediaItem.season">
-				@for (season of seasonsEpisodes.keys(); track season) {
-				<mat-option [value]="season" (click)="changeSeason()">{{
-					seasonsEpisodes.get(season)?.name
-				}}</mat-option>
+			<mat-label>Select Season</mat-label>
+			<mat-select [value]="mediaItem.season">
+				@for (season of mediaItem.seasonsEpisodes!.keys(); track $index) {
+				<mat-option
+					[value]="season"
+					(click)="changeSeason(season, mediaItem)"
+					>{{ mediaItem.seasonsEpisodes!.get(season)?.name }}</mat-option
+				>
 				}
 			</mat-select>
 		</mat-form-field>
 		<mat-form-field>
-			<mat-label>Select an Episode</mat-label>
-			<mat-select [(value)]="mediaItem.episode">
-				@for (episode of seasonsEpisodes.get(mediaItem.season!)?.episodes; track
-				episode) {
-				<mat-option [value]="episode.episode_number" (click)="changeEpisode()"
+			<mat-label>Select Episode</mat-label>
+			<mat-select [value]="mediaItem.episode">
+				@for (episode of
+				mediaItem.seasonsEpisodes!.get(mediaItem.season!)?.episodes; track
+				$index) {
+				<mat-option
+					[value]="episode.episode_number"
+					(click)="changeEpisode(episode.episode_number, mediaItem)"
 					>{{ episode.episode_number }}: {{ episode.name }}</mat-option
 				>
 				}
@@ -36,16 +52,17 @@
 	</div>
 	<div>
 		<div><strong>Episode title:</strong> {{ mediaItem.episode_title }}</div>
+		<div><strong>Episode runtime:</strong> {{minutesToHoursAndMinutes(mediaItem.seasonsEpisodes!.get(mediaItem.season!)!.episodes[mediaItem.episode! - 1].runtime)}}</div>
 		<div>
 			<strong>Episode overview:</strong> {{ mediaItem.episode_overview }}
 		</div>
 	</div>
-	} } @else if (isLoading) {
-	<div class="loading">... Loading</div>
-	} @else{
+	} } @else{
 	<div class="no-result">
 		<img src="/assets/no_television.jpg" />
 		<div>Sorry, no video</div>
 	</div>
+	} } @else {
+	<div class="loading">... Loading video</div>
 	}
 </div>

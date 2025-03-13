@@ -65,6 +65,7 @@
 	background-color: black;
 	color: white;
 	align-items: center;
+	align-content: start;
     row-gap: 5px;
 
 	img {
@@ -89,16 +90,13 @@
 
 .poster-description {
 	display: grid;
-    justify-self: center;
-    width: 80%;
-    height: 6em;
-    align-content: start;
-	p,
-	h6 {
-		white-space: nowrap;
+	padding: .5em;
+	white-space: nowrap;
+
+	* {
 		overflow: hidden;
 		text-overflow: ellipsis;
-        line-height: 1em;
+		margin: .5em 0;
 	}
 }
 

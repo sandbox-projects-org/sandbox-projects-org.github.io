@@ -11,7 +11,10 @@ export class TmdbService {
   public TMDB_POSTER_PATH_URL = 'https://image.tmdb.org/t/p/w500'
   private _TMDB_API_URL = 'https://api.themoviedb.org/3';
 
+  private _TMDB_TRENDING_ENDPOINT = `${this._TMDB_API_URL}/trending/all/week`;
+
   private _TMDB_SEARCH_MULTI_ENDPOINT = `${this._TMDB_API_URL}/search/multi`;
+  private _TMDB_MOVIE_DETAILS_ENDPOINT = `${this._TMDB_API_URL}/movie`;
   private _TMDB_TV_DETAILS_ENDPOINT = `${this._TMDB_API_URL}/tv`;
 
   private _TMDB_MOVIE_GENRES = `${this._TMDB_API_URL}/genre/movie/list`
@@ -31,8 +34,20 @@ export class TmdbService {
 
   constructor(private http: HttpClient) {}
 
+  getTrending(page: number) {
+    return this.http.get<any>(`${this._TMDB_TRENDING_ENDPOINT}?page=${page}`, this._httpOptions).pipe(
+      map(x => x.body)
+    )
+  }
+
   getMoviesShows(title: string, page: number) {
     return this.http.get<any>(`${this._TMDB_SEARCH_MULTI_ENDPOINT}?query=${title}&page=${page}`, this._httpSearchOptions).pipe(
+      map(x => x.body)
+    )
+  }
+
+  getMovieDetails(tmdbID: string) {
+    return this.http.get<any>(`${this._TMDB_MOVIE_DETAILS_ENDPOINT}/${tmdbID}`, this._httpOptions).pipe(
       map(x => x.body)
     )
   }
@@ -66,16 +81,4 @@ export class TmdbService {
     )
   }
 
-  genreListToString(mediaItem: IMediaInfo): string {
-      var genres = '';
-      for (const genre of mediaItem.genres) {
-        if (genres.length === 0) {
-          genres = genre
-        }
-        else {
-          genres += `, ${genre}`
-        }
-      }
-      return genres;
-    }
 }
