@@ -26,6 +26,9 @@ export class MoviesShowsComponent {
 					if (location.pathname === "/app-movies-shows") {
 						moviesShowsService.loadSearchResults('', true)
 					}
+					else {
+						moviesShowsService.showSearchResults = false;
+					}
 				}
 			},
 			error: (err) => {
