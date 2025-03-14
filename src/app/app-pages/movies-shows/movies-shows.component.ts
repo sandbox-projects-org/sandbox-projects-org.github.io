@@ -12,7 +12,6 @@ import { MoviesShowsService } from "./movies-shows.service";
 	styleUrl: "./movies-shows.component.scss",
 })
 export class MoviesShowsComponent {
-
 	constructor(
 		public moviesShowsService: MoviesShowsService,
 		route: ActivatedRoute,
@@ -24,9 +23,8 @@ export class MoviesShowsComponent {
 					moviesShowsService.loadSearchResults(params["search"], true);
 				} else {
 					if (location.pathname === "/app-movies-shows") {
-						moviesShowsService.loadSearchResults('', true)
-					}
-					else {
+						moviesShowsService.loadSearchResults("", true);
+					} else {
 						moviesShowsService.showSearchResults = false;
 					}
 				}
@@ -41,9 +39,9 @@ export class MoviesShowsComponent {
 		});
 
 		// scroll to top of page before reloading
-		window.addEventListener('beforeunload', (event) => {
-			this.scrollTop()
-		})
+		window.addEventListener("beforeunload", (event) => {
+			this.scrollTop();
+		});
 
 		// infinite scroll for paging
 		window.addEventListener("scroll", (event) => {
@@ -53,11 +51,13 @@ export class MoviesShowsComponent {
 						document.body.scrollHeight - window.innerHeight * 0.5 &&
 					!this.moviesShowsService.loadingPage
 				) {
-					if (route.snapshot.queryParamMap.has('search')) {
-						moviesShowsService.loadSearchResults(route.snapshot.queryParamMap.get('search')!, false);
-					}
-					else {
-						moviesShowsService.loadSearchResults('', false)
+					if (route.snapshot.queryParamMap.has("search")) {
+						moviesShowsService.loadSearchResults(
+							route.snapshot.queryParamMap.get("search")!,
+							false
+						);
+					} else {
+						moviesShowsService.loadSearchResults("", false);
 					}
 				}
 			}
@@ -68,15 +68,15 @@ export class MoviesShowsComponent {
 		this.scrollTop();
 
 		var queryParamObject: ISearchState = {
-					search: searchTitle
-				};
-				this.router.navigate(["app-movies-shows"], {
-					queryParams: queryParamObject,
-				});
+			search: searchTitle,
+		};
+		this.router.navigate(["app-movies-shows"], {
+			queryParams: queryParamObject,
+		});
 	}
 
 	loadVideo(mediaItem: IMediaInfo) {
-		this.moviesShowsService.updateMediaState(mediaItem)
+		this.moviesShowsService.updateMediaState(mediaItem);
 	}
 
 	scrollTop() {
