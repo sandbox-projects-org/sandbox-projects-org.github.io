@@ -3,6 +3,8 @@ import { TmdbService } from "./services/tmdb.service";
 import {
 	BehaviorSubject,
 	concatMap,
+	EMPTY,
+	expand,
 	forkJoin,
 	Observable,
 	of,
@@ -38,47 +40,70 @@ export class MoviesShowsService {
 	}
 
 	loadSearchResults(title: string, newSearchTitle: boolean) {
-		this.loadingPage = true;
-		const page = newSearchTitle
-			? 1
-			: ++this._searchStateSubject.getValue()!.page;
-
-		if (title === "") {
-			this.loadSearchResultsOperator(
-				this.tmdbService.getTrending(page),
-				title,
-				page
-			).subscribe({
-				next: (response) => {
-					this.updateSearchState(response);
-				},
-				error: (err) => {
-					console.log(err);
-				},
-				complete: () => {
-					this.loadingPage = false;
-					console.log("completed loading trending search results");
-				},
-			});
-		}
-
-		else {
-			this.loadSearchResultsOperator(
-				this.tmdbService.getMoviesShows(title, page),
-				title,
-				page
-			).subscribe({
-				next: (response) => {
-					this.updateSearchState(response);
-				},
-				error: (err) => {
-					console.log(err);
-				},
-				complete: () => {
-					this.loadingPage = false;
-					console.log("completed loading search results");
-				},
-			});
+		if (newSearchTitle || this._searchStateSubject.getValue()!.page < this._searchStateSubject.getValue()!.total_pages) {
+			this.loadingPage = true;
+			const page = newSearchTitle
+				? 1
+				: ++this._searchStateSubject.getValue()!.page;
+			const previousLength = (this._searchStateSubject.getValue()?.results.length && !newSearchTitle) ? this._searchStateSubject.getValue()!.results.length : 0;
+	
+			if (title === "") {
+				this.loadSearchResultsOperator(
+					this.tmdbService.getTrending(page),
+					title,
+					page
+				).pipe(
+					expand(searchResults => {
+						if (searchResults.results.length - previousLength < 10 && searchResults.page < searchResults.total_pages) {
+							++searchResults.page
+							return this.loadSearchResultsOperator(this.tmdbService.getMoviesShows(title, searchResults.page), title, searchResults.page)
+						}
+						else {
+							return EMPTY
+						}
+					})
+				).subscribe({
+					next: (response) => {
+						this.updateSearchState(response);
+					},
+					error: (err) => {
+						console.log(err);
+					},
+					complete: () => {
+						this.loadingPage = false;
+						console.log("completed loading trending search results");
+					},
+				});
+			}
+	
+			else {
+				this.loadSearchResultsOperator(
+					this.tmdbService.getMoviesShows(title, page),
+					title,
+					page
+				).pipe(
+					expand(searchResults => {
+						if (searchResults.results.length - previousLength < 10 && searchResults.page < searchResults.total_pages) {
+							++searchResults.page
+							return this.loadSearchResultsOperator(this.tmdbService.getMoviesShows(title, searchResults.page), title, searchResults.page)
+						}
+						else {
+							return EMPTY
+						}
+					})
+				).subscribe({
+					next: (response) => {
+						this.updateSearchState(response);
+					},
+					error: (err) => {
+						console.log(err);
+					},
+					complete: () => {
+						this.loadingPage = false;
+						console.log("completed loading search results");
+					},
+				});
+			}
 		}
 	}
 
@@ -86,7 +111,7 @@ export class MoviesShowsService {
 		searchObservable$: Observable<any>,
 		title: string,
 		page: number
-	) {
+	): Observable<ISearchResults> {
 		return searchObservable$.pipe(
 			concatMap((searchResults) => {
 				var genresMaps: Observable<Map<number, string>>[] = [];
@@ -135,7 +160,6 @@ export class MoviesShowsService {
 										this._searchStateSubject.getValue()!
 									);
 								}
-
 								for (const media of response.results) {
 									if (
 										media.poster_path &&
@@ -181,7 +205,7 @@ export class MoviesShowsService {
 										}
 									}
 								}
-								return of(newSearchResults);
+								return of(newSearchResults)
 							})
 						);
 					})
