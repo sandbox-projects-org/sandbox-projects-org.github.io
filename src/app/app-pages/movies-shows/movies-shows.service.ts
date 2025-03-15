@@ -80,8 +80,6 @@ export class MoviesShowsService {
 									searchResults.page
 								);
 							} else {
-								searchResults.page++;
-
 								return EMPTY;
 							}
 						})
@@ -120,8 +118,6 @@ export class MoviesShowsService {
 									searchResults.page
 								);
 							} else {
-								searchResults.page++;
-
 								return EMPTY;
 							}
 						})
