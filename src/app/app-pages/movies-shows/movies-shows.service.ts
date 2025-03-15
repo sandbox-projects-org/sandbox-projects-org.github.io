@@ -13,6 +13,7 @@ import {
 	IMediaInfo,
 	IMediaState,
 	ISearchResults,
+	ISearchState,
 } from "./interfaces";
 import { Router } from "@angular/router";
 import { EMediaType } from "./constants";
@@ -40,74 +41,109 @@ export class MoviesShowsService {
 	}
 
 	loadSearchResults(title: string, newSearchTitle: boolean) {
-		if (newSearchTitle || this._searchStateSubject.getValue()!.page < this._searchStateSubject.getValue()!.total_pages) {
+		if (
+			newSearchTitle ||
+			this._searchStateSubject.getValue()!.page <
+				this._searchStateSubject.getValue()!.total_pages
+		) {
 			this.loadingPage = true;
-			const page = newSearchTitle
-				? 1
-				: ++this._searchStateSubject.getValue()!.page;
-			const previousLength = (this._searchStateSubject.getValue()?.results.length && !newSearchTitle) ? this._searchStateSubject.getValue()!.results.length : 0;
-	
+			var previousSearchResults: ISearchResults = newSearchTitle
+				? {
+						title: title,
+						results: [],
+						page: 0,
+						total_pages: 0,
+				  }
+				: structuredClone(this._searchStateSubject.getValue()!);
+
+			++previousSearchResults.page;
+
 			if (title === "") {
 				this.loadSearchResultsOperator(
-					this.tmdbService.getTrending(page),
+					previousSearchResults,
+					this.tmdbService.getTrending(previousSearchResults.page),
 					title,
-					page
-				).pipe(
-					expand(searchResults => {
-						if (searchResults.results.length - previousLength < 10 && searchResults.page < searchResults.total_pages) {
-							++searchResults.page
-							return this.loadSearchResultsOperator(this.tmdbService.getMoviesShows(title, searchResults.page), title, searchResults.page)
-						}
-						else {
-							return EMPTY
-						}
-					})
-				).subscribe({
-					next: (response) => {
-						this.updateSearchState(response);
-					},
-					error: (err) => {
-						console.log(err);
-					},
-					complete: () => {
-						this.loadingPage = false;
-						console.log("completed loading trending search results");
-					},
-				});
-			}
-	
-			else {
+					previousSearchResults.page
+				)
+					.pipe(
+						expand((searchResults) => {
+							if (
+								searchResults.results.length - previousSearchResults.results.length < 10 &&
+								searchResults.page < searchResults.total_pages
+							) {
+								searchResults.page++;
+
+								return this.loadSearchResultsOperator(
+									searchResults,
+									this.tmdbService.getMoviesShows(title, searchResults.page),
+									title,
+									searchResults.page
+								);
+							} else {
+								searchResults.page++;
+
+								return EMPTY;
+							}
+						})
+					)
+					.subscribe({
+						next: (response) => {
+							this.updateSearchState(response);
+						},
+						error: (err) => {
+							console.log(err);
+						},
+						complete: () => {
+							this.loadingPage = false;
+							console.log("completed loading trending search results");
+						},
+					});
+			} else {
 				this.loadSearchResultsOperator(
-					this.tmdbService.getMoviesShows(title, page),
+					previousSearchResults,
+					this.tmdbService.getMoviesShows(title, previousSearchResults.page),
 					title,
-					page
-				).pipe(
-					expand(searchResults => {
-						if (searchResults.results.length - previousLength < 10 && searchResults.page < searchResults.total_pages) {
-							++searchResults.page
-							return this.loadSearchResultsOperator(this.tmdbService.getMoviesShows(title, searchResults.page), title, searchResults.page)
-						}
-						else {
-							return EMPTY
-						}
-					})
-				).subscribe({
-					next: (response) => {
-						this.updateSearchState(response);
-					},
-					error: (err) => {
-						console.log(err);
-					},
-					complete: () => {
-						this.loadingPage = false;
-						console.log("completed loading search results");
-					},
-				});
+					previousSearchResults.page
+				)
+					.pipe(
+						expand((searchResults) => {
+							if (
+								searchResults.results.length - previousSearchResults.results.length < 10 &&
+								searchResults.page < searchResults.total_pages
+							) {
+								searchResults.page++;
+
+								return this.loadSearchResultsOperator(
+									searchResults,
+									this.tmdbService.getMoviesShows(title, searchResults.page),
+									title,
+									searchResults.page
+								);
+							} else {
+								searchResults.page++;
+
+								return EMPTY;
+							}
+						})
+					)
+					.subscribe({
+						next: (response) => {
+							this.updateSearchState(response);
+						},
+						error: (err) => {
+							console.log(err);
+						},
+						complete: () => {
+							this.loadingPage = false;
+							console.log("completed loading search results");
+						},
+					});
 			}
 		}
 	}
 
 	loadSearchResultsOperator(
+		previousSearchResults: ISearchResults,
 		searchObservable$: Observable<any>,
 		title: string,
 		page: number
@@ -152,13 +188,10 @@ export class MoviesShowsService {
 										title: title,
 										results: [],
 										page: page,
-										total_pages: 1,
+										total_pages: response.total_pages,
 									};
-									newSearchResults.total_pages = response.total_pages;
 								} else {
-									newSearchResults = structuredClone(
-										this._searchStateSubject.getValue()!
-									);
+									newSearchResults = structuredClone(previousSearchResults);
 								}
 								for (const media of response.results) {
 									if (
@@ -205,7 +238,7 @@ export class MoviesShowsService {
 										}
 									}
 								}
-								return of(newSearchResults)
+								return of(newSearchResults);
 							})
 						);
 					})
