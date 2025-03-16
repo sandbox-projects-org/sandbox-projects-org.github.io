@@ -68,14 +68,14 @@ export class MoviesShowsService {
 					.pipe(
 						expand((searchResults) => {
 							if (
-								searchResults.results.length - previousSearchResults.results.length < 10 &&
+								searchResults.results.length - previousSearchResults.results.length < 20 &&
 								searchResults.page < searchResults.total_pages
 							) {
 								searchResults.page++;
 
 								return this.loadSearchResultsOperator(
 									searchResults,
-									this.tmdbService.getMoviesShows(title, searchResults.page),
+									this.tmdbService.getTrending(searchResults.page),
 									title,
 									searchResults.page
 								);
@@ -106,7 +106,7 @@ export class MoviesShowsService {
 					.pipe(
 						expand((searchResults) => {
 							if (
-								searchResults.results.length - previousSearchResults.results.length < 10 &&
+								searchResults.results.length - previousSearchResults.results.length < 20 &&
 								searchResults.page < searchResults.total_pages
 							) {
 								searchResults.page++;
