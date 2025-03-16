@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { AngularMaterialModule } from "../../shared/modules/angular-material.module";
 import { IMediaInfo, ISearchState } from "./interfaces";
 import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
@@ -11,10 +11,13 @@ import { MoviesShowsService } from "./movies-shows.service";
 	templateUrl: "./movies-shows.component.html",
 	styleUrl: "./movies-shows.component.scss",
 })
-export class MoviesShowsComponent {
+export class MoviesShowsComponent implements OnInit, OnDestroy {
+	infiniteScroll: () => void;
+	scrollTop: () => void;
+
 	constructor(
 		public moviesShowsService: MoviesShowsService,
-		route: ActivatedRoute,
+		private route: ActivatedRoute,
 		private router: Router
 	) {
 		route.queryParams.subscribe({
@@ -38,18 +41,18 @@ export class MoviesShowsComponent {
 			},
 		});
 
-		// scroll to top of page before reloading
-		window.addEventListener("beforeunload", (event) => {
-			this.scrollTop();
-		});
+		// initialize scroll top arrow function for new searches
+		this.scrollTop = () => {
+			window.scrollTo({ top: 0 });
+		};
 
-		// infinite scroll for paging
-		window.addEventListener("scroll", (event) => {
+		// initialize infinite scroll arrow function for paging
+		this.infiniteScroll = () => {
 			if (location.pathname === "/app-movies-shows") {
 				if (
 					window.scrollY + window.innerHeight >
 						document.body.scrollHeight - window.innerHeight * 0.5 &&
-					!this.moviesShowsService.loadingPage
+					!moviesShowsService.loadingPage
 				) {
 					if (route.snapshot.queryParamMap.has("search")) {
 						moviesShowsService.loadSearchResults(
@@ -61,7 +64,17 @@ export class MoviesShowsComponent {
 					}
 				}
 			}
-		});
+		};
+	}
+
+	ngOnInit(): void {
+		window.addEventListener("beforeunload", this.scrollTop);
+		window.addEventListener("scroll", this.infiniteScroll);
+	}
+
+	ngOnDestroy(): void {
+		window.removeEventListener("beforeunload", this.scrollTop);
+		window.removeEventListener("scroll", this.infiniteScroll);
 	}
 
 	searchTMDBMovieShow(searchTitle: string) {
@@ -77,10 +90,6 @@ export class MoviesShowsComponent {
 
 	loadVideo(mediaItem: IMediaInfo) {
 		this.moviesShowsService.updateMediaState(mediaItem);
-	}
-
-	scrollTop() {
-		window.scrollTo({ top: 0 });
 	}
 
 	blur(inputElement: HTMLInputElement) {
