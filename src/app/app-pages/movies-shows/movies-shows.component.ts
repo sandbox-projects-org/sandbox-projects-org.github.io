@@ -14,6 +14,8 @@ import { MoviesShowsService } from "./movies-shows.service";
 export class MoviesShowsComponent implements OnInit, OnDestroy {
 	infiniteScroll: () => void;
 	scrollTop: () => void;
+	isSearchHidden = false;
+	previousScrollPosition = 0;
 
 	constructor(
 		public moviesShowsService: MoviesShowsService,
@@ -46,8 +48,16 @@ export class MoviesShowsComponent implements OnInit, OnDestroy {
 			window.scrollTo({ top: 0 });
 		};
 
-		// initialize infinite scroll arrow function for paging
+		// initialize infinite scroll arrow function for paging, also for hiding search bar
 		this.infiniteScroll = () => {
+			if (window.pageYOffset > this.previousScrollPosition) {
+				this.isSearchHidden = true;
+			}
+			else {
+				this.isSearchHidden = false;
+			}
+			this.previousScrollPosition = window.pageYOffset;
+
 			if (location.pathname === "/app-movies-shows") {
 				if (
 					window.scrollY + window.innerHeight >

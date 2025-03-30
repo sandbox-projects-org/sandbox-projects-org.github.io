@@ -1,9 +1,9 @@
 .app {
-    display: grid;
+	display: grid;
 }
 
-.header {
-    display: grid;
-    height: 3.5em;
-    z-index: 100;
+app-header {
+	position: sticky;
+	top: 0px;
+	z-index: 100;
 }
