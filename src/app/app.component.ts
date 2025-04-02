@@ -3,11 +3,12 @@ import { HomepageComponent } from "./homepage/homepage.component";
 import { HeaderComponent } from "./header/header.component";
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from './shared/services/auth.service';
+import { AngularMaterialModule } from './shared/modules/angular-material.module';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent],
+  imports: [RouterOutlet, HeaderComponent, AngularMaterialModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -16,5 +17,9 @@ export class AppComponent {
 
   constructor(private authService: AuthService) {
     console.log(authService.isLoggedIn())
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

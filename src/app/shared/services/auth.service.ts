@@ -17,6 +17,10 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return this.oauthService.hasValidAccessToken()
+    return this.oauthService.hasValidAccessToken();
+  }
+
+  logout() {
+    this.oauthService.logOut();
   }
 }
