@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { AngularMaterialModule } from "../../shared/modules/angular-material.module";
 import { IMediaInfo, ISearchState } from "./interfaces";
 import { ActivatedRoute, Router, RouterOutlet } from "@angular/router";
@@ -11,11 +11,15 @@ import { MoviesShowsService } from "./movies-shows.service";
 	templateUrl: "./movies-shows.component.html",
 	styleUrl: "./movies-shows.component.scss",
 })
-export class MoviesShowsComponent {
+export class MoviesShowsComponent implements OnInit, OnDestroy {
+	infiniteScroll: () => void;
+	scrollTop: () => void;
+	isSearchHidden = false;
+	previousScrollPosition = 0;
 
 	constructor(
 		public moviesShowsService: MoviesShowsService,
-		route: ActivatedRoute,
+		private route: ActivatedRoute,
 		private router: Router
 	) {
 		route.queryParams.subscribe({
@@ -24,7 +28,9 @@ export class MoviesShowsComponent {
 					moviesShowsService.loadSearchResults(params["search"], true);
 				} else {
 					if (location.pathname === "/app-movies-shows") {
-						moviesShowsService.loadSearchResults('', true)
+						moviesShowsService.loadSearchResults("", true);
+					} else {
+						moviesShowsService.showSearchResults = false;
 					}
 				}
 			},
@@ -37,47 +43,63 @@ export class MoviesShowsComponent {
 			},
 		});
 
-		// scroll to top of page before reloading
-		window.addEventListener('beforeunload', (event) => {
-			this.scrollTop()
-		})
+		// initialize scroll top arrow function for new searches
+		this.scrollTop = () => {
+			window.scrollTo({ top: 0 });
+		};
 
-		// infinite scroll for paging
-		window.addEventListener("scroll", (event) => {
+		// initialize infinite scroll arrow function for paging, also for hiding search bar
+		this.infiniteScroll = () => {
+			if (window.pageYOffset > this.previousScrollPosition) {
+				this.isSearchHidden = true;
+			}
+			else {
+				this.isSearchHidden = false;
+			}
+			this.previousScrollPosition = window.pageYOffset;
+
 			if (location.pathname === "/app-movies-shows") {
 				if (
 					window.scrollY + window.innerHeight >
 						document.body.scrollHeight - window.innerHeight * 0.5 &&
-					!this.moviesShowsService.loadingPage
+					!moviesShowsService.loadingPage
 				) {
-					if (route.snapshot.queryParamMap.has('search')) {
-						moviesShowsService.loadSearchResults(route.snapshot.queryParamMap.get('search')!, false);
-					}
-					else {
-						moviesShowsService.loadSearchResults('', false)
+					if (route.snapshot.queryParamMap.has("search")) {
+						moviesShowsService.loadSearchResults(
+							route.snapshot.queryParamMap.get("search")!,
+							false
+						);
+					} else {
+						moviesShowsService.loadSearchResults("", false);
 					}
 				}
 			}
-		});
+		};
+	}
+
+	ngOnInit(): void {
+		window.addEventListener("beforeunload", this.scrollTop);
+		window.addEventListener("scroll", this.infiniteScroll);
+	}
+
+	ngOnDestroy(): void {
+		window.removeEventListener("beforeunload", this.scrollTop);
+		window.removeEventListener("scroll", this.infiniteScroll);
 	}
 
 	searchTMDBMovieShow(searchTitle: string) {
 		this.scrollTop();
 
 		var queryParamObject: ISearchState = {
-					search: searchTitle
-				};
-				this.router.navigate(["app-movies-shows"], {
-					queryParams: queryParamObject,
-				});
+			search: searchTitle,
+		};
+		this.router.navigate(["app-movies-shows"], {
+			queryParams: queryParamObject,
+		});
 	}
 
 	loadVideo(mediaItem: IMediaInfo) {
-		this.moviesShowsService.updateMediaState(mediaItem)
-	}
-
-	scrollTop() {
-		window.scrollTo({ top: 0 });
+		this.moviesShowsService.updateMediaState(mediaItem);
 	}
 
 	blur(inputElement: HTMLInputElement) {

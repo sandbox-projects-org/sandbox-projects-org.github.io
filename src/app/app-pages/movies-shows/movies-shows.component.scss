@@ -6,30 +6,23 @@
 	row-gap: 10px;
 }
 
-.scroll-top {
-	position: fixed;
-	z-index: 90;
-	top: 90%;
-	background-color: white;
-	border-radius: 50%;
-	opacity: 85%;
-}
-
-.search-header {
+.search-grid {
 	display: grid;
 	z-index: 90;
 	height: 78px;
 	width: 100%;
-}
 
-.search-grid {
-	display: grid;
-	position: fixed;
+	position: sticky;
+	top: 56px;
 	align-items: center;
 	justify-items: center;
 	background-color: black;
-	height: inherit;
-	width: inherit;
+	
+}
+
+.search-grid.hidden {
+	transform: translateY(-110%);
+	transition: .25s;
 }
 
 .search-bar {
