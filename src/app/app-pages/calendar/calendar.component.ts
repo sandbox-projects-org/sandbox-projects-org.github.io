@@ -12,6 +12,8 @@ import { Observable, interval, map, Subscription } from 'rxjs';
 })
 export class CalendarComponent implements OnDestroy {
 
+  snowflakes= new Array(30);
+
   dateObservable$: Observable<Date>;
   subscription: Subscription;
 
@@ -23,6 +25,7 @@ export class CalendarComponent implements OnDestroy {
 
 
   constructor(){
+    document.body.style.backgroundColor = '#3b9cba';
     // initialize observable to emit datetime every second
     this.dateObservable$ = interval(1000).pipe(
       map(() => new Date())
@@ -43,17 +46,18 @@ export class CalendarComponent implements OnDestroy {
     }
     else if (todayDate.getTime() < christmasDate.getTime()) {
       const daysTillChristmas = (christmasDate.getTime() - simpleTodayDate.getTime()) / (1000 * 60 * 60 * 24);
-      return daysTillChristmas;
+      return Math.round(daysTillChristmas);
     }
     else {
       const nextYearsChristmasDate = new Date(christmasDate.getFullYear() + 1, christmasDate.getMonth(), christmasDate.getDate());
       const daysTillChristmas = (nextYearsChristmasDate.getTime() - simpleTodayDate.getTime()) / (1000 * 60 * 60 * 24);
-      return daysTillChristmas
+      return Math.round(daysTillChristmas)
     }
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    document.body.style.backgroundColor = '#eefeff';
   }
 
 }
