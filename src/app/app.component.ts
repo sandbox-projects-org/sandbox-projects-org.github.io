@@ -16,7 +16,10 @@ export class AppComponent {
   title = 'angular-18-app';
 
   constructor(private authService: AuthService) {
-    console.log(authService.isLoggedIn())
+  }
+
+  isLoggedIn(): boolean {
+    return this.authService.isLoggedIn()
   }
 
   logout() {

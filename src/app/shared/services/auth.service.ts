@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { authCodeFlowConfig } from '../../auth.config';
+import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -8,16 +9,27 @@ import { authCodeFlowConfig } from '../../auth.config';
 export class AuthService {
 
   constructor(private oauthService: OAuthService) {
-    oauthService.configure(authCodeFlowConfig)
-    oauthService.loadDiscoveryDocumentAndTryLogin().then(() => {
-      if (!oauthService.hasValidAccessToken()) {
-        oauthService.initCodeFlow()
+  }
+
+  async initAuth(): Promise<void> {
+    this.oauthService.configure(authCodeFlowConfig)
+    this.oauthService.setupAutomaticSilentRefresh();
+    return await this.oauthService.loadDiscoveryDocumentAndTryLogin().then(() => {
+      if (!this.oauthService.hasValidAccessToken()) {
+        this.oauthService.initCodeFlow()
+        return Promise.reject()
       }
+      return Promise.resolve()
     })
   }
 
   isLoggedIn(): boolean {
-    return this.oauthService.hasValidAccessToken();
+    if (environment.authEnabled) {
+      return this.oauthService.hasValidAccessToken();
+    }
+    else {
+      return true
+    }
   }
 
   logout() {
