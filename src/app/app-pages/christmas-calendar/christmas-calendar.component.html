@@ -1,10 +1,12 @@
 <div class="calendar-grid">
 
 	<h1>Is it Christmas yet?</h1>
-	<h2>{{ isTodayChristmas ? "Yes" : "Nope" }}</h2>
+	<h2>{{ isTodayChristmas ? "Yes!" : "Nope" }}</h2>
 
-	<h1>How many days till Christmas?</h1>
-	<h2>{{ daysTillChristmas }} days</h2>
+    @if (!isTodayChristmas) {
+        <h1>How many days till Christmas?</h1>
+        <h2>{{ daysTillChristmas }} days</h2>
+    }
 
 </div>
 
