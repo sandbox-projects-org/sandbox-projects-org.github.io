@@ -281,7 +281,7 @@ export class MoviesShowsService {
 				(queryParamObject.episode = newMediaItem.episode);
 		}
 
-		this.router.navigate(["app-movies-shows/app-video-player"], {
+		this.router.navigate(["movies-shows/video-player"], {
 			queryParams: queryParamObject,
 		});
 	}

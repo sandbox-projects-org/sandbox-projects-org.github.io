@@ -2,17 +2,15 @@ import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Observable, interval, map, Subscription } from 'rxjs';
 
-
 @Component({
-  selector: 'app-calendar',
+  selector: 'app-christmas-calendar',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './calendar.component.html',
-  styleUrl: './calendar.component.scss'
+  templateUrl: './christmas-calendar.component.html',
+  styleUrl: './christmas-calendar.component.scss'
 })
-export class CalendarComponent implements OnDestroy {
-
-  snowflakes= new Array(50);
+export class ChristmasCalendarComponent implements OnDestroy {
+snowflakes= new Array(50);
 
   dateObservable$: Observable<Date>;
   subscription: Subscription;
@@ -60,5 +58,4 @@ export class CalendarComponent implements OnDestroy {
     this.subscription.unsubscribe();
     document.body.style.backgroundColor = '#eefeff';
   }
-
 }
