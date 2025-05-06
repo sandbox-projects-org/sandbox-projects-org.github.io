@@ -1,8 +1,12 @@
-<div class="calendar">
-	@for (snowflake of snowflakes; track snowflake) {
-	<div class="snowflake"></div>
-	}
+<div class="calendar-grid">
+
 	<div>Is it Christmas yet?: {{ isTodayChristmas ? "Yes" : "No" }}</div>
 
 	<div>How many days till Christmas? {{ daysTillChristmas }}</div>
+</div>
+
+<div class="snow">
+	@for (snowflake of snowflakes; track snowflake) {
+		<div class="snowflake"></div>
+		}
 </div>

@@ -12,7 +12,7 @@ import { Observable, interval, map, Subscription } from 'rxjs';
 })
 export class CalendarComponent implements OnDestroy {
 
-  snowflakes= new Array(30);
+  snowflakes= new Array(50);
 
   dateObservable$: Observable<Date>;
   subscription: Subscription;
