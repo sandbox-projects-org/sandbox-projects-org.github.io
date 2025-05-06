@@ -3,10 +3,16 @@
     justify-self: center;
     padding: 1em;
     font-family: 'Mountains of Christmas';
-    font-size: larger;
+    font-size: 1.5em;
     font-weight: bold;
     position: relative;
     z-index: 100;
+    color: white;
+}
+
+p {
+  text-indent: 3em;
+  font-size: x-large;
 }
 
 .snow {

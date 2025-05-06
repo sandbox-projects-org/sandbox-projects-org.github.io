@@ -25,7 +25,8 @@ export class CalendarComponent implements OnDestroy {
 
 
   constructor(){
-    document.body.style.backgroundColor = '#3b9cba';
+    document.body.style.backgroundColor = '#005670';
+
     // initialize observable to emit datetime every second
     this.dateObservable$ = interval(1000).pipe(
       map(() => new Date())
