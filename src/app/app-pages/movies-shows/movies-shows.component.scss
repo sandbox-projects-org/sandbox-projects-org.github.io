@@ -97,8 +97,10 @@
     display: grid;
     justify-items: center;
 
-    img {
-        max-width: 100%;
+    mat-icon {
+        width: auto;
+		height: auto;
+		font-size: 5em;
     }
 }
 
