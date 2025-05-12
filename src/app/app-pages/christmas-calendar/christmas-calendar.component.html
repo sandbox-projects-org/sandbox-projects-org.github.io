@@ -7,12 +7,14 @@
 		}
 	</button>
 
-	<h1>Is it Christmas yet?</h1>
-	<h2>{{ isTodayChristmas ? "Yes!" : "Nope" }}</h2>
-
 	@if (!isTodayChristmas) {
+	<h1>Is it Christmas yet?</h1>
+	<h2>Nope</h2>
+
 	<h1>How many days till Christmas?</h1>
 	<h2>{{ daysTillChristmas }} days</h2>
+	} @else {
+	<h1 id="christmas" class="christmas-message">Merry Christmas!</h1>
 	}
 </div>
 
