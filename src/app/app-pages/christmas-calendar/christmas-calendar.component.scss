@@ -5,8 +5,18 @@
     padding: 1em;
     font-family: 'Mountains of Christmas';
     position: relative;
+    width: 100%;
     z-index: 100;
     color: white;
+    box-sizing: border-box;
+}
+
+.volume-button {
+  justify-self: end;
+}
+
+.mat-icon {
+  color: white;
 }
 
 .snow {

@@ -1,16 +1,17 @@
 import { Component, OnDestroy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Observable, interval, map, Subscription } from "rxjs";
+import { AngularMaterialModule } from "../../shared/modules/angular-material.module";
 
 @Component({
 	selector: "app-christmas-calendar",
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, AngularMaterialModule],
 	templateUrl: "./christmas-calendar.component.html",
 	styleUrl: "./christmas-calendar.component.scss",
 })
 export class ChristmasCalendarComponent implements OnDestroy {
-	snowflakes = [...Array(50).keys()].map(i => i + 1);
+	snowflakes = [...Array(50).keys()].map((i) => i + 1);
 
 	dateObservable$: Observable<Date>;
 	subscription: Subscription;
@@ -31,6 +32,7 @@ export class ChristmasCalendarComponent implements OnDestroy {
 		"deck-the-halls-background-christmas-music.mp3",
 		"santa-and-friends.mp3",
 	];
+	isMuted = false;
 
 	constructor() {
 		document.body.style.backgroundColor = "#005670";
@@ -51,13 +53,21 @@ export class ChristmasCalendarComponent implements OnDestroy {
 		});
 
 		//audio for page
-			const randomAudio: number = Math.floor(
-				Math.random() * this.audioList.length
-			);
-			this.audio.src = "/assets/audio/" + this.audioList[randomAudio];
-			this.audio.loop = true;
-			this.audio.load();
-			this.audio.play();
+		const randomAudio: number = Math.floor(
+			Math.random() * this.audioList.length
+		);
+		this.audio.src = "/assets/audio/" + this.audioList[randomAudio];
+		this.audio.loop = true;
+		this.audio.autoplay = true;
+		this.audio.load();
+		this.audio
+			.play()
+			.then(() => {
+				this.isMuted = this.audio.muted;
+			})
+			.catch(() => {
+				this.isMuted = true;
+			});
 	}
 
 	getDaysTillChristmas(todayDate: Date, christmasDate: Date): number {
@@ -84,6 +94,12 @@ export class ChristmasCalendarComponent implements OnDestroy {
 				(1000 * 60 * 60 * 24);
 			return Math.round(daysTillChristmas);
 		}
+	}
+
+	toggleVolume() {
+		this.isMuted = !this.isMuted;
+		this.audio.muted = this.isMuted;
+		this.audio.play();
 	}
 
 	ngOnDestroy(): void {

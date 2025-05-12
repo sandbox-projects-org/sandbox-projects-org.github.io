@@ -1,18 +1,23 @@
 <div class="calendar-grid">
+	<button class="volume-button" mat-icon-button (click)="toggleVolume()">
+		@if (isMuted) {
+		<mat-icon>volume_off</mat-icon>
+		} @else {
+		<mat-icon>volume_up</mat-icon>
+		}
+	</button>
 
 	<h1>Is it Christmas yet?</h1>
 	<h2>{{ isTodayChristmas ? "Yes!" : "Nope" }}</h2>
 
-    @if (!isTodayChristmas) {
-        <h1>How many days till Christmas?</h1>
-        <h2>{{ daysTillChristmas }} days</h2>
-    }
-
+	@if (!isTodayChristmas) {
+	<h1>How many days till Christmas?</h1>
+	<h2>{{ daysTillChristmas }} days</h2>
+	}
 </div>
 
-	<div class="snow">
-		@for (snowflake of snowflakes; track snowflake) {
-			<div class="snowflake"></div>
-			}
-	</div>
-	
+<div class="snow">
+	@for (snowflake of snowflakes; track snowflake) {
+	<div class="snowflake"></div>
+	}
+</div>
