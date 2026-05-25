@@ -60,6 +60,7 @@
 	align-items: center;
 	align-content: start;
     row-gap: 5px;
+	border-radius: 5px;
 
 	img {
 		display: grid;
@@ -96,9 +97,12 @@
 .no-result {
     display: grid;
     justify-items: center;
+	margin: 4em 0;
 
-    img {
-        max-width: 100%;
+    mat-icon {
+        width: auto;
+		height: auto;
+		font-size: 5em;
     }
 }
 

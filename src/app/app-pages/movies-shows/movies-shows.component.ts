@@ -27,7 +27,7 @@ export class MoviesShowsComponent implements OnInit, OnDestroy {
 				if (params["search"]) {
 					moviesShowsService.loadSearchResults(params["search"], true);
 				} else {
-					if (location.pathname === "/app-movies-shows") {
+					if (location.pathname === "/movies-shows") {
 						moviesShowsService.loadSearchResults("", true);
 					} else {
 						moviesShowsService.showSearchResults = false;
@@ -58,7 +58,7 @@ export class MoviesShowsComponent implements OnInit, OnDestroy {
 			}
 			this.previousScrollPosition = window.pageYOffset;
 
-			if (location.pathname === "/app-movies-shows") {
+			if (location.pathname === "/movies-shows") {
 				if (
 					window.scrollY + window.innerHeight >
 						document.body.scrollHeight - window.innerHeight * 0.5 &&
@@ -93,7 +93,7 @@ export class MoviesShowsComponent implements OnInit, OnDestroy {
 		var queryParamObject: ISearchState = {
 			search: searchTitle,
 		};
-		this.router.navigate(["app-movies-shows"], {
+		this.router.navigate(["movies-shows"], {
 			queryParams: queryParamObject,
 		});
 	}
